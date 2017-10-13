@@ -2,6 +2,7 @@
 import sys
 import pandas
 import random
+import numpy as np
 
 """
 Functions for hotspot
@@ -41,16 +42,19 @@ def setup_matrix(columns, x_data, y_data):
     """
     Returns the data
     """
-    data = {}
-    data[columns[0]] = []
-    data[columns[1]] = []
-    data[columns[2]] = []
-    for y in y_data:
-        for x in x_data:
-            data[columns[0]].append(y)
-            data[columns[1]].append(x)
-            data[columns[2]].append(random.randint(0, 100))
-
+    data = np.array([['','Col1','Col2'],
+                    ['Row1',1,2],
+                    ['Row2',3,4]])
+    # data = {}
+    # data[columns[0]] = []
+    # data[columns[1]] = []
+    # data[columns[2]] = []
+    # for y in y_data:
+    #     for x in x_data:
+    #         data[columns[0]].append(y)
+    #         data[columns[1]].append(x)
+    #         data[columns[2]].append(random.randint(0, 100))
+    #
     return data
 
 

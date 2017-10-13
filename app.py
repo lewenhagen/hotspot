@@ -7,6 +7,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import math
 import csv
+import pandas
 
 
 app = Flask(__name__)
@@ -26,15 +27,43 @@ def main():
 
     # Sets up data for csv-file, using pandas
     data = functions.setup_matrix(columns, x_axis_data, y_axis_data)
-
+    print(data)
+    data2 = pandas.DataFrame(data=[
+        [5, 5, 5, 1, 2, 3, 4],
+        [5, 5, 5, 1, 2, 3, 4],
+        [5, 5, 5, 1, 2, 3, 4],
+        [5, 5, 5, 1, 2, 3, 4],
+        [5, 5, 5, 1, 2, 3, 4],
+        [5, 5, 5, 1, 2, 3, 4],
+        [5, 5, 5, 1, 2, 3, 4],
+        [5, 5, 5, 1, 2, 3, 4],
+        [5, 5, 5, 1, 2, 3, 4],
+        [5, 5, 5, 1, 2, 3, 4],
+        [5, 5, 5, 1, 2, 3, 4],
+        [5, 5, 5, 1, 2, 3, 4],
+        [5, 5, 5, 1, 2, 3, 4],
+        [5, 5, 5, 1, 2, 3, 4],
+        [5, 5, 5, 1, 2, 3, 4],
+        [5, 5, 5, 1, 2, 3, 4],
+        [5, 5, 5, 1, 2, 3, 4],
+        [5, 5, 5, 1, 2, 3, 4],
+        [5, 5, 5, 1, 2, 3, 4],
+        [5, 5, 5, 1, 2, 3, 4],
+        [5, 5, 5, 1, 2, 3, 4],
+        [5, 5, 5, 1, 2, 3, 4],
+        [5, 5, 5, 1, 2, 3, 4],
+        [5, 5, 5, 1, 2, 3, 4]
+    ],
+    index=y_axis_data,
+    columns=x_axis_data)
     # Saves data to .csv
-    functions.save_csv("hotspot.csv", data, columns)
+    # functions.save_csv("hotspot.csv", data, columns)
 
     # Creates a DataFrame to use, x_axis_data = correct order of x-axis-column
-    df = functions.create_dataframe("hotspot.csv", x_axis_data, columns)
-    print(type(df))
+    # df = functions.create_dataframe("hotspot.csv", x_axis_data, columns)
+    # print(type(df))
     fig, ax = plt.subplots(figsize=(5,5))
-    sns.heatmap(df, ax=ax,cmap="YlOrRd", annot=True, fmt="d")
+    sns.heatmap(data2, ax=ax,cmap="YlOrRd", annot=True, fmt="d")
     plt.yticks(rotation=0,fontsize=8);
     plt.xticks(rotation=0, fontsize=6);
     plt.tight_layout()
