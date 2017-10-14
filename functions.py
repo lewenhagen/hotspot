@@ -1,70 +1,59 @@
 #!usr/bin/env python3
-import sys
-import pandas
-import random
-import numpy as np
 
 """
 Functions for hotspot
 """
 
-def get_axis_data(data_type):
+import pandas
+import random
+import numpy as np
+
+def get_ticks(data_type):
     """
     Returns a dataset for x axis
     """
     data = {
         "weekdays": ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-        "hours": ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00',
+        "hours": [
+            '00:00', '01:00', '02:00', '03:00', '04:00', '05:00',
             '06:00', '07:00', '08:00', '09:00', '10:00', '11:00',
             '12:00', '13:00', '14:00', '15:00', '16:00', '17:00',
             '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'
-        ]
+        ],
+        "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     }
 
     try:
         return data[data_type]
     except KeyError:
-        print("Data not in dict.")
-        return []
+        raise SystemExit("No such tick data: {}. Change input and save file to reload.".format(data_type))
 
 
-
-def save_csv(filename, data, columns):
+def get_data():
     """
-    Saves DataFrame as CSV
+    Returns DataFrame (2D-list) with data
     """
-    df_save = pandas.DataFrame(data, columns=columns)
-    df_save.to_csv(filename)
+    # Get the data for the x ticks
+    x_ticks = get_ticks("weekdsays")
 
+    # Get the data for the y ticks
+    y_ticks = get_ticks("hours")
 
-
-def setup_matrix(columns, x_data, y_data):
-    """
-    Returns the data
-    """
-    data = np.array([['','Col1','Col2'],
-                    ['Row1',1,2],
-                    ['Row2',3,4]])
-    # data = {}
-    # data[columns[0]] = []
-    # data[columns[1]] = []
-    # data[columns[2]] = []
-    # for y in y_data:
-    #     for x in x_data:
-    #         data[columns[0]].append(y)
-    #         data[columns[1]].append(x)
-    #         data[columns[2]].append(random.randint(0, 100))
-    #
-    return data
-
-
-
-def create_dataframe(filename, sort_on, columns):
-    """
-    Creates a DataFrame file from csv
-    """
-    csv_file = pandas.read_csv(filename)
-    df = csv_file.pivot_table(index=columns[0], columns=columns[1], values=columns[2], fill_value=0)
-    df = df.reindex_axis(sort_on, axis=1) # Sort columns and their data
-
-    return df
+    return pandas.DataFrame(data=[
+        [random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],
+        [random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],
+        [random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],
+        [random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],[random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],
+        [random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],[random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],
+        [random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],[random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],
+        [random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],[random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],
+        [random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],[random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],
+        [random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],[random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],
+        [random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],[random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],
+        [random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],[random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],
+        [random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],[random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],
+        [random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],[random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],
+        [random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)]
+    ],
+    index=y_ticks,
+    columns=x_ticks)
