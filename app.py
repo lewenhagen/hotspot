@@ -5,8 +5,6 @@ Main file
 Generates the heatmap and render the image in template
 """
 
-import seaborn as sns
-import matplotlib.pyplot as plt
 import functions
 from flask import Flask, render_template
 
@@ -21,37 +19,45 @@ def main():
     """
     Main route
     """
+    hotspot_one = {
+        "filename": "map.png",
+        "title": "Temporal hotspot 1",
+        "xticks": functions.get_ticks("weekdays"),
+        "yticks": functions.get_ticks("hours"),
+        "columns": {
+            "xlabel": "Weekdays",
+            "ylabel": "Hours"
+        }
+    }
+
+    hotspot_two = {
+        "filename": "map2.png",
+        "title": "Temporal hotspot 2",
+        "xticks": functions.get_ticks("weekdays"),
+        "yticks": functions.get_ticks("hours"),
+        "columns": {
+            "xlabel": "Weekdays",
+            "ylabel": "Hours"
+        }
+    }
+
+    filenames = []
+
     # The filename for hotspot image
-    filename = "static/map.png"
+    filenames.append(hotspot_one["filename"])
+    filenames.append(hotspot_two["filename"])
 
     # Get a 2d list, dataframe
-    data = functions.get_data()
+    hotspot_one["data"] = functions.get_data(hotspot_one)
+    hotspot_two["data"] = functions.get_data(hotspot_two)
 
-    # Returns a tuple containing a figure and axes object(s)
-    fig, ax = plt.subplots(figsize=(7,7))
 
-    # Creates a heatmap. ax = axes object, cmap = colorscheme, annot = display data in map, fmt = format on annot
-    sns.heatmap(data, ax=ax, cmap="YlOrRd", annot=True, fmt="d")
+    # Creates the hotspot
+    functions.create_hotspot(hotspot_one)
+    functions.create_hotspot(hotspot_two)
 
-    # Sets labels and title
-    ax.set_xlabel('Weekdays', fontsize=14)
-    ax.set_ylabel('Hours', fontsize=14)
-    ax.set_title("Temporal Hotspot")
 
-    # Moves tick marker outside both axis
-    ax.tick_params(axis='both', direction="out")
-
-    # Config for the axis ticks
-    plt.yticks(rotation=0,fontsize=8);
-    plt.xticks(rotation=0, fontsize=8);
-
-    # Makes sure the image (labels) is not cut off
-    plt.tight_layout()
-
-    # Saves the figure as an image
-    plt.savefig(filename)
-
-    return render_template("index.html", hotspot=filename)
+    return render_template("index.html", hotspots=filenames)
 
 
 

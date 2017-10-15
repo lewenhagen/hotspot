@@ -7,6 +7,8 @@ Functions for hotspot
 import pandas
 import random
 import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 def get_ticks(data_type):
     """
@@ -29,31 +31,48 @@ def get_ticks(data_type):
         raise SystemExit("No such tick data: {}. Change input and save file to reload.".format(data_type))
 
 
-def get_data():
+def get_data(hotspot):
     """
     Returns DataFrame (2D-list) with data
     """
-    # Get the data for the x ticks
-    x_ticks = get_ticks("weekdsays")
 
-    # Get the data for the y ticks
-    y_ticks = get_ticks("hours")
+    data = []
 
-    return pandas.DataFrame(data=[
-        [random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],
-        [random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],
-        [random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],
-        [random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],[random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],
-        [random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],[random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],
-        [random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],[random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],
-        [random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],[random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],
-        [random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],[random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],
-        [random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],[random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],
-        [random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],[random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],
-        [random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],[random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],
-        [random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],[random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],
-        [random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],[random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)],
-        [random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), random.randint(0, 100)]
-    ],
-    index=y_ticks,
-    columns=x_ticks)
+    for i, v in enumerate(hotspot["yticks"]):
+        data.append([])
+        for _ in hotspot["xticks"]:
+            data[i].append(random.randint(0, 100))
+
+    return pandas.DataFrame(data=data,
+    index=hotspot["yticks"],
+    columns=hotspot["xticks"])
+
+
+
+def create_hotspot(hotspot):
+    """
+    Creates a hotspot
+    """
+    # Returns a tuple containing a figure and axes object(s)
+    fig, ax = plt.subplots(figsize=(7,7))
+
+    # Creates a heatmap. ax = axes object, cmap = colorscheme, annot = display data in map, fmt = format on annot
+    sns.heatmap(hotspot["data"], ax=ax, cmap="YlOrRd", annot=True, fmt="d")
+
+    # Sets labels and title
+    ax.set_xlabel(hotspot["columns"]["xlabel"], fontsize=14)
+    ax.set_ylabel(hotspot["columns"]["ylabel"], fontsize=14)
+    ax.set_title(hotspot["title"])
+
+    # Moves tick marker outside both axis
+    ax.tick_params(axis='both', direction="out")
+
+    # Config for the axis ticks
+    plt.yticks(rotation=0,fontsize=8);
+    plt.xticks(rotation=0, fontsize=8);
+
+    # Makes sure the image (labels) is not cut off
+    plt.tight_layout()
+
+    # Saves the figure as an image
+    plt.savefig("static/" + hotspot["filename"])
