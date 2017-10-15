@@ -1,0 +1,6 @@
+{
+    "weeks": {"size": 52,"unit": "Weeks", "order": 2},
+    "days": {"size": 7, "unit": "Days", "order": 1},
+    "months": {"size": 12, "unit": "Months", "order": 2},
+    "hours": {"size": 24, "unit": "Hours", "order": 0}
+}
