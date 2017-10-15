@@ -24,7 +24,7 @@ def main():
         "title": "Temporal hotspot 1",
         "xticks": functions.get_ticks("weekdays"),
         "yticks": functions.get_ticks("hours"),
-        "columns": {
+        "labels": {
             "xlabel": "Weekdays",
             "ylabel": "Hours"
         }
@@ -35,27 +35,25 @@ def main():
         "title": "Temporal hotspot 2",
         "xticks": functions.get_ticks("weekdays"),
         "yticks": functions.get_ticks("hours"),
-        "columns": {
+        "labels": {
             "xlabel": "Weekdays",
             "ylabel": "Hours"
         }
     }
 
-    filenames = []
-
-    # The filename for hotspot image
-    filenames.append(hotspot_one["filename"])
-    filenames.append(hotspot_two["filename"])
-
     # Get a 2d list, dataframe
     hotspot_one["data"] = functions.get_data(hotspot_one)
     hotspot_two["data"] = functions.get_data(hotspot_two)
-
 
     # Creates the hotspot
     functions.create_hotspot(hotspot_one)
     functions.create_hotspot(hotspot_two)
 
+    # The filenames for hotspot images
+    filenames = []
+
+    filenames.append(hotspot_one["filename"])
+    filenames.append(hotspot_two["filename"])
 
     return render_template("index.html", hotspots=filenames)
 

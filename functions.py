@@ -44,12 +44,12 @@ def get_data(hotspot):
             data[i].append(random.randint(0, 100))
 
     return pandas.DataFrame(data=data,
-    index=hotspot["yticks"],
-    columns=hotspot["xticks"])
+                            index=hotspot["yticks"],
+                            columns=hotspot["xticks"])
 
 
 
-def create_hotspot(hotspot):
+def create_hotspot(hotspot, cbar=True):
     """
     Creates a hotspot
     """
@@ -57,11 +57,11 @@ def create_hotspot(hotspot):
     fig, ax = plt.subplots(figsize=(7,7))
 
     # Creates a heatmap. ax = axes object, cmap = colorscheme, annot = display data in map, fmt = format on annot
-    sns.heatmap(hotspot["data"], ax=ax, cmap="YlOrRd", annot=True, fmt="d")
+    sns.heatmap(hotspot["data"], ax=ax, cmap="gist_gray_r", annot=True, fmt="d", cbar=cbar)
 
     # Sets labels and title
-    ax.set_xlabel(hotspot["columns"]["xlabel"], fontsize=14)
-    ax.set_ylabel(hotspot["columns"]["ylabel"], fontsize=14)
+    ax.set_xlabel(hotspot["labels"]["xlabel"], fontsize=14)
+    ax.set_ylabel(hotspot["labels"]["ylabel"], fontsize=14)
     ax.set_title(hotspot["title"])
 
     # Moves tick marker outside both axis
