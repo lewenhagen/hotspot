@@ -1,12 +1,66 @@
-<!doctype html>
-<html>
-<head>
-    <title>Hotpot</title>
-    <meta charset="utf-8">
-</head>
-<body>
-    {% for hotspot in hotspots %}
-        <img class="hotspot" src="static/{{ hotspot }}">
-    {% endfor %}
-</body>
-</html>
+{% include 'header.html' %}
+
+<div class="container" role="main">
+    <div class="page-header">
+        <h1>Create hotspot heatmap</h1>
+    </div>
+    <div class="container-fluid">
+        <form class="form-horizontal" method="POST" action="/hotspot">
+            <fieldset>
+                <legend>Setup</legend>
+                <div class="form-group">
+                    <label for="setupData" class="col-lg-2 control-label">Choose data</label>
+                    <div class="col-lg-6">
+                        <select class="form-control" id="setupData" name="setupData">
+                            <option value="testdata">Testdata</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="setupXticks" class="col-lg-2 control-label">Choose x-ticks</label>
+                    <div class="col-lg-6">
+                        <select class="form-control" id="setupXticks" name="setupXticks">
+                            {% for tick in xticks %}
+                                <option value="{{ tick }}">{{ tick }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="setupYticks" class="col-lg-2 control-label">Choose y-ticks</label>
+                    <div class="col-lg-6">
+                        <select class="form-control" id="setupYticks" name="setupYticks">
+                            {% for tick in yticks %}
+                                <option value="{{ tick }}">{{ tick }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="setupTitle" class="col-lg-2 control-label">Title</label>
+                    <div class="col-lg-6">
+                        <input type="text" class="form-control" id="setupTitle" name="setupTitle" placeholder="Title">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="setupFilename" class="col-lg-2 control-label">Save map as: (.png)</label>
+                    <div class="col-lg-6">
+                        <input type="text" class="form-control" id="setupFilename" name="setupFilename" placeholder="Filename)">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-lg-10 col-lg-offset-2">
+                        <button type="reset" class="btn btn-default">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Create Hotspot</button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+{% include 'footer.html' %}
