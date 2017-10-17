@@ -24,7 +24,7 @@ body {
 .hotspot {
     display: inline-block;
     margin-bottom: 50px;
-    /*float: left;*/
+    float: left;
 }
 
 .fileexists {
