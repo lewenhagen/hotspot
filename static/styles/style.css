@@ -23,6 +23,7 @@ body {
 
 .hotspot {
     display: inline-block;
+    margin-bottom: 50px;
     /*float: left;*/
 }
 
@@ -32,4 +33,8 @@ body {
 
 .right {
     float: right;
+}
+
+.high {
+    height: 1000px;
 }
