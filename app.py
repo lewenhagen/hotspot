@@ -93,7 +93,7 @@ def created():
     if request.method == "POST":
         view_hotspots = request.form.getlist("image")
 
-    return render_template("created.html", created=created_hotspots, view_hotspots=view_hotspots)
+    return render_template("created.html", created=sorted(created_hotspots), view_hotspots=view_hotspots)
 
 
 

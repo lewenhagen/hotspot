@@ -41,5 +41,7 @@ body {
 
 
 .high {
-    height: 1000px;
+    /*position: absolute;
+    min-height: 100%;*/
+    /*height: 100%;*/
 }
