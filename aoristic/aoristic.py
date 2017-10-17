@@ -4,23 +4,34 @@ Test aoristic method
 """
 import json
 import date_functions as dt_func
+import read_csv as rc
 
 def aoristic_method(events, t_map, x, y):
     """
     Start aoristic analysis on events
     """
-    measure_unit = x["unit"] if x["order"] < y["order"] else y["unit"] # Find out with unit is used to measure, days or hours
-    if measure_unit == "Days":
-        create_funcs = dt_func.create_days
-    elif measure_unit == "Hours":
-        create_funcs = dt_func.create_hours
+    # Denn funktion borde nog bli två så man kan skicka in färdig processerad data från annat håll.
+
+    measure_unit, create_dict_func = get_measure_unit(x, y)
 
     for event_data in events:
     # event_data = events[3]
-
-        event = create_funcs(event_data)
+        event = create_dict_func(event_data)
         fill_map(t_map, event, x, y, measure_unit)
 
+
+
+def get_measure_unit(x, y):
+    """
+    Check which unit and create functions should be used for aoristic method
+    """
+    measure_unit = x["unit"] if x["order"] < y["order"] else y["unit"] # Find out which unit is used to measure, days or hours
+    if measure_unit == "Days":
+        create_func = dt_func.create_days
+    elif measure_unit == "Hours":
+        create_func = dt_func.create_hours
+
+    return measure_unit, create_func
 
 
 def get_nr_of_timeslots(event, unit):
@@ -68,12 +79,12 @@ def get_xy(date, x, y):
     """
     return x and y indexes
     """
-    xy = get_unit(date, x["unit"]), get_unit(date, y["unit"])
+    xy = get_unit_value(date, x["unit"]), get_unit_value(date, y["unit"])
     return xy
 
 
 
-def get_unit(date, unit):
+def get_unit_value(date, unit):
     """
     Return unit
     """
@@ -90,16 +101,17 @@ def main():
     """
     Starts program
     """
-    events = json.load(open("events.json", "r"))
+    # events = json.load(open("events.json", "r"))
+    events = rc.csv_to_dict()
     units = json.load(open("units.json", "r"))
 
     # weekday X time of day [7*24]
     unit_x = units["hours"]
     unit_y = units["days"]
 
+    # weekday X month [7*12]
     # unit_x = units["days"]
     # unit_y = units["months"]
-    # weekday X month [7*12]
 
     t_map = [[0 for y in range(unit_y["size"])] for x in range(unit_x["size"])]
 

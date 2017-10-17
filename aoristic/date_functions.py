@@ -21,9 +21,10 @@ def create_date(date):
     """
     Create date object from date string
     """
-    day = int(date[:2])
-    month = int(date[3:5])
-    year = int(date[6:10])
+    # Skapa från sträng direkt??!?!
+    day = int(date[8:])
+    month = int(date[5:7])
+    year = int(date[:4])
     return datetime.date(day=day, month=month, year=year)
 
 
@@ -32,11 +33,11 @@ def create_hours(event):
     """
     create time and date for unit Hours
     """
-    date_start = create_date(event["date_start"])
-    date_end = create_date(event["date_end"])
+    date_start = create_date(event["datestart"])
+    date_end = create_date(event["dateend"])
 
-    time_start = create_time(event["time_start"][:2])
-    time_end = create_time(event["time_end"][:2])
+    time_start = create_time(event["timestart"][:2])
+    time_end = create_time(event["timeend"][:2])
 
     event_end = create_datetime(date_end, time_end) + datetime.timedelta(hours=1)
 
@@ -48,8 +49,8 @@ def create_days(event):
     """
     create time and date for unit Days
     """
-    date_start = create_date(event["date_start"])
-    date_end = create_date(event["date_end"])
+    date_start = create_date(event["datestart"])
+    date_end = create_date(event["dateend"])
 
     time_start = create_time()
     time_end = create_time()
