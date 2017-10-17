@@ -33,6 +33,7 @@ def hotspot():
     if request.method == "POST":
         filename = request.form["setupFilename"] + ".png"
 
+        # if file exists, choose another filename
         if filename in os.listdir("static"):
             return render_template("index.html", xticks=config.x_ticks, yticks=config.y_ticks, duplicate=filename)
         else:
