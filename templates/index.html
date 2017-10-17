@@ -60,6 +60,9 @@
                 </div>
             </fieldset>
         </form>
+        {% if duplicate %}
+            <div class="fileexists well"><h2>Filename: "{{ duplicate }}" exists.</h2></div>
+        {% endif %}
     </div>
 </div>
 

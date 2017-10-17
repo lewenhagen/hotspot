@@ -1,3 +1,7 @@
+html {
+    overflow-y: scroll;
+}
+
 body {
   padding-top: 70px;
   padding-bottom: 30px;
@@ -19,5 +23,13 @@ body {
 
 .hotspot {
     display: inline-block;
-    float: left;
+    /*float: left;*/
+}
+
+.fileexists {
+    text-align: center;
+}
+
+.right {
+    float: right;
 }
