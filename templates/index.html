@@ -12,7 +12,8 @@
                     <label for="setupData" class="col-lg-2 control-label">Choose data</label>
                     <div class="col-lg-6">
                         <select class="form-control" id="setupData" name="setupData">
-                            {% for data in av_data %}
+                            <option value="">Choose data...</option>
+                            {% for data in setup.available_data %}
                                 <option value="{{ data }}">{{ data }}</option>
                             {% endfor %}
                         </select>
@@ -24,7 +25,7 @@
                     <div class="col-lg-6">
                         <select class="form-control" id="setupCity" name="setupCity">
                             <option value="all">All cities</option>
-                            {% for city in cities %}
+                            {% for city in setup.cities %}
                                 <option value="{{ city }}">{{ city }}</option>
                             {% endfor %}
                         </select>
@@ -35,7 +36,8 @@
                     <label for="setupXticks" class="col-lg-2 control-label">Choose x-ticks</label>
                     <div class="col-lg-6">
                         <select class="form-control" id="setupXticks" name="setupXticks">
-                            {% for tick in xticks %}
+                            <option value="">Choose x-ticks...</option>
+                            {% for tick in setup.x_ticks %}
                                 <option value="{{ tick }}">{{ tick }}</option>
                             {% endfor %}
                         </select>
@@ -45,7 +47,8 @@
                     <label for="setupYticks" class="col-lg-2 control-label">Choose y-ticks</label>
                     <div class="col-lg-6">
                         <select class="form-control" id="setupYticks" name="setupYticks">
-                            {% for tick in yticks %}
+                            <option value="">Choose y-ticks...</option>
+                            {% for tick in setup.y_ticks %}
                                 <option value="{{ tick }}">{{ tick }}</option>
                             {% endfor %}
                         </select>

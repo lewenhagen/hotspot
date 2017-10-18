@@ -6,9 +6,9 @@ Generates the heatmap and render the image in template
 """
 
 import functions
-import config
+from config import setup
 from flask import Flask, render_template, request
-# import os, glob
+import os, glob
 import sys
 sys.path.insert(0, 'aoristic/')
 import aoristic
@@ -29,37 +29,42 @@ def main():
     Main route
     """
 
-    return render_template("index.html", xticks=config.x_ticks, yticks=config.y_ticks, av_data=config.available_data, cities=config.city_list)
+    return render_template("index.html", setup=setup)
 
 
 @app.route("/hotspot", methods=["POST"])
 def hotspot():
     """ Hotspot route """
-    save_as_csv = False
 
     if request.method == "POST":
+        setup_data = request.form["setupData"]
+        setup_city = request.form["setupCity"]
+        setup_x_ticks = request.form["setupXticks"]
+        setup_y_ticks = request.form["setupYticks"]
+        setup_title = request.form["setupTitle"]
         filename = request.form["setupFilename"]
+        save_as_csv = False
 
         if request.form.getlist("savecsv"):
             save_as_csv = True
 
         # if file exists, choose another filename
         if filename in os.listdir("static"):
-            return render_template("index.html", xticks=config.x_ticks, yticks=config.y_ticks, duplicate=filename)
+            return render_template("index.html", setup=setup)
         else:
             hotspot_one = {
                 "filename": filename,
-                "title": request.form["setupTitle"],
-                "xticks": functions.get_ticks(request.form["setupXticks"]),
-                "yticks": functions.get_ticks(request.form["setupYticks"]),
+                "title": setup_title,
+                "xticks": functions.get_ticks(setup_x_ticks),
+                "yticks": functions.get_ticks(setup_y_ticks),
                 "labels": {
-                    "xlabel": request.form["setupXticks"],
-                    "ylabel": request.form["setupYticks"]
+                    "xlabel": setup_x_ticks,
+                    "ylabel": setup_y_ticks
                 }
             }
 
             # Get a 2d list, dataframe
-            hotspot_one["data"] = functions.get_data(hotspot_one, request.form["setupData"], save_as_csv, request.form["setupCity"])
+            hotspot_one["data"] = functions.get_data(hotspot_one, setup_data, save_as_csv, setup_city)
 
             # Creates the hotspot
             functions.create_hotspot(hotspot_one)
