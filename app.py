@@ -45,12 +45,15 @@ def hotspot():
         filename = request.form["setupFilename"]
         save_as_csv = False
 
+        if any(field is "" for field in (setup_data, setup_city, setup_x_ticks, setup_y_ticks, setup_title, filename)):
+            return render_template("index.html", error=True, setup=setup)
+
         if request.form.getlist("savecsv"):
             save_as_csv = True
 
         # if file exists, choose another filename
         if filename in os.listdir("static"):
-            return render_template("index.html", setup=setup)
+            return render_template("index.html", duplicate=True, setup=setup)
         else:
             hotspot_one = {
                 "filename": filename,
