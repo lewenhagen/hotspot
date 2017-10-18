@@ -6,7 +6,7 @@ import math
 
 
 
-def create_time(hour=0):
+def create_time(hour):
     """
     Create time object.
     """
@@ -19,9 +19,8 @@ def create_time(hour=0):
 
 def create_date(date):
     """
-    Create date object from date string
+    Create date object from string
     """
-    # Skapa från sträng direkt??!?!
     day = int(date[8:])
     month = int(date[5:7])
     year = int(date[:4])
@@ -29,15 +28,34 @@ def create_date(date):
 
 
 
-def create_hours(event):
+def create_dates(start, end):
+    """
+    Creates two date objects, start and end
+    """
+    date_start = create_date(start)
+    date_end = create_date(end)
+    return date_start, date_end
+
+
+
+def create_times(start=0, end=0):
+    """
+    Create two time objects, start and end
+    """
+    time_start = create_time(start)
+    time_end = create_time(end)
+
+    return time_start, time_end
+
+
+
+def create_hours_event(event):
     """
     create time and date for unit Hours
     """
-    date_start = create_date(event["datestart"])
-    date_end = create_date(event["dateend"])
+    date_start, date_end = create_dates(event["datestart"], event["dateend"])
 
-    time_start = create_time(event["timestart"][:2])
-    time_end = create_time(event["timeend"][:2])
+    time_start, time_end = create_times(event["timestart"][:2], event["timeend"][:2])
 
     event_end = create_datetime(date_end, time_end) + datetime.timedelta(hours=1)
 
@@ -45,15 +63,13 @@ def create_hours(event):
 
 
 
-def create_days(event):
+def create_days_event(event):
     """
     create time and date for unit Days
     """
-    date_start = create_date(event["datestart"])
-    date_end = create_date(event["dateend"])
+    date_start, date_end = create_dates(event["datestart"], event["dateend"])
 
-    time_start = create_time()
-    time_end = create_time()
+    time_start, time_end = create_time()
 
     event_end = create_datetime(date_end, time_end) + datetime.timedelta(days=1)
 
@@ -114,14 +130,3 @@ def get_nr_months(start, end):
     months = (end.year - start.year) * 12
     months += end.month - start.month + 1
     return months
-
-
-
-# def compare_date_time(start, end, unit):
-#     """
-#     Compare data <= date or time < time
-#     """
-#     if unit == "Days":
-#         return start.date() < end.date()
-#     elif unit == "Hours":
-#         return start < end

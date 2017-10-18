@@ -6,6 +6,8 @@ import json
 import date_functions as dt_func
 import read_csv as rc
 
+
+
 def aoristic_method(events, t_map, x, y):
     """
     Start aoristic analysis on events
@@ -27,11 +29,12 @@ def get_measure_unit(x, y):
     """
     measure_unit = x["unit"] if x["order"] < y["order"] else y["unit"] # Find out which unit is used to measure, days or hours
     if measure_unit == "Days":
-        create_func = dt_func.create_days
+        create_func = dt_func.create_days_event
     elif measure_unit == "Hours":
-        create_func = dt_func.create_hours
+        create_func = dt_func.create_hours_event
 
     return measure_unit, create_func
+
 
 
 def get_nr_of_timeslots(event, unit):
