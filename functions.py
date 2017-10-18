@@ -45,7 +45,7 @@ def get_data(hotspot, type_of_data, save_as_csv):
 
     data = []
     if type_of_data == "realdata":
-        data = aoristic.main()
+        data = aoristic.main()# Använd inte main, fixa data innan och kalla på aoristic_method.
     elif type_of_data == "testdata":
         for i, v in enumerate(hotspot["yticks"]):
             data.append([])
