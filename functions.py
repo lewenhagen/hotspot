@@ -9,6 +9,13 @@ import random
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+import lisa # call lisa.get_neigbours(datalist, y, x, distance)
+
+import sys
+sys.path.insert(0, 'aoristic/')
+import aoristic
+
+
 
 def get_ticks(data_type):
     """
@@ -31,21 +38,28 @@ def get_ticks(data_type):
         raise SystemExit("No such tick data: {}. Change input and save file to reload.".format(data_type))
 
 
-def get_data(hotspot):
+def get_data(hotspot, type_of_data, save_as_csv):
     """
     Returns DataFrame (2D-list) with data
     """
 
     data = []
+    if type_of_data == "realdata":
+        data = aoristic.main()
+    elif type_of_data == "testdata":
+        for i, v in enumerate(hotspot["yticks"]):
+            data.append([])
+            for _ in hotspot["xticks"]:
+                data[i].append(random.randint(0, 100))
 
-    for i, v in enumerate(hotspot["yticks"]):
-        data.append([])
-        for _ in hotspot["xticks"]:
-            data[i].append(random.randint(0, 100))
-
-    return pandas.DataFrame(data=data,
+    df = pandas.DataFrame(data=data,
                             index=hotspot["yticks"],
                             columns=hotspot["xticks"])
+
+    if save_as_csv:
+        df.to_csv("saved_csv_hotspots/" + hotspot["filename"] + ".csv", sep="\t", encoding="utf-8")
+    # lisa.get_neigbours(data, 5, 5, 2)
+    return df
 
 
 
@@ -57,7 +71,7 @@ def create_hotspot(hotspot, cbar=True):
     fig, ax = plt.subplots(figsize=(7,7))
 
     # Creates a heatmap. ax = axes object, cmap = colorscheme, annot = display data in map, fmt = format on annot
-    sns.heatmap(hotspot["data"], ax=ax, cmap="YlOrRd", annot=True, fmt="d", cbar=cbar)
+    sns.heatmap(hotspot["data"], ax=ax, cmap="YlOrRd", annot=True, fmt=".1f", cbar=cbar)
 
     # Sets labels and title
     ax.set_xlabel(hotspot["labels"]["xlabel"], fontsize=14)
@@ -75,4 +89,4 @@ def create_hotspot(hotspot, cbar=True):
     plt.tight_layout()
 
     # Saves the figure as an image
-    plt.savefig("static/" + hotspot["filename"])
+    plt.savefig("static/" + hotspot["filename"] + ".png")

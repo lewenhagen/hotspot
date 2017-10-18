@@ -102,8 +102,8 @@ def main():
     Starts program
     """
     # events = json.load(open("events.json", "r"))
-    events = rc.csv_to_dict()
-    units = json.load(open("units.json", "r"))
+    events = rc.csv_to_dict("aoristic/temp.data.2014.csv")
+    units = json.load(open("aoristic/units.json", "r"))
 
     # weekday X time of day [7*24]
     unit_x = units["hours"]
@@ -117,8 +117,10 @@ def main():
 
     aoristic_method(events, t_map, unit_x, unit_y)
 
-    for i, row in enumerate(t_map):
-        print(i, row)
+    # for i, row in enumerate(t_map):
+        # print(i, row)
+
+    return t_map
 
 
 
