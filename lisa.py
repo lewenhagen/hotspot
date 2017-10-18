@@ -5,14 +5,6 @@ Module for LISA Statistics
 """
 s_counter = 0
 
-# test_data = []
-#
-# for y in range(24):
-#     test_data.append([])
-#     for x in range(7):
-#         test_data[y].append(s_counter)
-#         s_counter += 1
-#
 def print_data(data):
     print("[ 0   1   2   3   4   5   6]")
     for i, x in enumerate(data):

@@ -4,6 +4,7 @@
 Functions for hotspot
 """
 
+import os, glob
 import pandas
 import random
 import numpy as np
@@ -38,11 +39,12 @@ def get_ticks(data_type):
         raise SystemExit("No such tick data: {}. Change input and save file to reload.".format(data_type))
 
 
-def get_data(hotspot, type_of_data, save_as_csv):
+def get_data(hotspot, type_of_data, save_as_csv, city):
     """
     Returns DataFrame (2D-list) with data
     """
-
+    # Use city to select data.
+    # CITYNAME or all
     data = []
     if type_of_data == "realdata":
         data = aoristic.main()# Använd inte main, fixa data innan och kalla på aoristic_method.
@@ -90,3 +92,17 @@ def create_hotspot(hotspot, cbar=True):
 
     # Saves the figure as an image
     plt.savefig("static/" + hotspot["filename"] + ".png")
+
+
+
+def get_saved_png():
+    """
+    Returns a list of all saved .png images
+    """
+    created_hotspots = []
+
+    for image in os.listdir("static"):
+        if image.endswith(".png"):
+            created_hotspots.append(image)
+
+    return created_hotspots

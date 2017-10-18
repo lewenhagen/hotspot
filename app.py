@@ -8,7 +8,7 @@ Generates the heatmap and render the image in template
 import functions
 import config
 from flask import Flask, render_template, request
-import os, glob
+# import os, glob
 import sys
 sys.path.insert(0, 'aoristic/')
 import aoristic
@@ -29,8 +29,7 @@ def main():
     Main route
     """
 
-
-    return render_template("index.html", xticks=config.x_ticks, yticks=config.y_ticks)
+    return render_template("index.html", xticks=config.x_ticks, yticks=config.y_ticks, av_data=config.available_data, cities=config.city_list)
 
 
 @app.route("/hotspot", methods=["POST"])
@@ -60,7 +59,7 @@ def hotspot():
             }
 
             # Get a 2d list, dataframe
-            hotspot_one["data"] = functions.get_data(hotspot_one, request.form["setupData"], save_as_csv)
+            hotspot_one["data"] = functions.get_data(hotspot_one, request.form["setupData"], save_as_csv, request.form["setupCity"])
 
             # Creates the hotspot
             functions.create_hotspot(hotspot_one)
@@ -78,13 +77,8 @@ def created():
     Created route
     """
 
-    created_hotspots = []
+    created_hotspots = functions.get_saved_png()
     view_hotspots = []
-
-    for image in os.listdir("static"):
-        if image.endswith(".png"):
-            created_hotspots.append(image)
-
 
     if request.method == "POST":
         view_hotspots = request.form.getlist("image")
