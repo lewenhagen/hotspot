@@ -41,7 +41,7 @@ def hotspot():
     if request.method == "POST":
         filename = request.form["setupFilename"]
 
-        if request.form["savecsv"]:
+        if request.form.getlist("savecsv"):
             save_as_csv = True
 
         # if file exists, choose another filename
@@ -60,7 +60,6 @@ def hotspot():
             }
 
             # Get a 2d list, dataframe
-
             hotspot_one["data"] = functions.get_data(hotspot_one, request.form["setupData"], save_as_csv)
 
             # Creates the hotspot
