@@ -11,52 +11,46 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 import lisa # call lisa.get_neigbours(datalist, y, x, distance)
-
+import config
+import csv
 import sys
 sys.path.insert(0, 'aoristic/')
 import aoristic
 
 
 
-def get_ticks(data_type):
+def csv_to_dict(file_name="temp.csv", deli=";"):
     """
-    Returns a dataset for x axis
+    Read csv with header, create list with dicts. key is header value
     """
-    data = {
-        "weeks": ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-        "hours": [
-            '00:00', '01:00', '02:00', '03:00', '04:00', '05:00',
-            '06:00', '07:00', '08:00', '09:00', '10:00', '11:00',
-            '12:00', '13:00', '14:00', '15:00', '16:00', '17:00',
-            '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'
-        ],
-        "months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-    }
+    reader = csv.reader(open("datafiles/" + file_name, "r"), delimiter=deli)
+    headers = reader.__next__()
+    result = []
+    for row in reader:
+        dic = {}
+        for index, value in enumerate(row):
+            dic[headers[index]] = value
+        result.append(dic)
 
-    try:
-        return data[data_type]
-    except KeyError:
-        raise SystemExit("No such tick data: {}. Change input and save file to reload.".format(data_type))
+    return result
 
 
-def get_data(hotspot, type_of_data, save_as_csv, city):
+
+def get_data(hotspot, datafile_to_use, save_as_csv, city, filename):
     """
     Returns DataFrame (2D-list) with data
     """
     # Use city to select data.
     # CITYNAME or all
-    data = []
-    if type_of_data.endswith(".csv"):
-        data = aoristic.main()# Använd inte main, fixa data innan och kalla på aoristic_method.
-    elif type_of_data == "testdata":
-        for i, v in enumerate(hotspot["yticks"]):
-            data.append([])
-            for _ in hotspot["xticks"]:
-                data[i].append(random.randint(0, 100))
+    t_map = config.create_empty_matrix(hotspot["xticks"], hotspot["yticks"])
 
-    df = pandas.DataFrame(data=data,
-                            index=hotspot["yticks"],
-                            columns=hotspot["xticks"])
+    # data = []
+    if filename.endswith(".csv"):
+        aoristic.aoristic_method(datafile_to_use, t_map, hotspot["xticks"], hotspot["yticks"])
+
+    df = pandas.DataFrame(data=t_map,
+                            index=hotspot["yticks"]["ticks"],
+                            columns=hotspot["xticks"]["ticks"])
 
     if save_as_csv:
         df.to_csv("saved_csv_hotspots/" + hotspot["filename"] + ".csv", sep="\t", encoding="utf-8")

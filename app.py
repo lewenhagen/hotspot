@@ -23,6 +23,11 @@ import aoristic
 
 app = Flask(__name__)
 
+units_json = config.get_units()
+
+units = units_json["units"]
+units_keys = units_json["keys"]
+
 
 @app.route('/', methods=["POST", "GET"])
 def main():
@@ -71,16 +76,17 @@ def hotspot():
             hotspot_one = {
                 "filename": filename,
                 "title": setup_title,
-                "xticks": functions.get_ticks(setup_x_ticks),
-                "yticks": functions.get_ticks(setup_y_ticks),
+                "xticks": units[setup_x_ticks],
+                "yticks": units[setup_y_ticks],
                 "labels": {
-                    "xlabel": setup_x_ticks,
-                    "ylabel": setup_y_ticks
-                }
+                    "xlabel": units[setup_x_ticks]["unit"],
+                    "ylabel": units[setup_y_ticks]["unit"]
+                },
+                "units": units
             }
 
             # Get a 2d list, dataframe
-            hotspot_one["data"] = functions.get_data(hotspot_one, setup_data, save_as_csv, setup_city)
+            hotspot_one["data"] = functions.get_data(hotspot_one, functions.csv_to_dict(setup_data), save_as_csv, setup_city, setup_data)
 
             # Creates the hotspot
             functions.create_hotspot(hotspot_one)

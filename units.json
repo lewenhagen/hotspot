@@ -1,6 +1,31 @@
 {
-    "weeks": {"size": 52,"unit": "Weeks", "order": 2},
-    "days": {"size": 7, "unit": "Days", "order": 1},
-    "months": {"size": 12, "unit": "Months", "order": 2},
-    "hours": {"size": 24, "unit": "Hours", "order": 0}
+    "weeks": {
+        "size": 52,
+        "unit": "Weeks",
+        "order": 2,
+        "ticks": []
+    },
+    "days": {
+        "size": 7,
+        "unit": "Days",
+        "order": 1,
+        "ticks": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    },
+    "months": {
+        "size": 12,
+        "unit": "Months",
+        "order": 2,
+        "ticks": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    },
+    "hours": {
+        "size": 24,
+        "unit": "Hours",
+        "order": 0,
+        "ticks": [
+            "00:00", "01:00", "02:00", "03:00", "04:00", "05:00",
+            "06:00", "07:00", "08:00", "09:00", "10:00", "11:00",
+            "12:00", "13:00", "14:00", "15:00", "16:00", "17:00",
+            "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"
+        ]
+    }
 }

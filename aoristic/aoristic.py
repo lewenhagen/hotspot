@@ -72,8 +72,8 @@ def fill_map(t_map, event, xu, yu, unit):
 
     while start < end:
         x, y = get_xy(start, xu, yu)
-        value = round(t_map[x][y] + incr, 3)
-        t_map[x][y] = value
+        value = round(t_map[y][x] + incr, 3)
+        t_map[y][x] = value
         start += dt_func.create_timedelta(unit)
 
 

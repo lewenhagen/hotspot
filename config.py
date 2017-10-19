@@ -28,18 +28,39 @@ def get_cities_as_list(from_file):
     """
     return sorted(list(set(pd.read_csv("datafiles/" + from_file, sep=";", usecols=["city"]).city.tolist())))
 
-def get_ticks():
+def get_units():
     """
-    Get ticks from json file
+    Get units from json file
     """
     units = json.load(open("units.json", "r"))
 
-    return sorted(units.keys())
+    return {
+        "units": units,
+        "keys": sorted(units.keys())
+        }
+
+
+
+def create_empty_matrix(x, y):
+    """
+    Creates an empty matrix of the correct size
+    """
+    print("X: ", x)
+    print("Y: ", y)
+
+    # units = get_units()["units"]
+    unit_x = x
+    unit_y = y
+
+    t_map = [[0 for x in range(unit_x["size"])] for y in range(unit_y["size"])]
+
+    return t_map
+
 
 setup = {
     "datafiles": get_datafiles(),
-    "y_ticks": get_ticks(),
-    "x_ticks": get_ticks(),
+    "y_ticks": get_units()["keys"],
+    "x_ticks": get_units()["keys"],
     # "available_data": ["testdata", "realdata"],
     "cities": []
 }
