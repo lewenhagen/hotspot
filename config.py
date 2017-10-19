@@ -2,6 +2,7 @@
 
 import pandas as pd
 import os, glob
+import json
 
 """
 Configuration file for hotspot
@@ -16,17 +17,31 @@ def get_datafiles():
     for datafile in os.listdir("datafiles"):
         if datafile.endswith(".csv"):
             datafiles.append(datafile)
-    datafiles.append("testdata")
 
     return datafiles
 
 
+
+def get_cities_as_list(from_file):
+    """
+    Returns cities from file
+    """
+    return sorted(list(set(pd.read_csv("datafiles/" + from_file, sep=";", usecols=["city"]).city.tolist())))
+
+def get_ticks():
+    """
+    Get ticks from json file
+    """
+    units = json.load(open("units.json", "r"))
+
+    return sorted(units.keys())
+
 setup = {
     "datafiles": get_datafiles(),
-    "y_ticks": ["hours", "months"],
-    "x_ticks": ["weekdays", "months"],
-    "available_data": ["testdata", "realdata"],
-    "cities": sorted(list(set(pd.read_csv("datafiles/temp.data.2014.csv", sep=";", usecols=["city"]).city.tolist())))
+    "y_ticks": get_ticks(),
+    "x_ticks": get_ticks(),
+    # "available_data": ["testdata", "realdata"],
+    "cities": []
 }
 # y_ticks = ["hours", "months"]
 # x_ticks = ["weekdays", "months"]

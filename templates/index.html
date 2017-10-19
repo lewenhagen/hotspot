@@ -5,7 +5,8 @@
         <h1>Create hotspot heatmap</h1>
     </div>
     <div class="container-fluid">
-        <form class="form-horizontal" method="POST" action="/hotspot">
+        {% if choose_data %}
+        <form class="form-horizontal" method="POST" action="{{ url_for('main') }}">
             <fieldset>
                 <legend>Setup</legend>
                 <div class="form-group">
@@ -13,10 +14,28 @@
                     <div class="col-lg-6">
                         <select class="form-control" id="setupData" name="setupData">
                             <option value="">Choose data...</option>
-                            {% for data in setup.datafiles %}
+                            {% for data in choose_data %}
                                 <option value="{{ data }}">{{ data }}</option>
                             {% endfor %}
                         </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-10 col-lg-offset-2">
+                        <!-- <button type="reset" class="btn btn-default">Cancel</button> -->
+                        <button type="submit" class="btn btn-primary">Choose data</button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+        {% else %}
+        <form class="form-horizontal" method="POST" action="{{ url_for('hotspot') }}">
+            <fieldset>
+                <legend>Setup</legend>
+                <div class="form-group">
+                    <label for="datachosen" class="col-lg-2 control-label">datachosen</label>
+                    <div class="col-lg-6">
+                        <input class="form-control" readonly="readonly" id="datachosen" value="{{ data_chosen }}" name="datachosen">
                     </div>
                 </div>
 
@@ -87,6 +106,7 @@
                 </div>
             </fieldset>
         </form>
+        {% endif %}
         {% if duplicate %}
             <div class="error well"><h2>Filename: "{{ duplicate }}" exists.</h2></div>
         {% endif %}

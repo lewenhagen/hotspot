@@ -6,7 +6,8 @@ Generates the heatmap and render the image in template
 """
 
 import functions
-from config import setup
+import config
+# from config import setup
 from flask import Flask, render_template, request
 import os, glob
 import sys
@@ -18,18 +19,28 @@ import aoristic
 # from aoristic import read_csv
 
 
-
+# setup = config.setup
 
 app = Flask(__name__)
 
 
-@app.route('/')
+@app.route('/', methods=["POST", "GET"])
 def main():
     """
     Main route
     """
+    if request.method == "GET":
+        choose_data = config.get_datafiles()
 
-    return render_template("index.html", setup=setup)
+        return render_template("index.html", choose_data=choose_data)
+
+    elif request.method == "POST":
+        data_chosen = request.form["setupData"]
+
+        setup = config.setup
+        setup["cities"] = config.get_cities_as_list(data_chosen)
+
+        return render_template("index.html", data_chosen=data_chosen, setup=setup)
 
 
 @app.route("/hotspot", methods=["POST"])
@@ -37,7 +48,7 @@ def hotspot():
     """ Hotspot route """
 
     if request.method == "POST":
-        setup_data = request.form["setupData"]
+        setup_data = request.form["datachosen"]
         setup_city = request.form["setupCity"]
         setup_x_ticks = request.form["setupXticks"]
         setup_y_ticks = request.form["setupYticks"]
@@ -45,9 +56,11 @@ def hotspot():
         filename = request.form["setupFilename"]
         save_as_csv = False
 
+        # Display error if any field is empty
         if any(field is "" for field in (setup_data, setup_city, setup_x_ticks, setup_y_ticks, setup_title, filename)):
             return render_template("index.html", error=True, setup=setup)
 
+        # Save csv if checked
         if request.form.getlist("savecsv"):
             save_as_csv = True
 
@@ -74,8 +87,6 @@ def hotspot():
 
             # The filename for hotspot image
             filename = hotspot_one["filename"] + ".png"
-
-
 
     return render_template("hotspot.html", hotspot=filename)
 
