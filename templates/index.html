@@ -13,7 +13,7 @@
                     <div class="col-lg-6">
                         <select class="form-control" id="setupData" name="setupData">
                             <option value="">Choose data...</option>
-                            {% for data in setup.available_data %}
+                            {% for data in setup.datafiles %}
                                 <option value="{{ data }}">{{ data }}</option>
                             {% endfor %}
                         </select>

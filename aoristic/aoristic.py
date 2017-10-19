@@ -105,7 +105,7 @@ def main():
     Starts program
     """
     # events = json.load(open("events.json", "r"))
-    events = rc.csv_to_dict("aoristic/temp.data.2014.csv")
+    events = rc.csv_to_dict("datafiles/temp.data.2014.csv")
     units = json.load(open("aoristic/units.json", "r"))
 
     # weekday X time of day [7*24]
