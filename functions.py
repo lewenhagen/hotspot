@@ -56,6 +56,8 @@ def get_data(hotspot, datafile_to_use):
     # lisa.get_neigbours(data, 5, 5, 2)
     return df
 
+
+
 def validate_form(req_form):
     """
     Makes sure the form is proper filled
@@ -83,6 +85,8 @@ def validate_form(req_form):
 
     return result
 
+
+
 def setup_hotspot(req_form, units):
     """
     Creates the hotspot base dict and returns it
@@ -105,7 +109,6 @@ def setup_hotspot(req_form, units):
     hotspot["data"] = get_data(hotspot, csv_to_dict(req_form["datachosen"]))
 
     return hotspot
-
 
 
 
