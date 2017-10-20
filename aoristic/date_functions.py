@@ -69,7 +69,7 @@ def create_days_event(event):
     """
     date_start, date_end = create_dates(event["datestart"], event["dateend"])
 
-    time_start, time_end = create_time()
+    time_start, time_end = create_times()
 
     event_end = create_datetime(date_end, time_end) + datetime.timedelta(days=1)
 
