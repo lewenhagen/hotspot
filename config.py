@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 import pandas as pd
 import os, glob
@@ -22,11 +23,13 @@ def get_datafiles():
 
 
 
-def get_cities_as_list(from_file):
+def get_column_as_list(file_name, column):
     """
-    Returns cities from file
+    Returns a unique values from column in a file
     """
-    return sorted(list(set(pd.read_csv("datafiles/" + from_file, sep=";", usecols=["city"]).city.tolist())))
+    return sorted(list(set(pd.read_csv("datafiles/" + file_name, sep=";", usecols=[column])[column].tolist())))
+
+
 
 def get_units():
     """
@@ -54,9 +57,21 @@ def create_empty_matrix(x, y):
     return t_map
 
 
+
+def get_csv_header(file_name):
+    """
+    Get headers from csv file
+    """
+    return sorted(pd.read_csv("datafiles/" + file_name, sep=";", encoding = 'utf8', nrows=0).columns.tolist())
+
+
+
 setup = {
-    "datafiles": get_datafiles(),
+    "datafile": "",
     "y_ticks": get_units()["keys"],
     "x_ticks": get_units()["keys"],
-    "cities": []
+    "filter": {
+        "column": "",
+        "values": []
+    }
 }

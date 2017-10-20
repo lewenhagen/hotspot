@@ -39,6 +39,14 @@ body {
     float: left;
 }
 
+label {
+    font-size: 1.15em !important;
+}
+
+input[type="checkbox"] {
+    position: inherit !important;
+}
+
 
 .high {
     /*position: absolute;

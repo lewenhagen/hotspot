@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 
 """
 Main file
@@ -11,9 +13,7 @@ from flask import Flask, render_template, request
 import os, glob
 
 
-
 app = Flask(__name__)
-
 
 
 units_json = config.get_units()
@@ -34,11 +34,19 @@ def main():
         return render_template("index.html", choose_data=choose_data)
 
     elif request.method == "POST":
-        data_chosen = request.form["setupData"]
+        if "setupData" in request.form: # Data has been chose, next choose filter if csv
+            setup["datafile"] = request.form["setupData"]
+            if setup["datafile"][-4:] == ".csv":
+                csv_header = config.get_csv_header(setup["datafile"])
+                return render_template("index.html", choose_filter=csv_header, setup=setup)
 
-        # setup["cities"] = config.get_cities_as_list(data_chosen)
-
-        return render_template("index.html", data_chosen=data_chosen, setup=setup)
+        elif "setupFilter" in request.form: # filter has been chosen, next prepate setup hotspot
+            if "filter" not in request.form:
+                setup["filter"]["column"] = request.form["setupFilter"]
+                setup["filter"]["values"] = config.get_column_as_list(setup["datafile"], setup["filter"]["column"])
+                return render_template("index.html", setup=setup, chose_filter=True)
+            else:
+                return render_template("index.html", setup=setup)
 
 
 @app.route("/hotspot", methods=["POST"])
@@ -46,18 +54,16 @@ def hotspot():
     """
     Hotspot route
     """
+    # HERE!! Här som vi tar emot request med konstigt Ö
 
     if request.method == "POST":
         valid_form = functions.validate_form(request.form)
-
-        # Display error if any field is empty or file exists
+        # Display error if any field is empty
         if not valid_form["valid"]:
             return render_template("index.html", error=valid_form["error"], data_chosen=valid_form["datachosen"], setup=setup)
 
         else:
-            # Setup the hotspot dict
             hotspot = functions.setup_hotspot(request.form, units)
-
             # Creates the hotspot
             functions.create_hotspot(hotspot)
 

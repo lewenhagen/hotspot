@@ -1,0 +1,28 @@
+<form class="form-horizontal" method="POST" action="{{ url_for('main') }}">
+    <fieldset>
+        <legend>Setup</legend>
+        {% include 'forms/chosen_data_file.html' %}
+        <div class="form-group">
+            <label for="setupFilter" class="col-lg-2 control-label">Filter on column</label>
+            <div class="col-lg-6">
+                <select class="form-control" id="setupFilter" name="setupFilter">
+                    <option value="">Choose a column to filter on...</option>
+                    {% for data in choose_filter %}
+                        <option value="{{ data }}">{{ data }}</option>
+                    {% endfor %}
+                </select>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" name="filter" value="no"> Don't filter
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-lg-10 col-lg-offset-2">
+                <!-- <button type="reset" class="btn btn-default">Cancel</button> -->
+                <button type="submit" class="btn btn-primary">Choose filter</button>
+            </div>
+        </div>
+    </fieldset>
+</form>

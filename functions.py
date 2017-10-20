@@ -1,4 +1,5 @@
 #!usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 """
 Functions for hotspot
@@ -13,22 +14,28 @@ import matplotlib.pyplot as plt
 import lisa # call lisa.get_neigbours(datalist, y, x, distance)
 import config
 import csv
-# import sys
 import re
-# sys.path.insert(0, 'aoristic/')
 from aoristic import aoristic
 
 
 
-def csv_to_dict(file_name="temp.csv", deli=";"):
+def csv_to_dict(filter_v, filter_c, file_name="temp.csv", deli=";"):
     """
     Read csv with header, create list with dicts. key is header value
     """
     reader = csv.reader(open("datafiles/" + file_name, "r"), delimiter=deli)
     headers = reader.__next__()
+    try:
+        filter_index = headers.index(filter_c)
+    except:
+        filter_index = -1
     result = []
+    print(filter_v)
+    print(filter_c)
+
     for row in reader:
         dic = {}
+        # if (not filter_c or not filter_v) or row[filter_index] == filter_v:
         for index, value in enumerate(row):
             dic[headers[index]] = value
         result.append(dic)
@@ -95,7 +102,7 @@ def validate_form(req_form):
     }
 
     # setup_data = req_form["datachosen"]
-    # setup_city = req_form["setupCity"]
+    # setup_filter = req_form["setupFilter"]
     setup_x_ticks = req_form["setupXticks"]
     setup_y_ticks = req_form["setupYticks"]
     setup_title = req_form["setupTitle"]
@@ -121,7 +128,8 @@ def setup_hotspot(req_form, units):
         "filename": req_form["setupFilename"],
         "datafilename": req_form["datachosen"],
         "title": req_form["setupTitle"],
-        "city": req_form["setupCity"],
+        "filtervalue": req_form.get("setupFilter"), # !!!!HÄR !!! hämtar vi värde med konstigt Ö!!!
+        "filtercolumn": req_form.get("filtercolumn"),
         "xticks": units[req_form["setupXticks"]],
         "yticks": units[req_form["setupYticks"]],
         "labels": {
@@ -132,7 +140,7 @@ def setup_hotspot(req_form, units):
         "units": units
     }
 
-    hotspot["data"] = get_data(hotspot, csv_to_dict(req_form["datachosen"]))
+    hotspot["data"] = get_data(hotspot, csv_to_dict(hotspot["filtervalue"], hotspot["filtercolumn"] ,req_form["datachosen"]))
 
     return hotspot
 
