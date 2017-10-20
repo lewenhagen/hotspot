@@ -3,8 +3,8 @@
 Test aoristic method
 """
 import json
-import date_functions as dt_func
-import read_csv as rc
+from aoristic import date_functions as dt_func
+from aoristic import read_csv as rc
 
 
 

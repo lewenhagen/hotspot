@@ -9,8 +9,8 @@ import functions
 import config
 from flask import Flask, render_template, request
 import os, glob
-import sys
-sys.path.insert(0, 'aoristic/')
+# import sys
+# sys.path.insert(0, 'aoristic/')
 import aoristic
 
 

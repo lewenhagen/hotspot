@@ -13,9 +13,9 @@ import matplotlib.pyplot as plt
 import lisa # call lisa.get_neigbours(datalist, y, x, distance)
 import config
 import csv
-import sys
+# import sys
 import re
-sys.path.insert(0, 'aoristic/')
+# sys.path.insert(0, 'aoristic/')
 import aoristic
 
 
