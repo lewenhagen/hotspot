@@ -14,6 +14,7 @@ import lisa # call lisa.get_neigbours(datalist, y, x, distance)
 import config
 import csv
 import sys
+import re
 sys.path.insert(0, 'aoristic/')
 import aoristic
 
@@ -34,6 +35,27 @@ def csv_to_dict(file_name="temp.csv", deli=";"):
 
     return result
 
+
+
+def log_to_dict(filename):
+    result = []
+    pattern = r"\[([\w]{1,2}).*([A-z]{3}).*([\w]{4}):([\w]{2}:[\w]{2}:[\w]{2})\s"
+    with open("datafiles/" + filename, "r") as filehandler:
+        lines = filehandler.readlines()
+
+    for line in lines:
+        match = re.findall( pattern, line )
+
+        part = {
+            "day": match[0][0],
+            "month": match[0][1],
+            "year": match[0][2],
+            "timestart": match[0][3],
+            "timeend": match[0][3]
+        }
+        result.append(part)
+
+    return result
 
 
 def get_data(hotspot, datafile_to_use):
