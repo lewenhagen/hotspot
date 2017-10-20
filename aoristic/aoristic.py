@@ -97,6 +97,8 @@ def get_unit_value(date, unit):
         return date.month - 1
     elif unit == "Days":
         return date.weekday()
+    elif unit == "Weeks":
+        return date.isocalendar()[1]
 
 
 
@@ -105,16 +107,20 @@ def main():
     Starts program
     """
     # events = json.load(open("events.json", "r"))
-    events = rc.csv_to_dict("datafiles/temp.data.2014.csv")
-    units = json.load(open("aoristic/units.json", "r"))
+    events = rc.csv_to_dict("../datafiles/temp.data.2014.csv")
+    units = json.load(open("../units.json", "r"))
 
     # weekday X time of day [7*24]
-    unit_x = units["hours"]
-    unit_y = units["days"]
+    # unit_x = units["hours"]
+    # unit_y = units["days"]
 
     # weekday X month [7*12]
     # unit_x = units["days"]
     # unit_y = units["months"]
+
+    # weekday X weeks [7*52]
+    unit_x = units["days"]
+    unit_y = units["weeks"]
 
     t_map = [[0 for y in range(unit_y["size"])] for x in range(unit_x["size"])]
 

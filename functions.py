@@ -74,6 +74,7 @@ def get_data(hotspot, datafile_to_use):
                             columns=hotspot["xticks"]["ticks"])
 
     if hotspot["save_me"]:
+        # ändra sep till ","/";"?
         df.to_csv("saved_csv_hotspots/" + hotspot["filename"] + ".csv", sep="\t", encoding="utf-8")
     # lisa.get_neigbours(data, 5, 5, 2)
     return df
