@@ -36,7 +36,7 @@ def main():
     elif request.method == "POST":
         data_chosen = request.form["setupData"]
 
-        setup["cities"] = config.get_cities_as_list(data_chosen)
+        # setup["cities"] = config.get_cities_as_list(data_chosen)
 
         return render_template("index.html", data_chosen=data_chosen, setup=setup)
 
@@ -48,7 +48,7 @@ def hotspot():
     if request.method == "POST":
         valid_form = functions.validate_form(request.form)
 
-        # Display error if any field is empty
+        # Display error if any field is empty or file exists
         if not valid_form["valid"]:
             return render_template("index.html", error=valid_form["error"], data_chosen=valid_form["datachosen"], setup=setup)
 

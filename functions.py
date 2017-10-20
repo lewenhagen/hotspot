@@ -38,6 +38,9 @@ def csv_to_dict(file_name="temp.csv", deli=";"):
 
 
 def log_to_dict(filename):
+    """
+    Reads log file and creates a dict
+    """
     result = []
     pattern = r"\[([\w]{1,2}).*([A-z]{3}).*([\w]{4}):([\w]{2}:[\w]{2}:[\w]{2})\s"
     with open("datafiles/" + filename, "r") as filehandler:
@@ -92,13 +95,13 @@ def validate_form(req_form):
     }
 
     # setup_data = req_form["datachosen"]
-    setup_city = req_form["setupCity"]
+    # setup_city = req_form["setupCity"]
     setup_x_ticks = req_form["setupXticks"]
     setup_y_ticks = req_form["setupYticks"]
     setup_title = req_form["setupTitle"]
     filename = req_form["setupFilename"]
 
-    if any(field is "" for field in (setup_city, setup_x_ticks, setup_y_ticks, setup_title, filename)):
+    if any(field is "" for field in (setup_x_ticks, setup_y_ticks, setup_title, filename)):
         result["valid"] = False
         result["error"] = "You forgot something in the form."
 

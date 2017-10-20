@@ -15,7 +15,7 @@ def get_datafiles():
     datafiles = []
 
     for datafile in os.listdir("datafiles"):
-        if datafile.endswith(".csv"):
+        if datafile.endswith(".csv") or datafile.endswith(".log"):
             datafiles.append(datafile)
 
     return datafiles
