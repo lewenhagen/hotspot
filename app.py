@@ -43,7 +43,9 @@ def main():
 
 @app.route("/hotspot", methods=["POST"])
 def hotspot():
-    """ Hotspot route """
+    """
+    Hotspot route
+    """
 
     if request.method == "POST":
         valid_form = functions.validate_form(request.form)
