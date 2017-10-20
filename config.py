@@ -45,10 +45,7 @@ def create_empty_matrix(x, y):
     """
     Creates an empty matrix of the correct size
     """
-    print("X: ", x)
-    print("Y: ", y)
 
-    # units = get_units()["units"]
     unit_x = x
     unit_y = y
 
@@ -61,12 +58,5 @@ setup = {
     "datafiles": get_datafiles(),
     "y_ticks": get_units()["keys"],
     "x_ticks": get_units()["keys"],
-    # "available_data": ["testdata", "realdata"],
     "cities": []
 }
-# y_ticks = ["hours", "months"]
-# x_ticks = ["weekdays", "months"]
-# available_data = ["testdata", "realdata"]
-#
-# # theData = pd.read_csv("aoristic/temp.data.2014.csv", sep=";", usecols=["city"])
-# city_list = sorted(list(set(pd.read_csv("aoristic/temp.data.2014.csv", sep=";", usecols=["city"]).city.tolist())))

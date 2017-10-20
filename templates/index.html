@@ -107,11 +107,8 @@
             </fieldset>
         </form>
         {% endif %}
-        {% if duplicate %}
-            <div class="error well"><h2>Filename: "{{ duplicate }}" exists.</h2></div>
-        {% endif %}
         {% if error %}
-            <div class="error well"><h2>Forgot something in the form?</h2></div>
+            <div class="error well"><h2>{{ error }}</h2></div>
         {% endif %}
     </div>
 </div>

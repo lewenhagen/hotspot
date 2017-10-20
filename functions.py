@@ -36,26 +36,76 @@ def csv_to_dict(file_name="temp.csv", deli=";"):
 
 
 
-def get_data(hotspot, datafile_to_use, save_as_csv, city, filename):
+def get_data(hotspot, datafile_to_use):
     """
     Returns DataFrame (2D-list) with data
     """
-    # Use city to select data.
+    # Use hotspot["city"] to select data.
     # CITYNAME or all
     t_map = config.create_empty_matrix(hotspot["xticks"], hotspot["yticks"])
 
-    # data = []
-    if filename.endswith(".csv"):
+    if hotspot["datafilename"].endswith(".csv"):
         aoristic.aoristic_method(datafile_to_use, t_map, hotspot["xticks"], hotspot["yticks"])
 
     df = pandas.DataFrame(data=t_map,
                             index=hotspot["yticks"]["ticks"],
                             columns=hotspot["xticks"]["ticks"])
 
-    if save_as_csv:
+    if hotspot["save_me"]:
         df.to_csv("saved_csv_hotspots/" + hotspot["filename"] + ".csv", sep="\t", encoding="utf-8")
     # lisa.get_neigbours(data, 5, 5, 2)
     return df
+
+def validate_form(req_form):
+    """
+    Makes sure the form is proper filled
+    """
+    result = {
+        "valid": True,
+        "error": None,
+        "datachosen": req_form["datachosen"]
+    }
+
+    # setup_data = req_form["datachosen"]
+    setup_city = req_form["setupCity"]
+    setup_x_ticks = req_form["setupXticks"]
+    setup_y_ticks = req_form["setupYticks"]
+    setup_title = req_form["setupTitle"]
+    filename = req_form["setupFilename"]
+
+    if any(field is "" for field in (setup_city, setup_x_ticks, setup_y_ticks, setup_title, filename)):
+        result["valid"] = False
+        result["error"] = "You forgot something in the form."
+
+    if filename + ".png" in os.listdir("static"):
+        result["valid"] = False
+        result["error"] = "Filename already exists."
+
+    return result
+
+def setup_hotspot(req_form, units):
+    """
+    Creates the hotspot base dict and returns it
+    """
+    hotspot = {
+        "filename": req_form["setupFilename"],
+        "datafilename": req_form["datachosen"],
+        "title": req_form["setupTitle"],
+        "city": req_form["setupCity"],
+        "xticks": units[req_form["setupXticks"]],
+        "yticks": units[req_form["setupYticks"]],
+        "labels": {
+            "xlabel": units[req_form["setupXticks"]]["unit"],
+            "ylabel": units[req_form["setupYticks"]]["unit"]
+        },
+        "save_me": True if req_form.getlist("savecsv") else False,
+        "units": units
+    }
+
+    hotspot["data"] = get_data(hotspot, csv_to_dict(req_form["datachosen"]))
+
+    return hotspot
+
 
 
 

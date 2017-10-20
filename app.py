@@ -7,26 +7,23 @@ Generates the heatmap and render the image in template
 
 import functions
 import config
-# from config import setup
 from flask import Flask, render_template, request
 import os, glob
 import sys
 sys.path.insert(0, 'aoristic/')
 import aoristic
-# print(sys.path)
-# from aoristic import aoristic
-# from aoristic import date_functions
-# from aoristic import read_csv
 
 
-# setup = config.setup
 
 app = Flask(__name__)
+
+
 
 units_json = config.get_units()
 
 units = units_json["units"]
 units_keys = units_json["keys"]
+setup = config.setup
 
 
 @app.route('/', methods=["POST", "GET"])
@@ -42,7 +39,6 @@ def main():
     elif request.method == "POST":
         data_chosen = request.form["setupData"]
 
-        setup = config.setup
         setup["cities"] = config.get_cities_as_list(data_chosen)
 
         return render_template("index.html", data_chosen=data_chosen, setup=setup)
@@ -53,48 +49,23 @@ def hotspot():
     """ Hotspot route """
 
     if request.method == "POST":
-        setup_data = request.form["datachosen"]
-        setup_city = request.form["setupCity"]
-        setup_x_ticks = request.form["setupXticks"]
-        setup_y_ticks = request.form["setupYticks"]
-        setup_title = request.form["setupTitle"]
-        filename = request.form["setupFilename"]
-        save_as_csv = False
+        valid_form = functions.validate_form(request.form)
 
         # Display error if any field is empty
-        if any(field is "" for field in (setup_data, setup_city, setup_x_ticks, setup_y_ticks, setup_title, filename)):
-            return render_template("index.html", error=True, setup=setup)
+        if not valid_form["valid"]:
+            return render_template("index.html", error=valid_form["error"], data_chosen=valid_form["datachosen"], setup=setup)
 
-        # Save csv if checked
-        if request.form.getlist("savecsv"):
-            save_as_csv = True
-
-        # if file exists, choose another filename
-        if filename in os.listdir("static"):
-            return render_template("index.html", duplicate=True, setup=setup)
         else:
-            hotspot_one = {
-                "filename": filename,
-                "title": setup_title,
-                "xticks": units[setup_x_ticks],
-                "yticks": units[setup_y_ticks],
-                "labels": {
-                    "xlabel": units[setup_x_ticks]["unit"],
-                    "ylabel": units[setup_y_ticks]["unit"]
-                },
-                "units": units
-            }
-
-            # Get a 2d list, dataframe
-            hotspot_one["data"] = functions.get_data(hotspot_one, functions.csv_to_dict(setup_data), save_as_csv, setup_city, setup_data)
+            # Setup the hotspot dict
+            hotspot = functions.setup_hotspot(request.form, units)
 
             # Creates the hotspot
-            functions.create_hotspot(hotspot_one)
+            functions.create_hotspot(hotspot)
 
-            # The filename for hotspot image
-            filename = hotspot_one["filename"] + ".png"
 
-    return render_template("hotspot.html", hotspot=filename)
+
+
+    return render_template("hotspot.html", hotspot=hotspot["filename"] + ".png")
 
 @app.route('/created', methods=["POST", "GET"])
 def created():
