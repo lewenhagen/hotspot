@@ -16,7 +16,7 @@ import csv
 # import sys
 import re
 # sys.path.insert(0, 'aoristic/')
-import aoristic
+from aoristic import aoristic
 
 
 
