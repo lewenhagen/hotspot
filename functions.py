@@ -128,7 +128,7 @@ def setup_hotspot(req_form, units):
         "filename": req_form["setupFilename"],
         "datafilename": req_form["datachosen"],
         "title": req_form["setupTitle"],
-        "filtervalue": req_form.get("setupFilter"), # !!!!HÄR !!! hämtar vi värde med konstigt Ö!!!
+        "filtervalue": req_form.get("setupFilter"),
         "filtercolumn": req_form.get("filtercolumn"),
         "xticks": units[req_form["setupXticks"]],
         "yticks": units[req_form["setupYticks"]],

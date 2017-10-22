@@ -13,6 +13,7 @@ from flask import Flask, render_template, request
 import os, glob
 
 
+
 app = Flask(__name__)
 
 
@@ -54,8 +55,6 @@ def hotspot():
     """
     Hotspot route
     """
-    # HERE!! Här som vi tar emot request med konstigt Ö
-
     if request.method == "POST":
         valid_form = functions.validate_form(request.form)
         # Display error if any field is empty
