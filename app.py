@@ -35,19 +35,26 @@ def main():
         return render_template("index.html", choose_data=choose_data)
 
     elif request.method == "POST":
-        if "setupData" in request.form: # Data has been chose, next choose filter if csv
+        if "setupData" in request.form: # Data has been chosen, next choose filter if csv
             setup["datafile"] = request.form["setupData"]
-            if setup["datafile"][-4:] == ".csv":
+            if setup["datafile"].endswith(".csv"):
                 csv_header = config.get_csv_header(setup["datafile"])
                 return render_template("index.html", choose_filter=csv_header, setup=setup)
+            elif setup["datafile"].endswith(".log"):
+                print("log chosen")
+                # log = functions.log_to_dict(setup["datafile"])
+
+                return render_template("index.html", setup=setup)
 
         elif "setupFilter" in request.form: # filter has been chosen, next prepate setup hotspot
             if "filter" not in request.form:
                 setup["filter"]["column"] = request.form["setupFilter"]
                 setup["filter"]["values"] = config.get_column_as_list(setup["datafile"], setup["filter"]["column"])
+
                 return render_template("index.html", setup=setup, chose_filter=True)
             else:
                 return render_template("index.html", setup=setup)
+
 
 
 @app.route("/hotspot", methods=["POST"])
@@ -62,14 +69,14 @@ def hotspot():
             return render_template("index.html", error=valid_form["error"], data_chosen=valid_form["datachosen"], setup=setup)
 
         else:
+            # Setup the hotspot
             hotspot = functions.setup_hotspot(request.form, units)
             # Creates the hotspot
             functions.create_hotspot(hotspot)
 
-
-
-
     return render_template("hotspot.html", hotspot=hotspot["filename"] + ".png")
+
+
 
 @app.route('/created', methods=["POST", "GET"])
 def created():

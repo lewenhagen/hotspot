@@ -44,31 +44,42 @@ def csv_to_dict(filter_v, filter_c, file_name="temp.csv", deli=";"):
 
 
 
-def log_to_dict(filename):
+def log_to_dict(hotspot, t_map):
     """
     Reads log file and creates a dict
     """
-    result = []
+    from datetime import datetime
+    # import calendar
+    counter = 0
+    # result = []
+    # t_map = []
     pattern = r"\[([\w]{1,2}).*([A-z]{3}).*([\w]{4}):([\w]{2}:[\w]{2}:[\w]{2})\s"
-    with open("datafiles/" + filename, "r") as filehandler:
+    with open("datafiles/" + hotspot["datafilename"], "r") as filehandler:
         lines = filehandler.readlines()
 
     for line in lines:
-        match = re.findall( pattern, line )
+        print("Working on line:", counter, "/", len(lines))
+        counter += 1
+        match = re.findall(pattern, line)
 
-        part = {
-            "day": match[0][0],
-            "month": match[0][1],
-            "year": match[0][2],
-            "timestart": match[0][3],
-            "timeend": match[0][3]
-        }
-        result.append(part)
+        # part = {
+        #     "day": match[0][0],
+        #     "month": match[0][1],
+        #     "year": match[0][2],
+        #     "timestart": match[0][3]
+        # }
+        # result.append(part)
+        new_date = datetime.strptime(match[0][1] + " " + match[0][0] + " " + match[0][2] + " " + match[0][3],"%b %d %Y %H:%M:%S")
+        # print(new_date)
+        aoristic.add_incr(t_map, new_date, hotspot["xticks"], hotspot["yticks"])
+        # weekday = calendar.day_name[datetime.strptime(match[0][1] + " " + match[0][0] + " " + match[0][2],"%b %d %Y").weekday()]
+        # print(weekday)
 
-    return result
+    # return result
 
 
-def get_data(hotspot, datafile_to_use):
+
+def get_data_frame(hotspot, datafile_to_use=None):
     """
     Returns DataFrame (2D-list) with data
     """
@@ -78,7 +89,9 @@ def get_data(hotspot, datafile_to_use):
 
     if hotspot["datafilename"].endswith(".csv"):
         aoristic.aoristic_method(datafile_to_use, t_map, hotspot["xticks"], hotspot["yticks"])
-
+    elif hotspot["datafilename"].endswith(".log"):
+        log_to_dict(hotspot, t_map)
+        # print(t_map)
     df = pandas.DataFrame(data=t_map,
                             index=hotspot["yticks"]["ticks"],
                             columns=hotspot["xticks"]["ticks"])
@@ -124,6 +137,7 @@ def setup_hotspot(req_form, units):
     """
     Creates the hotspot base dict and returns it
     """
+
     hotspot = {
         "filename": req_form["setupFilename"],
         "datafilename": req_form["datachosen"],
@@ -139,9 +153,10 @@ def setup_hotspot(req_form, units):
         "save_me": True if req_form.getlist("savecsv") else False,
         "units": units
     }
-
-    hotspot["data"] = get_data(hotspot, csv_to_dict(hotspot["filtervalue"], hotspot["filtercolumn"] ,req_form["datachosen"]))
-
+    if req_form["datachosen"].endswith(".csv"):
+        hotspot["data"] = get_data_frame(hotspot, csv_to_dict(hotspot["filtervalue"], hotspot["filtercolumn"], req_form["datachosen"]))
+    elif req_form["datachosen"].endswith(".log"):
+        hotspot["data"] = get_data_frame(hotspot)
     return hotspot
 
 

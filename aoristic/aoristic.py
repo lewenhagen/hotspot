@@ -12,7 +12,7 @@ def aoristic_method(events, t_map, x, y):
     """
     Start aoristic analysis on events
     """
-    # Denn funktion borde nog bli två så man kan skicka in färdig processerad data från annat håll.
+    # Denna funktion borde nog bli två så man kan skicka in färdig processerad data från annat håll.
 
     measure_unit, create_dict_func = get_measure_unit(x, y)
 
@@ -62,18 +62,29 @@ def calc_aoristic_value(event, unit):
 
 
 
-def fill_map(t_map, event, xu, yu, unit):
+def add_incr(t_map, start, xu, yu, incr=1):
     """
     Add incr to t_map for each slot event spans
+    """
+    x, y = get_xy(start, xu, yu)
+    value = round(t_map[y][x] + incr, 3)
+    t_map[y][x] = value
+
+
+
+def fill_map(t_map, event, xu, yu, unit):
+    """
+    Fills map and use add_incr to t_map for each slot event spans
     """
     incr = calc_aoristic_value(event, unit)
     start = event["start"]
     end = event["end"]
 
     while start < end:
-        x, y = get_xy(start, xu, yu)
-        value = round(t_map[y][x] + incr, 3)
-        t_map[y][x] = value
+        add_incr(t_map, start, xu, yu, incr)
+        # x, y = get_xy(start, xu, yu)
+        # value = round(t_map[y][x] + incr, 3)
+        # t_map[y][x] = value
         start += dt_func.create_timedelta(unit)
 
 
