@@ -62,7 +62,7 @@ def log_to_dict(hotspot, t_map):
         new_date = datetime.strptime(match[0][1] + " " + match[0][0] + " " + match[0][2] + " " + match[0][3],"%b %d %Y %H:%M:%S")
         aoristic.add_incr(t_map, new_date, hotspot["xticks"], hotspot["yticks"])
 
-        print("Working on line:", counter, "/", len(lines))
+        # print("Working on line:", counter, "/", len(lines))
         counter += 1
 
 
@@ -74,19 +74,22 @@ def get_data_frame(hotspot, datafile_to_use=None):
     # Use hotspot["city"] to select data.
     # CITYNAME or all
     t_map = config.create_empty_matrix(hotspot["xticks"], hotspot["yticks"])
-    # lisa.calculate_from_matrix(t_map)
     if hotspot["datafilename"].endswith(".csv"):
         aoristic.aoristic_method(datafile_to_use, t_map, hotspot["xticks"], hotspot["yticks"])
     elif hotspot["datafilename"].endswith(".log"):
         log_to_dict(hotspot, t_map)
         # print(t_map)
+
+
     df = pandas.DataFrame(data=t_map,
                             index=hotspot["yticks"]["ticks"],
                             columns=hotspot["xticks"]["ticks"])
 
+    lisa.calculate_from_matrix(t_map)
+
     if hotspot["save_me"]:
         # ändra sep till ","/";"?
-        df.to_csv("saved_csv_hotspots/" + hotspot["filename"] + ".csv", sep="\t", encoding="utf-8")
+        df.to_csv("saved_csv_hotspots/" + hotspot["filename"] + ".csv", sep=",", encoding="utf-8")
     # lisa.get_neigbours(data, 5, 5, 2)
     return df
 

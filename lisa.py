@@ -1,18 +1,30 @@
 #!/usr/bin/env python3
+import pysal
 from pysal.esda.getisord import G_Local
+from pysal.weights.Distance import DistanceBand
 import random as rm
 import numpy as np
 """
 Module for LISA Statistics
 """
 
-def calculate_from_matrix(t_map):
+
+def calculate_from_matrix(matrix):
     """
-    calculates something
+    calculates awesome stuff
     """
-    for y in t_map:
-        for x in y:
-            print(y[x])
+    raw_data = np.matrix(matrix)
+    n = len(raw_data)
+    mean = raw_data.mean()
+    row_len = len(raw_data[0])
+    num_rows =
+    row_total = raw_data.sum()
+
+    print(raw_data)
+    # for y in t_map:
+    #     for x in y:
+    #         print(x)
+
     # lg = G_Local(y, dist_w)
     # lg.n
 # s_counter = 0
