@@ -16,6 +16,7 @@ import config
 import csv
 import re
 from aoristic import aoristic
+from datetime import datetime
 
 
 
@@ -48,34 +49,21 @@ def log_to_dict(hotspot, t_map):
     """
     Reads log file and creates a dict
     """
-    from datetime import datetime
-    # import calendar
+
     counter = 0
-    # result = []
-    # t_map = []
     pattern = r"\[([\w]{1,2}).*([A-z]{3}).*([\w]{4}):([\w]{2}:[\w]{2}:[\w]{2})\s"
+
     with open("datafiles/" + hotspot["datafilename"], "r") as filehandler:
         lines = filehandler.readlines()
 
     for line in lines:
-        print("Working on line:", counter, "/", len(lines))
-        counter += 1
         match = re.findall(pattern, line)
 
-        # part = {
-        #     "day": match[0][0],
-        #     "month": match[0][1],
-        #     "year": match[0][2],
-        #     "timestart": match[0][3]
-        # }
-        # result.append(part)
         new_date = datetime.strptime(match[0][1] + " " + match[0][0] + " " + match[0][2] + " " + match[0][3],"%b %d %Y %H:%M:%S")
-        # print(new_date)
         aoristic.add_incr(t_map, new_date, hotspot["xticks"], hotspot["yticks"])
-        # weekday = calendar.day_name[datetime.strptime(match[0][1] + " " + match[0][0] + " " + match[0][2],"%b %d %Y").weekday()]
-        # print(weekday)
 
-    # return result
+        print("Working on line:", counter, "/", len(lines))
+        counter += 1
 
 
 

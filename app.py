@@ -37,12 +37,13 @@ def main():
     elif request.method == "POST":
         if "setupData" in request.form: # Data has been chosen, next choose filter if csv
             setup["datafile"] = request.form["setupData"]
+
             if setup["datafile"].endswith(".csv"):
                 csv_header = config.get_csv_header(setup["datafile"])
+
                 return render_template("index.html", choose_filter=csv_header, setup=setup)
+
             elif setup["datafile"].endswith(".log"):
-                print("log chosen")
-                # log = functions.log_to_dict(setup["datafile"])
 
                 return render_template("index.html", setup=setup)
 
