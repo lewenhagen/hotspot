@@ -86,7 +86,7 @@ def get_data_frame(hotspot, datafile_to_use=None):
     # Use hotspot["city"] to select data.
     # CITYNAME or all
     t_map = config.create_empty_matrix(hotspot["xticks"], hotspot["yticks"])
-
+    # lisa.calculate_from_matrix(t_map)
     if hotspot["datafilename"].endswith(".csv"):
         aoristic.aoristic_method(datafile_to_use, t_map, hotspot["xticks"], hotspot["yticks"])
     elif hotspot["datafilename"].endswith(".log"):
