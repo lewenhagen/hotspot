@@ -13,57 +13,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import lisa # call lisa.get_neigbours(datalist, y, x, distance)
 import config
-import csv
-import re
 from aoristic import aoristic
-from datetime import datetime
-
-
-
-def csv_to_dict(filter_v, filter_c, file_name="temp.csv", deli=";"):
-    """
-    Read csv with header, create list with dicts. key is header value
-    """
-    reader = csv.reader(open("datafiles/" + file_name, "r"), delimiter=deli)
-    headers = reader.__next__()
-    try:
-        filter_index = headers.index(filter_c)
-    except:
-        filter_index = -1
-    result = []
-    # print(filter_v)
-    # print(filter_c)
-
-    for row in reader:
-        dic = {}
-        # if (not filter_c or not filter_v) or row[filter_index] == filter_v:
-        for index, value in enumerate(row):
-            dic[headers[index]] = value
-        result.append(dic)
-
-    return result
-
-
-
-def log_to_dict(hotspot, t_map):
-    """
-    Reads log file and creates a dict
-    """
-
-    counter = 0
-    pattern = r"\[([\w]{1,2}).*([A-z]{3}).*([\w]{4}):([\w]{2}:[\w]{2}:[\w]{2})\s"
-
-    with open("datafiles/" + hotspot["datafilename"], "r") as filehandler:
-        lines = filehandler.readlines()
-
-    for line in lines:
-        match = re.findall(pattern, line)
-
-        new_date = datetime.strptime(match[0][1] + " " + match[0][0] + " " + match[0][2] + " " + match[0][3],"%b %d %Y %H:%M:%S")
-        aoristic.add_incr(t_map, new_date, hotspot["xticks"], hotspot["yticks"])
-
-        # print("Working on line:", counter, "/", len(lines))
-        counter += 1
+from aoristic import parser
 
 
 
@@ -77,7 +28,7 @@ def get_data_frame(hotspot, datafile_to_use=None):
     if hotspot["datafilename"].endswith(".csv"):
         aoristic.aoristic_method(datafile_to_use, t_map, hotspot["xticks"], hotspot["yticks"])
     elif hotspot["datafilename"].endswith(".log"):
-        log_to_dict(hotspot, t_map)
+        parser.log_to_dict(hotspot, t_map)
         # print(t_map)
 
 
@@ -145,7 +96,7 @@ def setup_hotspot(req_form, units):
         "units": units
     }
     if req_form["datachosen"].endswith(".csv"):
-        hotspot["data"] = get_data_frame(hotspot, csv_to_dict(hotspot["filtervalue"], hotspot["filtercolumn"], req_form["datachosen"]))
+        hotspot["data"] = get_data_frame(hotspot, parser.csv_to_dict(hotspot["filtervalue"], hotspot["filtercolumn"], req_form["datachosen"]))
     elif req_form["datachosen"].endswith(".log"):
         hotspot["data"] = get_data_frame(hotspot)
     return hotspot
