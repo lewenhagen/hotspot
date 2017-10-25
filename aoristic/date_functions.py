@@ -96,6 +96,14 @@ def create_datetime(date, time):
 
 
 
+def create_datetime_tupl(date_tupl):
+    """
+    Create datetime object from string
+    """
+    return datetime.datetime.strptime(date_tupl[1] + " " + date_tupl[0] + " " + date_tupl[2] + " " + date_tupl[3],"%b %d %Y %H:%M:%S")
+
+
+
 def create_timedelta(unit, value=1):
     """
     Increase datetime for 1 unit. ex. with 1 hour or 1 day

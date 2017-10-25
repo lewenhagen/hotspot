@@ -4,7 +4,7 @@ Test aoristic method
 """
 import json
 from aoristic import date_functions as dt_func
-from aoristic import read_csv as rc
+from aoristic import parser
 
 
 
@@ -118,7 +118,7 @@ def main():
     Starts program
     """
     # events = json.load(open("events.json", "r"))
-    events = rc.csv_to_dict("../datafiles/temp.data.2014.csv")
+    events = parser.csv_to_dict_no_filter("../datafiles/temp.data.2014.csv")
     units = json.load(open("../units.json", "r"))
 
     # weekday X time of day [7*24]
