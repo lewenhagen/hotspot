@@ -4,7 +4,7 @@ Test aoristic method
 """
 import json
 from aoristic import date_functions as dt_func
-from aoristic import parser
+import parser
 
 
 
