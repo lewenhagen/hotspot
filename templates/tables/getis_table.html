@@ -1,0 +1,19 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            {% for x_num in range(getis[0]|length) %}
+                <th>{{ x_num }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for y_num in range(getis|length) %}
+            <tr><td class="col-md-1">{{ y_num }}</td>
+                {% for x in getis[y_num] %}
+                    <td class="col-md-1">{{ x }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

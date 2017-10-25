@@ -75,7 +75,7 @@ def hotspot():
             # Creates the hotspot
             functions.create_hotspot(hotspot)
 
-    return render_template("hotspot.html", hotspot=hotspot["filename"] + ".png")
+    return render_template("hotspot.html", hotspot=hotspot["filename"] + ".png", getis=hotspot["getis"])
 
 
 

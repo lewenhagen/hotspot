@@ -31,8 +31,8 @@ def csv_to_dict(filter_v, filter_c, file_name="temp.csv", deli=";"):
     except:
         filter_index = -1
     result = []
-    print(filter_v)
-    print(filter_c)
+    # print(filter_v)
+    # print(filter_c)
 
     for row in reader:
         dic = {}
@@ -85,7 +85,7 @@ def get_data_frame(hotspot, datafile_to_use=None):
                             index=hotspot["yticks"]["ticks"],
                             columns=hotspot["xticks"]["ticks"])
 
-    lisa.calculate_from_matrix(t_map)
+    hotspot["getis"] = lisa.calculate_from_matrix(t_map)
 
     if hotspot["save_me"]:
         # ändra sep till ","/";"?
