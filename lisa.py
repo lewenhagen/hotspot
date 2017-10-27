@@ -18,215 +18,123 @@ def print_data(data):
     for index, value in np.ndenumerate(data):
         print(index, value)
 
-def get_neigbours(data, y, x, d):
-    if y < len(data) and x < len(data[y]):
-        start = data[y][x]
-        new_data = []
-        size_x = len(data[0])
-        size_y = len(data)
+def get_neigbours(data, y, x, d, w):
+    """
+    Calculates the neighbourhood, with modulus
+    """
+    new_data = []
+    m_sum = 0
+    square_weight = 0
+    j_count = 0
+    start = data[y, x]
+    size_y, size_x = data.shape
 
-        iterations = d+d+1
+    iterations = d+d+1
 
-        for _ in range(iterations):
-            new_data.append([])
+    for _ in range(iterations):
+        new_data.append([])
 
-        startY = (y - d) % size_y
+    startY = (y - d) % size_y
+    startX = (x - d) % size_x
+
+    counterY = 0
+
+    while counterY < iterations:
+        counterX = 0
         startX = (x - d) % size_x
+        while counterX < iterations:
+            new_data[counterY].append(data[startY, startX])
 
-        counterY = 0
+            counterX += 1
+            startX += 1
+            startX = startX % size_x
 
-        while counterY < iterations:
-            counterX = 0
-            startX = (x - d) % size_x
-            while counterX < iterations:
-                new_data[counterY].append(data[startY][startX])
+        startY = (startY + 1) % size_y
+        counterY += 1
 
-                counterX += 1
-                startX += 1
-                startX = startX % size_x
+    for local_y in new_data:
+        m_sum += sum(local_y)
 
-            startY = (startY + 1) % size_y
-            counterY += 1
+        for local_x in local_y:
+            square_weight += w * w
 
-    else:
-        print("x or y is out of range")
+        j_count += len(local_y)
 
-
-    # print_data(new_data)
-    return new_data
+    return {"sum": m_sum, "square_weight": square_weight, "j_count": j_count}
 
 
 
-def get_neigbours_inbound(data, y, x, min_y, max_y, min_x, max_x, d):
-    # print("here:", data[:3, :3])
-    print("min_y:", min_y)
-    print("max_y:", max_y)
-    print("min_x:", min_x)
-    print("max_x:", max_x)
+def get_neigbours_inbound(data, rows, cols, distance, w):
+    """
+    Calculates the neighbourhood, inbound
+    """
+    row_len, num_rows = data.shape
+    m_sum = 0
+    square_weight = 0
+    j_count = 0
 
-    return data[min_y:max_y, min_x:max_x]
+    min_x = 0 if (cols - distance) < 0 else (cols - distance)
+    max_x = row_len if (cols + distance) > row_len else (cols + distance)
+
+    min_y = 0 if (rows - distance) < 0 else (rows - distance)
+    max_y = num_rows if (rows + distance) > num_rows else (rows + distance)
+
+    if max_y < row_len and max_y > 0:
+        max_y += 1
+
+    if max_x < num_rows and max_x > 0:
+        max_x += 1
+
+    for trow in range(min_y, max_y):
+        m_sum += data[trow, min_x:max_x].sum()
+
+        for tcol in range(min_x, max_x):
+            square_weight += (w * w)
+
+        j_count += (max_x - min_x)
+
+    return {"sum": m_sum, "square_weight": square_weight, "j_count": j_count}
 
 
 def calculate_from_matrix(matrix):
     """
-    calculates awesome stuff
+    Creates a matrix based on Local Getis and Ord*, (Local Gi*)
     """
     # Initialization of variables
     raw_data = np.matrix(matrix)
-    # print(raw_data)
     n = raw_data.size
     mean = raw_data.mean()
     num_rows, row_len = raw_data.shape
-    # print("num_rows:", num_rows)
-    # print("row_len", row_len)
-
-    raw_total = raw_data.sum()
-
+    # raw_total = raw_data.sum()
     distance = 3
-    # dist_y = distance
-    # dist_x = distance
     weight = 1
-    # square_sum = (raw_data*raw_data).sum()
-    square_sum = (np.sum(np.square(raw_data)))
-
-    j_counts_matrix = np.zeros(shape=(num_rows, row_len), dtype=object)
+    square_sum = (np.sum(np.square(raw_data))) # sum(map(sum, matrix))
     gi_matrix = np.zeros(shape=(num_rows, row_len), dtype=object)
 
-    # for index, value in np.ndenumerate(raw_data):
-    #     i, j = index
-    for rows in range(num_rows):
-        for cols in range(row_len):
-            # print(raw_data[rows])
-            # print(cols)
-            # print(i, j)
+    for index, value in np.ndenumerate(raw_data):
 
-            # min_y = -1
-            # max_y = -1
-            # min_x = -1
-            # max_x = -1
+        rows, cols = index
 
+        result = get_neigbours(raw_data, rows, cols, distance, weight)
+        # result = get_neigbours_inbound(raw_data, rows, cols, distance, weight)
+        
+        m_sum = result["sum"]
+        square_weight = result["square_weight"]
+        j_count = result["j_count"]
 
-            if (cols - distance) < 0:
-                min_x = 0
-            else:
-                min_x = cols - distance
+        numerator = m_sum - (mean * j_count)
+        S = math.sqrt( (square_sum / n) - (mean**2) )
+        denominator = S * math.sqrt( ( (n * j_count) - square_weight**2) / n )
 
-            if (cols + distance) > row_len:
-                max_x = row_len
-            else:
-                max_x = cols + distance
+        res = numerator / denominator
+        gi_matrix[rows][cols] =  res if res != 0 else 0
 
-            if (rows - distance) < 0:
-                min_y = 0
-            else:
-                min_y = rows - distance
+    # print_data(raw_data)
+    # print(gi_matrix)
+    return gi_matrix
 
-            if (rows + distance) > num_rows:
-                max_y = num_rows
-            else:
-                max_y = rows + distance
-
-            # print("col-min:", min_x)
-            # print("col-max:", max_x)
-            # print("row-min:", min_y)
-            # print("row-max:", max_y)
-
-
-            # local_temp = get_neigbours_inbound(raw_data, i, j, min_y, max_y, min_x, max_x, distance)
-            # print("Local:temp", local_temp)
-            # local_temp = get_neigbours(matrix, i, j, distance)
-            # print_data(local_temp)
-
-            m_sum = 0
-            square_weight = 0
-            j_count = 0
-
-
-            for trow in range(min_y, max_y):
-                # print(raw_data[trow, min_x:max_x])
-                # print(raw_data[trow, min_x:max_x].sum())
-            
-                m_sum += raw_data[trow, min_x:max_x+1].sum()
-                # print(m_sum)
-
-                # print(raw_data[trow, min_x:max_x])
-                print(range(min_x, max_x))
-                for tcol in range(min_x, max_x):
-                    # print(tcol)
-                    # print(raw_data[trow][tcol])
-                    square_weight += (weight * weight)
-                    print(square_weight)
-
-                j_count += (max_x - min_x)
-                # print(j_count)
-                # print("col-max", max_x)
-                # print("col-min", min_x)
-
-            # for local_y in local_temp:
-            #     m_sum += sum(local_y)
-            #
-            #     for local_x in local_y:
-            #         square_weight += weight**2
-            #
-            #     j_count += max(local_y) - min(local_y) + 1
-            # print("j_count:", j_count)
-                j_counts_matrix[rows][cols] = j_count
-
-            # print("j_count: ", j_count)
-            # print(j_counts_matrix[i][j])
-            # print("m_sum:", m_sum)
-            numerator = m_sum - (mean * j_counts_matrix[rows][cols])
-
-            S = math.sqrt( (square_sum / n) - (mean**2) )
-            denominator = S * math.sqrt( ( (n * j_counts_matrix[rows][cols]) - square_weight**2) / n )
-
-            gi_matrix[rows][cols] = numerator / denominator
-            # print("numerator", numerator)
-            # print("denominator", denominator)
-
-
-    # for i, y_val in enumerate(matrix):
-    #     for j, x_val in enumerate(y_val):
-    #         local_temp = get_neigbours(matrix, i, j, distance)
-    #         # print_data(local_temp)
-    #
-    #         square_weight = 0
-    #         j_count = 0
-    #         m_sum = 0
-    #         for local_y in local_temp:
-    #             m_sum += sum(local_y)
-    #
-    #             for local_x in local_y:
-    #                 square_weight += pow(weight, 2)
-    #
-    #             j_count += max(local_y) - min(local_y) + 1
-    #
-    #         j_counts_matrix[i][j] = j_count
-    #         numerator = m_sum - (mean * j_counts_matrix[i][j])
-    #         S = math.sqrt( (square_sum / n) - (pow(mean, 2)) )
-    #         denominator = S * math.sqrt( ( (n * j_counts_matrix[i][j]) - pow(square_weight, 2)) / n )
-    #         gi_matrix[i][j] = round(numerator / denominator, 2)
-    #         # print(gi_matrix[i][j])
-
-    # print_data(j_counts_matrix)
-    # return gi_matrix
-
-    # print_data(gi_matrix)
-    # print("raw_data:", raw_data)
-    # print("n:", n)
-    # print("mean:", mean)
-    # print("row_len:", row_len)
-    # print("num_rows:", num_rows)
-
-
-    # for y in t_map:
-    #     for x in y:
-    #         print(x)
-
-    # lg = G_Local(y, dist_w)
-    # lg.n
-# s_counter = 0
-
+# Verify correctness of function calculateGiScoreMatrix with example on page 165 in Chainey and
+# Ratcliffe's book "GIS and Crime Mapping"
 test_matrix = [
     [1,1,1,5,0,0,0,1,0,0,0,0,0,0,3,2], # 14
     [0,3,0,0,6,1,0,1,1,0,0,0,0,0,1,3], # 16
@@ -246,9 +154,4 @@ test_matrix = [
     [0,8,2,6,0,0,0,4,3,1,4,7,0,0,0,0] # 35
 ]
 # Totalt: 394
-# print_data(calculate_from_matrix(test_matrix))
 print_data(calculate_from_matrix(test_matrix))
-
-
-
-# get_neigbours(test_data, 23, 0, 4)
