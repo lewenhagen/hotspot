@@ -12,7 +12,8 @@ Module for LISA Statistics
 #
 def print_data(data):
     # print("[ 0   1   2   3   4   5   6]")
-    # for i, x in enumerate(data):
+    # for i in range(len(data)):
+    #     # print(data[i])
     #     print(i, np.around(x.astype(np.double), 2))
     for index, value in np.ndenumerate(data):
         print(index, value)
@@ -72,76 +73,116 @@ def calculate_from_matrix(matrix):
     """
     # Initialization of variables
     raw_data = np.matrix(matrix)
+    # print(raw_data)
     n = raw_data.size
     mean = raw_data.mean()
     num_rows, row_len = raw_data.shape
+    # print("num_rows:", num_rows)
+    # print("row_len", row_len)
+
     raw_total = raw_data.sum()
 
-    distance = 1
+    distance = 3
+    # dist_y = distance
+    # dist_x = distance
     weight = 1
-    square_sum = np.sum(raw_data**2)
+    # square_sum = (raw_data*raw_data).sum()
+    square_sum = (np.sum(np.square(raw_data)))
 
     j_counts_matrix = np.zeros(shape=(num_rows, row_len), dtype=object)
     gi_matrix = np.zeros(shape=(num_rows, row_len), dtype=object)
 
-    for index, value in np.ndenumerate(raw_data):
-        i, j = index
+    # for index, value in np.ndenumerate(raw_data):
+    #     i, j = index
+    for rows in range(num_rows):
+        for cols in range(row_len):
+            # print(raw_data[rows])
+            # print(cols)
+            # print(i, j)
 
-        min_y = -1
-        max_y = -1
-        min_x = -1
-        max_x = -1
-
-
-        if (j - distance) < 1:
-            min_x = 1
-        else:
-            min_x = j - distance
-
-        if (j + distance) > row_len:
-            max_x = row_len
-        else:
-            max_x = j + distance
-
-        if (i - distance) < 1:
-            min_y = 1
-        else:
-            min_y = i - distance
-
-        if (i + distance) > num_rows:
-            max_y = num_rows
-        else:
-            max_y = i + distance
+            # min_y = -1
+            # max_y = -1
+            # min_x = -1
+            # max_x = -1
 
 
-        # local_temp = get_neigbours_inbound(raw_data, i, j, min_y, max_y, min_x, max_x, distance)
-        # print("Local:temp", local_temp)
-        # local_temp = get_neigbours(matrix, i, j, distance)
-        # print_data(local_temp)
+            if (cols - distance) < 0:
+                min_x = 0
+            else:
+                min_x = cols - distance
 
-        square_weight = 0
-        j_count = 0
-        m_sum = 0
+            if (cols + distance) > row_len:
+                max_x = row_len
+            else:
+                max_x = cols + distance
 
-        for trow in raw_data[min_y:max_y]:
-            m_sum += sum(raw_data[trow, min_x:max_x])
-            for tcol in raw_data[min_x:max_x]:
-                square_weight += weight**2
-            j_count += (max_x - min_x + 1)
-        # for local_y in local_temp:
-        #     m_sum += sum(local_y)
-        #
-        #     for local_x in local_y:
-        #         square_weight += weight**2
-        #
-        #     j_count += max(local_y) - min(local_y) + 1
+            if (rows - distance) < 0:
+                min_y = 0
+            else:
+                min_y = rows - distance
 
-        j_counts_matrix[i][j] = j_count
-        numerator = m_sum - (mean * j_counts_matrix[i][j])
-        S = math.sqrt( (square_sum / n) - (mean**2) )
-        denominator = S * math.sqrt( ( (n * j_counts_matrix[i][j]) - square_weight**2) / n )
-        gi_matrix[i][j] = numerator / denominator
+            if (rows + distance) > num_rows:
+                max_y = num_rows
+            else:
+                max_y = rows + distance
 
+            # print("col-min:", min_x)
+            # print("col-max:", max_x)
+            # print("row-min:", min_y)
+            # print("row-max:", max_y)
+
+
+            # local_temp = get_neigbours_inbound(raw_data, i, j, min_y, max_y, min_x, max_x, distance)
+            # print("Local:temp", local_temp)
+            # local_temp = get_neigbours(matrix, i, j, distance)
+            # print_data(local_temp)
+
+            m_sum = 0
+            square_weight = 0
+            j_count = 0
+
+
+            for trow in range(min_y, max_y):
+                # print(raw_data[trow, min_x:max_x])
+                # print(raw_data[trow, min_x:max_x].sum())
+            
+                m_sum += raw_data[trow, min_x:max_x+1].sum()
+                # print(m_sum)
+
+                # print(raw_data[trow, min_x:max_x])
+                print(range(min_x, max_x))
+                for tcol in range(min_x, max_x):
+                    # print(tcol)
+                    # print(raw_data[trow][tcol])
+                    square_weight += (weight * weight)
+                    print(square_weight)
+
+                j_count += (max_x - min_x)
+                # print(j_count)
+                # print("col-max", max_x)
+                # print("col-min", min_x)
+
+            # for local_y in local_temp:
+            #     m_sum += sum(local_y)
+            #
+            #     for local_x in local_y:
+            #         square_weight += weight**2
+            #
+            #     j_count += max(local_y) - min(local_y) + 1
+            # print("j_count:", j_count)
+                j_counts_matrix[rows][cols] = j_count
+
+            # print("j_count: ", j_count)
+            # print(j_counts_matrix[i][j])
+            # print("m_sum:", m_sum)
+            numerator = m_sum - (mean * j_counts_matrix[rows][cols])
+
+            S = math.sqrt( (square_sum / n) - (mean**2) )
+            denominator = S * math.sqrt( ( (n * j_counts_matrix[rows][cols]) - square_weight**2) / n )
+
+            gi_matrix[rows][cols] = numerator / denominator
+            # print("numerator", numerator)
+            # print("denominator", denominator)
 
 
     # for i, y_val in enumerate(matrix):
@@ -166,7 +207,10 @@ def calculate_from_matrix(matrix):
     #         denominator = S * math.sqrt( ( (n * j_counts_matrix[i][j]) - pow(square_weight, 2)) / n )
     #         gi_matrix[i][j] = round(numerator / denominator, 2)
     #         # print(gi_matrix[i][j])
-    return gi_matrix
+
+    # print_data(j_counts_matrix)
+    # return gi_matrix
+
     # print_data(gi_matrix)
     # print("raw_data:", raw_data)
     # print("n:", n)
@@ -202,8 +246,8 @@ test_matrix = [
     [0,8,2,6,0,0,0,4,3,1,4,7,0,0,0,0] # 35
 ]
 # Totalt: 394
+# print_data(calculate_from_matrix(test_matrix))
 print_data(calculate_from_matrix(test_matrix))
-
 
 
 
