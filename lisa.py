@@ -7,6 +7,7 @@ import numpy as np
 import math
 import pandas as pd
 import scipy.stats as st
+# import scipy as sp
 # from pandas import DataFrame
 """
 Module for LISA Statistics
@@ -19,12 +20,7 @@ pd.set_option('display.width', 1000)
 
 def print_data(data):
     print(pd.DataFrame(data))
-    # print("[ 0   1   2   3   4   5   6]")
-    # for i in range(len(data)):
-    #     # print(data[i])
-    #     print(i, np.around(x.astype(np.double), 2))
-    # for index, value in np.ndenumerate(data):
-    #     print(index, value)
+
 
 def get_neigbours(data, y, x, d, w):
     """
@@ -104,7 +100,22 @@ def get_neigbours_inbound(data, rows, cols, distance, w, n_rows, r_len):
     return {"sum": m_sum, "square_weight": square_weight, "j_count": j_count}
 
 
+def mean_confidence_interval(data, confidence=0.95):
+    flattened = data.flatten()
+    a = 1.0*np.array(flattened)
+    n = len(a)
+    m, se = np.mean(a), st.sem(a)
+    h = se * st.t._ppf((1+confidence)/2., n-1)
+    return m-h, m+h
+
+def confIntMean(a, conf=0.95):
+    mean, sem, m = np.mean(a), st.sem(a), st.t.ppf((1+conf)/2., len(a)-1)
+    return mean - m*sem, mean + m*sem
+
+
 def calculate_from_matrix(matrix):
+    # print("HERE:")
+    # print(pd.DataFrame(st.zscore(matrix, axis=None)))
     """
     Creates a matrix based on Local Getis and Ord*, (Local Gi*)
     """
@@ -136,12 +147,18 @@ def calculate_from_matrix(matrix):
         denominator = S * math.sqrt( ( (n * j_count) - square_weight**2) / n )
 
         res = np.around(numerator / denominator, 2)
+        # print(rows, cols, st.norm.cdf(0.1))
         gi_matrix[rows][cols] =  res #if res != 0 else 0
 
     # print_data(raw_data)
     # print_data(gi_matrix)
 
     # print(gi_matrix)
+    # print(st.norm.cdf(gi_matrix))
+    # print(mean_confidence_interval(gi_matrix))
+    print(confIntMean(gi_matrix.flatten()))
+    # print(st.t.interval(0.95, len(gi_matrix)-1, loc=np.mean(gi_matrix), scale=st.sem(gi_matrix)))
+
     return gi_matrix
 
 # Verify correctness of function calculateGiScoreMatrix with example on page 165 in Chainey and
