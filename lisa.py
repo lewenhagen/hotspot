@@ -1,22 +1,30 @@
 #!/usr/bin/env python3
-import pysal
-from pysal.esda.getisord import G_Local
-from pysal.weights.Distance import DistanceBand
+# import pysal
+# from pysal.esda.getisord import G_Local
+# from pysal.weights.Distance import DistanceBand
 import random as rm
 import numpy as np
 import math
+import pandas as pd
+import scipy.stats as st
+# from pandas import DataFrame
 """
 Module for LISA Statistics
 """
 
-#
+
+pd.set_option('display.max_rows', 500)
+pd.set_option('display.max_columns', 500)
+pd.set_option('display.width', 1000)
+
 def print_data(data):
+    print(pd.DataFrame(data))
     # print("[ 0   1   2   3   4   5   6]")
     # for i in range(len(data)):
     #     # print(data[i])
     #     print(i, np.around(x.astype(np.double), 2))
-    for index, value in np.ndenumerate(data):
-        print(index, value)
+    # for index, value in np.ndenumerate(data):
+    #     print(index, value)
 
 def get_neigbours(data, y, x, d, w):
     """
@@ -43,7 +51,7 @@ def get_neigbours(data, y, x, d, w):
         counterX = 0
         startX = (x - d) % size_x
         while counterX < iterations:
-            new_data[counterY].append(data[startY, startX])
+            new_data[counterY].append(np.around(data[startY, startX], 2))
 
             counterX += 1
             startX += 1
@@ -51,7 +59,7 @@ def get_neigbours(data, y, x, d, w):
 
         startY = (startY + 1) % size_y
         counterY += 1
-
+    # print("HERE:", new_data)
     for local_y in new_data:
         m_sum += sum(local_y)
 
@@ -64,7 +72,7 @@ def get_neigbours(data, y, x, d, w):
 
 
 
-def get_neigbours_inbound(data, rows, cols, distance, w):
+def get_neigbours_inbound(data, rows, cols, distance, w, n_rows, r_len):
     """
     Calculates the neighbourhood, inbound
     """
@@ -105,19 +113,20 @@ def calculate_from_matrix(matrix):
     n = raw_data.size
     mean = raw_data.mean()
     num_rows, row_len = raw_data.shape
-    # raw_total = raw_data.sum()
-    distance = 3
+    # raw_total = raw_data.sum
+    distance = 1
     weight = 1
     square_sum = (np.sum(np.square(raw_data))) # sum(map(sum, matrix))
-    gi_matrix = np.zeros(shape=(num_rows, row_len), dtype=object)
+    gi_matrix = np.zeros(shape=(num_rows, row_len), dtype=float)
 
     for index, value in np.ndenumerate(raw_data):
 
         rows, cols = index
-
+        # print("rows:", rows)
+        # print("cols:", cols)
         result = get_neigbours(raw_data, rows, cols, distance, weight)
-        # result = get_neigbours_inbound(raw_data, rows, cols, distance, weight)
-        
+        # result = get_neigbours_inbound(raw_data, rows, cols, distance, weight, num_rows, row_len)
+        # print(result)
         m_sum = result["sum"]
         square_weight = result["square_weight"]
         j_count = result["j_count"]
@@ -126,10 +135,12 @@ def calculate_from_matrix(matrix):
         S = math.sqrt( (square_sum / n) - (mean**2) )
         denominator = S * math.sqrt( ( (n * j_count) - square_weight**2) / n )
 
-        res = numerator / denominator
-        gi_matrix[rows][cols] =  res if res != 0 else 0
+        res = np.around(numerator / denominator, 2)
+        gi_matrix[rows][cols] =  res #if res != 0 else 0
 
     # print_data(raw_data)
+    # print_data(gi_matrix)
+
     # print(gi_matrix)
     return gi_matrix
 

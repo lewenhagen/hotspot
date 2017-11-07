@@ -31,11 +31,13 @@ def get_data_frame(hotspot, datafile_to_use=None):
         parser.log_to_dict(hotspot, t_map)
         # print(t_map)
 
+    g_map = lisa.calculate_from_matrix(t_map)
 
-    df = pandas.DataFrame(data=t_map,
+    df = pandas.DataFrame(data=g_map,
                             index=hotspot["yticks"]["ticks"],
                             columns=hotspot["xticks"]["ticks"])
 
+    # g_map = lisa.calculate_from_matrix(t_map)
     hotspot["getis"] = lisa.calculate_from_matrix(t_map)
 
     if hotspot["save_me"]:
@@ -111,7 +113,7 @@ def create_hotspot(hotspot, cbar=True):
     fig, ax = plt.subplots(figsize=(7,7))
 
     # Creates a heatmap. ax = axes object, cmap = colorscheme, annot = display data in map, fmt = format on annot
-    sns.heatmap(hotspot["data"], ax=ax, cmap="YlOrRd", annot=True, fmt=".1f", cbar=cbar)
+    sns.heatmap(hotspot["data"], ax=ax, cmap="bwr", annot=True, fmt=".1f", cbar=cbar)
 
     # Sets labels and title
     ax.set_xlabel(hotspot["labels"]["xlabel"], fontsize=14)
