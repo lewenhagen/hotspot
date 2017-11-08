@@ -7,6 +7,8 @@ import numpy as np
 import math
 import pandas as pd
 import scipy.stats as st
+from scipy import mean as sci_mean
+import scikits.bootstrap as bootstrap
 # import scipy as sp
 # from pandas import DataFrame
 """
@@ -115,7 +117,7 @@ def confIntMean(a, conf=0.95):
 
 def calculate_from_matrix(matrix):
     # print("HERE:")
-    # print(pd.DataFrame(st.zscore(matrix, axis=None)))
+    # print(pd.DataFrame(st.zscore(matrix, axis=None, ddof=3)))
     """
     Creates a matrix based on Local Getis and Ord*, (Local Gi*)
     """
@@ -154,9 +156,18 @@ def calculate_from_matrix(matrix):
     # print_data(gi_matrix)
 
     # print(gi_matrix)
-    # print(st.norm.cdf(gi_matrix))
+    print(pd.DataFrame(st.norm.cdf(gi_matrix)))
+    # print(st.norm.ppf(gi_matrix))
+    sigma = np.std(gi_matrix)
+    s_mean = np.mean(gi_matrix)
+    # print(st.norm.interval(0.95, loc=s_mean, scale=sigma))
+    test = 1 - 4 * 0.05
+
+    level = 1 - 256 * (0.05)
+    # print(level)
     # print(mean_confidence_interval(gi_matrix))
-    print(confIntMean(gi_matrix.flatten()))
+    # print( bootstrap.ci(data=gi_matrix, statfunction=sci_mean, alpha=0.05) )
+    # print(confIntMean(gi_matrix.flatten()))
     # print(st.t.interval(0.95, len(gi_matrix)-1, loc=np.mean(gi_matrix), scale=st.sem(gi_matrix)))
 
     return gi_matrix
