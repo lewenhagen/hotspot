@@ -8,7 +8,7 @@ import math
 import pandas as pd
 import scipy.stats as st
 from scipy import mean as sci_mean
-import scikits.bootstrap as bootstrap
+# import scikits.bootstrap as bootstrap
 # import scipy as sp
 # from pandas import DataFrame
 """
@@ -102,17 +102,18 @@ def get_neigbours_inbound(data, rows, cols, distance, w, n_rows, r_len):
     return {"sum": m_sum, "square_weight": square_weight, "j_count": j_count}
 
 
-def mean_confidence_interval(data, confidence=0.95):
-    flattened = data.flatten()
-    a = 1.0*np.array(flattened)
-    n = len(a)
-    m, se = np.mean(a), st.sem(a)
-    h = se * st.t._ppf((1+confidence)/2., n-1)
-    return m-h, m+h
 
-def confIntMean(a, conf=0.95):
-    mean, sem, m = np.mean(a), st.sem(a), st.t.ppf((1+conf)/2., len(a)-1)
-    return mean - m*sem, mean + m*sem
+
+def conf(data, confidence=0.95):
+    mean = data.mean()
+
+    var = np.var(data) # variance
+
+    std=math.sqrt(var)
+
+    return st.norm.interval(confidence, loc=mean, scale=std)
+
+
 
 
 def calculate_from_matrix(matrix):
@@ -156,21 +157,39 @@ def calculate_from_matrix(matrix):
     # print_data(gi_matrix)
 
     # print(gi_matrix)
-    print(pd.DataFrame(st.norm.cdf(gi_matrix)))
-    # print(st.norm.ppf(gi_matrix))
-    sigma = np.std(gi_matrix)
-    s_mean = np.mean(gi_matrix)
-    # print(st.norm.interval(0.95, loc=s_mean, scale=sigma))
-    test = 1 - 4 * 0.05
 
-    level = 1 - 256 * (0.05)
+    # print(pd.DataFrame(st.norm.pdf(gi_matrix)))
+
+    # print(st.norm.ppf(gi_matrix))
+    # sigma = np.std(gi_matrix)
+    # s_mean = np.mean(gi_matrix)
+    # # print(st.norm.interval(0.95, loc=s_mean, scale=sigma))
+    # test = 1 - 4 * 0.05
+    #
+    # level = 1 - 256 * (0.05)
     # print(level)
+    # print("90%")
+    # print(conf(gi_matrix, 0.90))
+    # print("95%")
+    # print(conf(gi_matrix, 0.95))
+    # print("99%")
+    # print(conf(gi_matrix, 0.99))
+    # print("99.99%")
+    # print(conf(gi_matrix, 0.9999))
+    result = {
+        "getis": gi_matrix,
+        "conf_levels": {
+                "0.90": conf(gi_matrix, 0.90),
+                "0.95": conf(gi_matrix, 0.95),
+                "0.99": conf(gi_matrix, 0.99)
+                }
+    }
     # print(mean_confidence_interval(gi_matrix))
     # print( bootstrap.ci(data=gi_matrix, statfunction=sci_mean, alpha=0.05) )
     # print(confIntMean(gi_matrix.flatten()))
     # print(st.t.interval(0.95, len(gi_matrix)-1, loc=np.mean(gi_matrix), scale=st.sem(gi_matrix)))
 
-    return gi_matrix
+    return result
 
 # Verify correctness of function calculateGiScoreMatrix with example on page 165 in Chainey and
 # Ratcliffe's book "GIS and Crime Mapping"
@@ -193,4 +212,4 @@ test_matrix = [
     [0,8,2,6,0,0,0,4,3,1,4,7,0,0,0,0] # 35
 ]
 # Totalt: 394
-print_data(calculate_from_matrix(test_matrix))
+# print_data(calculate_from_matrix(test_matrix))

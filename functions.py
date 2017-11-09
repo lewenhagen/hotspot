@@ -31,20 +31,24 @@ def get_data_frame(hotspot, datafile_to_use=None):
         parser.log_to_dict(hotspot, t_map)
         # print(t_map)
 
-    g_map = lisa.calculate_from_matrix(t_map)
+    result = lisa.calculate_from_matrix(t_map)
 
-    df = pandas.DataFrame(data=g_map,
+    df_getis = pandas.DataFrame(data=result["getis"],
+                            index=hotspot["yticks"]["ticks"],
+                            columns=hotspot["xticks"]["ticks"])
+
+    df_data = pandas.DataFrame(data=t_map,
                             index=hotspot["yticks"]["ticks"],
                             columns=hotspot["xticks"]["ticks"])
 
     # g_map = lisa.calculate_from_matrix(t_map)
-    hotspot["getis"] = lisa.calculate_from_matrix(t_map)
+    # hotspot["getis"] = lisa.calculate_from_matrix(t_map)
 
     if hotspot["save_me"]:
         # ändra sep till ","/";"?
         df.to_csv("saved_csv_hotspots/" + hotspot["filename"] + ".csv", sep=",", encoding="utf-8")
     # lisa.get_neigbours(data, 5, 5, 2)
-    return df
+    return (df_data, df_getis, result["conf_levels"])
 
 
 
@@ -98,22 +102,25 @@ def setup_hotspot(req_form, units):
         "units": units
     }
     if req_form["datachosen"].endswith(".csv"):
-        hotspot["data"] = get_data_frame(hotspot, parser.csv_to_dict(hotspot["filtervalue"], hotspot["filtercolumn"], req_form["datachosen"]))
+        hotspot["data"], hotspot["getis"], hotspot["conf_levels"] = get_data_frame(hotspot, parser.csv_to_dict(hotspot["filtervalue"], hotspot["filtercolumn"], req_form["datachosen"]))
+
     elif req_form["datachosen"].endswith(".log"):
         hotspot["data"] = get_data_frame(hotspot)
     return hotspot
 
 
 
-def create_hotspot(hotspot, cbar=True):
+def create_hotspot(hotspot, use_hotspot, cbar=True):
     """
     Creates a hotspot
     """
+    if use_hotspot == "getis":
+        hotspot["filename"] += "-getis"
     # Returns a tuple containing a figure and axes object(s)
     fig, ax = plt.subplots(figsize=(7,7))
 
     # Creates a heatmap. ax = axes object, cmap = colorscheme, annot = display data in map, fmt = format on annot
-    sns.heatmap(hotspot["data"], ax=ax, cmap="bwr", annot=True, fmt=".1f", cbar=cbar)
+    sns.heatmap(hotspot[use_hotspot], ax=ax, cmap="bwr", annot=True, fmt=".1f", cbar=cbar)
 
     # Sets labels and title
     ax.set_xlabel(hotspot["labels"]["xlabel"], fontsize=14)
@@ -131,7 +138,9 @@ def create_hotspot(hotspot, cbar=True):
     plt.tight_layout()
 
     # Saves the figure as an image
-    plt.savefig("static/" + hotspot["filename"] + ".png")
+    if not os.path.exists("static/" + hotspot["title"]):
+        os.makedirs("static/" + hotspot["title"])
+    plt.savefig("static/" + hotspot["title"] + "/" + hotspot["filename"] + ".png")
 
 
 

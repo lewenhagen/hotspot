@@ -73,9 +73,13 @@ def hotspot():
             # Setup the hotspot
             hotspot = functions.setup_hotspot(request.form, units)
             # Creates the hotspot
-            functions.create_hotspot(hotspot)
+            functions.create_hotspot(hotspot, "data")
+            functions.create_hotspot(hotspot, "getis")
 
-    return render_template("hotspot.html", hotspot=hotspot["filename"] + ".png", getis=hotspot["getis"])
+            filelist=os.listdir('static/' + hotspot["title"])
+
+
+    return render_template("hotspot.html", folder=hotspot["title"], hotspots=filelist)
 
 
 
