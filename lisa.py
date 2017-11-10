@@ -106,15 +106,31 @@ def get_neigbours_inbound(data, rows, cols, distance, w, n_rows, r_len):
 
 def conf(data, confidence=0.95):
     mean = data.mean()
-
+    # print("here1", mean)
     var = np.var(data) # variance
 
     std=math.sqrt(var)
-
+    # print( "here",std)
     return st.norm.interval(confidence, loc=mean, scale=std)
 
 
+def get_standard_deviation(data):
+    """
+    Returns the standard deviation from given matrix
+    """
+    sd_sum = data.sum()                             # summera alla features i dataset
+    sd_square = sd_sum**2                           # square av summan
+    square_divide = sd_square / data.size           # dela square med antalet features i dataset
+    total_square_sum = np.sum(np.square(data))      # += feat * feat (samma som nedan kommenterat)
+    # for value in data.flatten():
+    #     total_square_sum += value**2
 
+    total_square_sum -= sd_square                   # dra av sd_square från totala square summan
+    total_of_feats = data.size - 1                  # dra av 1 från totalt antal features
+
+    variance = total_square_sum / total_of_feats    # dela totala square summan med antalet feats (-1)
+    standard_deviation = np.sqrt(variance)          # roten ur variance = standars deviation
+    # print(standard_deviation)
 
 def calculate_from_matrix(matrix):
     # print("HERE:")
@@ -150,7 +166,7 @@ def calculate_from_matrix(matrix):
         denominator = S * math.sqrt( ( (n * j_count) - square_weight**2) / n )
 
         res = np.around(numerator / denominator, 2)
-        # print(rows, cols, st.norm.cdf(0.1))
+        # print(str(res) + ",")
         gi_matrix[rows][cols] =  res #if res != 0 else 0
 
     # print_data(raw_data)
@@ -175,7 +191,7 @@ def calculate_from_matrix(matrix):
     # print("99%")
     # print(conf(gi_matrix, 0.99))
     # print("99.99%")
-    # print(conf(gi_matrix, 0.9999))
+    # print(conf(gi_matrix, 0.95))
     result = {
         "getis": gi_matrix,
         "conf_levels": {
@@ -188,7 +204,8 @@ def calculate_from_matrix(matrix):
     # print( bootstrap.ci(data=gi_matrix, statfunction=sci_mean, alpha=0.05) )
     # print(confIntMean(gi_matrix.flatten()))
     # print(st.t.interval(0.95, len(gi_matrix)-1, loc=np.mean(gi_matrix), scale=st.sem(gi_matrix)))
-
+    # print(gi_matrix)
+    # get_standard_deviation(gi_matrix)
     return result
 
 # Verify correctness of function calculateGiScoreMatrix with example on page 165 in Chainey and
@@ -212,4 +229,4 @@ test_matrix = [
     [0,8,2,6,0,0,0,4,3,1,4,7,0,0,0,0] # 35
 ]
 # Totalt: 394
-# print_data(calculate_from_matrix(test_matrix))
+# calculate_from_matrix(test_matrix)
