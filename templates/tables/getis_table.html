@@ -1,19 +1,14 @@
-<table class="table">
+<table class="table table-striped">
     <thead>
         <tr>
-            <th>#</th>
-            {% for x_num in range(getis[0]|length) %}
-                <th>{{ x_num }}</th>
-            {% endfor %}
+            <th>Confidence level</th>
+            <th>p-value</th>
+            <th>z-score range</th>
         </tr>
     </thead>
     <tbody>
-        {% for y_num in range(getis|length) %}
-            <tr><td class="col-md-1">{{ y_num }}</td>
-                {% for x in getis[y_num] %}
-                    <td class="col-md-1">{{ x }}</td>
-                {% endfor %}
-            </tr>
-        {% endfor %}
+        <tr><td>0.90%</td><td>0.10</td><td>{{ lisa["0.90"][0] }} < Z < {{ lisa["0.90"][1] }}</td></tr>
+        <tr><td>0.95%</td><td>0.05</td><td>{{ lisa["0.95"][0] }} < Z < {{ lisa["0.95"][1] }}</td></tr>
+        <tr><td>0.99%</td><td>0.01</td><td>{{ lisa["0.99"][0] }} < Z < {{ lisa["0.99"][1] }}</td></tr>
     </tbody>
 </table>

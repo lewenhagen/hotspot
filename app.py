@@ -72,31 +72,32 @@ def hotspot():
         else:
             # Setup the hotspot
             hotspot = functions.setup_hotspot(request.form, units)
-            # Creates the hotspot
+            # Creates the hotspots
             functions.create_hotspot(hotspot, "data")
             functions.create_hotspot(hotspot, "getis")
 
-            filelist=os.listdir('static/' + hotspot["title"])
+            filelist = functions.get_saved_png(hotspot["title"])
+            #os.listdir('static/maps/' + hotspot["title"])
 
 
-    return render_template("hotspot.html", folder=hotspot["title"], hotspots=filelist)
+    return render_template("hotspot.html", folder=hotspot["title"], hotspots=filelist, lisa=hotspot["conf_levels"])
 
 
 
-@app.route('/created', methods=["POST", "GET"])
-def created():
+@app.route('/show/', methods=["POST", "GET"])
+@app.route('/show/<folder>', methods=["POST", "GET"])
+def show(folder=None):
     """
-    Created route
+    Show route
     """
+    all_folders = functions.get_folders()
 
-    created_hotspots = functions.get_saved_png()
-    view_hotspots = []
+    if folder is None:
+        view_hotspots = []
+    elif folder in functions.get_folders():
+        view_hotspots = functions.get_saved_png(folder)
 
-    if request.method == "POST":
-        view_hotspots = request.form.getlist("image")
-
-    return render_template("created.html", created=sorted(created_hotspots), view_hotspots=view_hotspots)
-
+    return render_template("show.html", created=sorted(all_folders), view_hotspots=view_hotspots, folder=folder)
 
 
 

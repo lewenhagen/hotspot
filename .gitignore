@@ -1,4 +1,5 @@
 __pycache__/
+maps/
 *.csv
 *.pyc
 static/*.png

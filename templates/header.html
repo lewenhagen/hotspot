@@ -30,7 +30,7 @@
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li {%- if request.path == "/" %} class="active" {% endif %}><a href="{{ url_for('main') }}">Start</a></li>
-            <li {%- if request.path == "/created" %} class="active" {% endif %}><a href="{{ url_for('created') }}">Created</a></li>
+            <li {%- if request.path == "/show" %} class="active" {% endif %}><a href="{{ url_for('show') }}">Show</a></li>
           </ul>
         </div>
       </div>

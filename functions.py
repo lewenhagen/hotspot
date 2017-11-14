@@ -45,12 +45,14 @@ def get_data_frame(hotspot, datafile_to_use=None):
     # hotspot["getis"] = lisa.calculate_from_matrix(t_map)
 
     if hotspot["save_me"]:
-        if not os.path.exists("static/" + hotspot["title"]):
-            os.makedirs("static/" + hotspot["title"])
-        # ändra sep till ","/";"?
-        df_getis.to_csv("static/" + hotspot["title"] + "_getis.csv", sep=",", encoding="utf-8")
-        df_data.to_csv("static/" + hotspot["title"] + "_aoristic.csv", sep=",", encoding="utf-8")
+        print("Saving file!")
+        if not os.path.exists("static/maps/" + hotspot["title"]):
+            print("Creating folder")
+            os.makedirs("static/maps/" + hotspot["title"])
 
+        df_getis.to_csv("static/maps/" + hotspot["title"] + "/" + hotspot["filename"] + "_getis.csv", sep=",", encoding="utf-8")
+        df_data.to_csv("static/maps/" + hotspot["title"] + "/" + hotspot["filename"] + "_aoristic.csv", sep=",", encoding="utf-8")
+        print("Saved csv files.")
     # lisa.get_neigbours(data, 5, 5, 2)
     return (df_data, df_getis, result["conf_levels"])
 
@@ -105,11 +107,12 @@ def setup_hotspot(req_form, units):
         "save_me": True if req_form.getlist("savecsv") else False,
         "units": units
     }
+
     if req_form["datachosen"].endswith(".csv"):
         hotspot["data"], hotspot["getis"], hotspot["conf_levels"] = get_data_frame(hotspot, parser.csv_to_dict(hotspot["filtervalue"], hotspot["filtercolumn"], req_form["datachosen"]))
 
     elif req_form["datachosen"].endswith(".log"):
-        hotspot["data"] = get_data_frame(hotspot)
+        hotspot["data"], hotspot["getis"], hotspot["conf_levels"] = get_data_frame(hotspot)
     return hotspot
 
 
@@ -142,19 +145,27 @@ def create_hotspot(hotspot, use_hotspot, cbar=True):
     plt.tight_layout()
 
     # Saves the figure as an image
-    if not os.path.exists("static/" + hotspot["title"]):
-        os.makedirs("static/" + hotspot["title"])
-    plt.savefig("static/" + hotspot["title"] + "/" + hotspot["filename"] + ".png")
+    if not os.path.exists("static/maps/" + hotspot["title"]):
+        os.makedirs("static/maps/" + hotspot["title"])
+    plt.savefig("static/maps/" + hotspot["title"] + "/" + hotspot["filename"] + ".png")
+
+
+def get_folders():
+    """
+    Returns saved folders
+    """
+    return [ name for name in os.listdir("static/maps") if os.path.isdir(os.path.join("static/maps", name)) ]
+    # return os.listdir('static')
 
 
 
-def get_saved_png():
+def get_saved_png(folder):
     """
     Returns a list of all saved .png images
     """
     created_hotspots = []
 
-    for image in os.listdir("static"):
+    for image in os.listdir("static/maps/" + folder):
         if image.endswith(".png"):
             created_hotspots.append(image)
 

@@ -1,16 +1,18 @@
 {% include 'header.html' %}
     <div class="container-fluid" role="main">
-        <form class="form-horizontal col-md-2 high right" method="POST" action="/created">
+        <form class="form-horizontal col-md-2 high right" method="GET" action="/created">
             <fieldset>
                 <legend>Choose maps to view</legend>
                 <div class="form-group">
                     <div class="col-lg-3">
+
                         {% for image in created %}
-                            <div class="checkbox">
+                        <a href="{{ url_for('created') }}/{{ image }}">{{ image }}</a><br>
+                            <!-- <div class="checkbox">
                                 <label>
                                     <input type="checkbox" name="image" value="{{ image }}"> {{ image }}
                                 </label>
-                            </div>
+                            </div> -->
                         {% endfor %}
                     </div>
                 </div>
