@@ -45,8 +45,12 @@ def get_data_frame(hotspot, datafile_to_use=None):
     # hotspot["getis"] = lisa.calculate_from_matrix(t_map)
 
     if hotspot["save_me"]:
+        if not os.path.exists("static/" + hotspot["title"]):
+            os.makedirs("static/" + hotspot["title"])
         # ändra sep till ","/";"?
-        df.to_csv("saved_csv_hotspots/" + hotspot["filename"] + ".csv", sep=",", encoding="utf-8")
+        df_getis.to_csv("static/" + hotspot["title"] + "_getis.csv", sep=",", encoding="utf-8")
+        df_data.to_csv("static/" + hotspot["title"] + "_aoristic.csv", sep=",", encoding="utf-8")
+
     # lisa.get_neigbours(data, 5, 5, 2)
     return (df_data, df_getis, result["conf_levels"])
 
