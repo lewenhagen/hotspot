@@ -3,113 +3,92 @@
 Test aoristic method
 """
 import json
+from functools import partial
 from aoristic import date_functions as dt_func
-import parser
+from aoristic.units import Unit
+from aoristic.units import Hour
 
+# import date_functions as dt_func
+# from units import Unit
+# from units import Hour
+# import parse
+# import time
 
 
 def aoristic_method(events, t_map, x, y):
     """
     Start aoristic analysis on events
     """
-    # Denna funktion borde nog bli två så man kan skicka in färdig processerad data från annat håll.
-
-    measure_unit, create_dict_func = get_measure_unit(x, y)
+    Unit_class = setup_class(x, y)
 
     for event_data in events:
-    # event_data = events[3]
-        event = create_dict_func(event_data)
-        fill_map(t_map, event, x, y, measure_unit)
+        event = Unit_class(event_data)
+
+        fill_map(t_map, event)
+
+
+
+def setup_class(x, y):
+    """
+    Create partial for class creation
+    """
+    unit_class = get_measure_unit(x, y)
+    get_x = get_get_unit(x["unit"])
+    get_y = get_get_unit(y["unit"])
+
+    unit_class = partial(Hour, get_x=get_x, get_y=get_y)
+
+    return unit_class
+
+
+
+def get_get_unit(unit):
+    """
+    Return the static class method for get_(unit)
+    """
+    if unit == "Hours":
+        return Unit.get_hour
+    elif unit == "Days":
+        return Unit.get_day
+    elif unit == "Months":
+        return Unit.get_month
+    elif unit == "Weeks":
+        return Unit.get_week
 
 
 
 def get_measure_unit(x, y):
     """
-    Check which unit and create functions should be used for aoristic method
+    Check which unit is smallest and what Class should be used for the events
     """
-    measure_unit = x["unit"] if x["order"] < y["order"] else y["unit"] # Find out which unit is used to measure, days or hours
-    if measure_unit == "Days":
-        create_func = dt_func.create_days_event
-    elif measure_unit == "Hours":
-        create_func = dt_func.create_hours_event
+    smallest = x["unit"] if x["order"] < y["order"] else y["unit"] # Find out which unit is used to measure, days or hours
+    if smallest == "Days":
+        unit_class = Unit
+    elif smallest == "Hours":
+        unit_class = Hour
 
-    return measure_unit, create_func
-
-
-
-def get_nr_of_timeslots(event, unit):
-    """
-    Return how many units duration span.
-    """
-    res = 0
-    if unit == "Hours":
-        res = dt_func.get_nr_hours(event["duration"])
-    elif unit == "Months":
-        res = dt_func.get_nr_months(event["start"], event["end"])
-    elif unit =="Days":
-        res = dt_func.get_nr_days(event["start"], event["end"], event["duration"])
-
-    return float(res)
+    return unit_class
 
 
 
-def calc_aoristic_value(event, unit):
-    """
-    Calculate the incremental value for each time slot
-    """
-    time_span = get_nr_of_timeslots(event, unit)
-    return  round(1 / time_span, 3)
-
-
-
-def add_incr(t_map, start, xu, yu, incr=1):
-    """
-    Add incr to t_map for each slot event spans
-    """
-    x, y = get_xy(start, xu, yu)
-    value = round(t_map[y][x] + incr, 3)
-    t_map[y][x] = value
-
-
-
-def fill_map(t_map, event, xu, yu, unit):
+def fill_map(t_map, event):
     """
     Fills map and use add_incr to t_map for each slot event spans
     """
-    incr = calc_aoristic_value(event, unit)
-    start = event["start"]
-    end = event["end"]
+    a_value = event.calc_aoristic_value()
 
-    while start < end:
-        add_incr(t_map, start, xu, yu, incr)
-        # x, y = get_xy(start, xu, yu)
-        # value = round(t_map[y][x] + incr, 3)
-        # t_map[y][x] = value
-        start += dt_func.create_timedelta(unit)
+    for e in event:
+        x, y = event.get_x(e), event.get_y(e)
+        add_incr(t_map, x, y, a_value)
 
 
 
-def get_xy(date, x, y):
+def add_incr(t_map, x, y, incr=1):
     """
-    return x and y indexes
+    Add incr to t_map for current units(x,y)
     """
-    xy = get_unit_value(date, x["unit"]), get_unit_value(date, y["unit"])
-    return xy
-
-
-
-def get_unit_value(date, unit):
-    """
-    Return unit
-    """
-    if unit == "Hours":
-        return date.hour
-    elif unit == "Months":
-        return date.month - 1
-    elif unit == "Days":
-        return date.weekday()
-    elif unit == "Weeks":
-        return date.isocalendar()[1]
+    value = round(t_map[y][x] + incr, 3)
+    t_map[y][x] = value
 
 
 
@@ -118,8 +97,10 @@ def main():
     Starts program
     """
     # events = json.load(open("events.json", "r"))
-    events = parser.csv_to_dict_no_filter("../datafiles/temp.data.2014.csv")
+    events = parse.csv_to_dict_no_filter("../datafiles/crime-2014.csv")
     units = json.load(open("../units.json", "r"))
+
+    start_time = time.time()
 
     # weekday X time of day [7*24]
     # unit_x = units["hours"]
@@ -133,14 +114,14 @@ def main():
     unit_x = units["days"]
     unit_y = units["weeks"]
 
-    t_map = [[0 for y in range(unit_y["size"])] for x in range(unit_x["size"])]
-
+    t_map = [[0 for y in range(unit_x["size"])] for x in range(unit_y["size"])]
+    # print(json.dumps(t_map, indent=4))
     aoristic_method(events, t_map, unit_x, unit_y)
+    print("--- %s seconds ---" % (time.time() - start_time))
+    for i, row in enumerate(t_map):
+        print(i, row)
 
-    # for i, row in enumerate(t_map):
-        # print(i, row)
-
-    return t_map
+    # print(t_map)
 
 
 

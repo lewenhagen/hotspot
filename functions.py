@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import lisa # call lisa.get_neigbours(datalist, y, x, distance)
 import config
 from aoristic import aoristic
-from aoristic import parser
+from aoristic import parse
 from getis import Gi
 # from shutil import copyfile
 
@@ -31,7 +31,7 @@ def get_data_frame(hotspot, datafile_to_use=None):
     if hotspot["datafilename"].endswith(".csv"):
         aoristic.aoristic_method(datafile_to_use, t_map, hotspot["xticks"], hotspot["yticks"])
     elif hotspot["datafilename"].endswith(".log"):
-        parser.log_to_dict(hotspot, t_map)
+        parse.log_to_dict(hotspot, t_map)
         # print(t_map)
 
     gi = Gi(t_map)
@@ -121,7 +121,7 @@ def setup_hotspot(req_form, units):
     }
 
     if req_form["datachosen"].endswith(".csv"):
-        hotspot["data"], hotspot["getis"], hotspot["conf_levels"] = get_data_frame(hotspot, parser.csv_to_dict(hotspot["filtervalue"], hotspot["filtercolumn"], req_form["datachosen"]))
+        hotspot["data"], hotspot["getis"], hotspot["conf_levels"] = get_data_frame(hotspot, parse.csv_to_dict(hotspot["filtervalue"], hotspot["filtercolumn"], req_form["datachosen"]))
 
     elif req_form["datachosen"].endswith(".log"):
         hotspot["data"], hotspot["getis"], hotspot["conf_levels"] = get_data_frame(hotspot)

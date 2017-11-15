@@ -21,7 +21,7 @@ def log_to_dict(hotspot, t_map):
     for line in lines:
         match = pattern.search(line)
         new_date = dt_func.create_datetime_tupl(match.groups())
-        
+
         aoristic.add_incr(t_map, new_date, hotspot["xticks"], hotspot["yticks"])
 
         # print("Working on line:", counter, "/", len(lines))
@@ -41,7 +41,7 @@ def csv_to_dict(filter_v, filter_c, file_name="temp.csv", deli=";"):
         filter_index = -1
 
     result = []
-    
+
     if filter_index == -1:
         read_csv_rows(result, reader, headers)
     else:
@@ -90,7 +90,7 @@ def csv_to_dict_no_filter(file_name="temp.csv", deli=";"):
     reader = csv.reader(open(file_name, "r"), delimiter=deli)
     headers = reader.__next__()
     result = []
-    
+
     read_csv_rows(result, reader, headers)
 
     return result
