@@ -15,6 +15,7 @@ import lisa # call lisa.get_neigbours(datalist, y, x, distance)
 import config
 from aoristic import aoristic
 from aoristic import parser
+from getis import Gi
 # from shutil import copyfile
 
 
@@ -33,7 +34,16 @@ def get_data_frame(hotspot, datafile_to_use=None):
         parser.log_to_dict(hotspot, t_map)
         # print(t_map)
 
-    result = lisa.calculate_from_matrix(t_map)
+    gi = Gi(t_map)
+    gi.calculate()
+    result = {}
+    result["getis"] = gi.get_result()
+    result["conf_levels"] = {
+        "0.90": gi.confidence_interval(0.90),
+        "0.95": gi.confidence_interval(0.95),
+        "0.99": gi.confidence_interval(0.99)
+    }
+    # result = lisa.calculate_from_matrix(t_map)
 
     df_getis = pandas.DataFrame(data=result["getis"],
                             index=hotspot["yticks"]["ticks"],

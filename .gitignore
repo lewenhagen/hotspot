@@ -4,3 +4,4 @@ maps/
 *.pyc
 static/*.png
 debug.log
+templates/created/
