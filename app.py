@@ -75,6 +75,7 @@ def hotspot():
             # Creates the hotspots
             functions.create_hotspot(hotspot, "data")
             functions.create_hotspot(hotspot, "getis")
+            functions.save_table(hotspot["title"], hotspot["conf_levels"])
 
             filelist = functions.get_saved_png(hotspot["title"])
             #os.listdir('static/maps/' + hotspot["title"])

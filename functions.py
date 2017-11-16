@@ -15,6 +15,8 @@ import lisa # call lisa.get_neigbours(datalist, y, x, distance)
 import config
 from aoristic import aoristic
 from aoristic import parser
+# from shutil import copyfile
+
 
 
 
@@ -170,3 +172,31 @@ def get_saved_png(folder):
             created_hotspots.append(image)
 
     return created_hotspots
+
+
+
+def save_table(folder, lisa):
+    """
+    Saves a copy of the html table
+    """
+    if not os.path.exists("templates/created/" + folder):
+        os.makedirs("templates/created/" + folder)
+
+    table = """<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Confidence level</th>
+            <th>p-value</th>
+            <th>z-score range</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td>0.90%</td><td>0.10</td><td>{} < Z < {}</td></tr>
+        <tr><td>0.95%</td><td>0.05</td><td>{} < Z < {}</td></tr>
+        <tr><td>0.99%</td><td>0.01</td><td>{} < Z < {}</td></tr>
+    </tbody>
+</table>
+    """.format(lisa["0.90"][0], lisa["0.90"][1], lisa["0.95"][0], lisa["0.95"][1], lisa["0.99"][0], lisa["0.99"][1])
+
+    with open("templates/created/" + folder + "/getis_table.html", "w+") as f:
+        f.write(table)

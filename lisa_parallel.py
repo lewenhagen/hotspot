@@ -6,6 +6,11 @@ import pandas as pd
 import scipy.stats as st
 from scipy import mean as sci_mean
 
+from getis import Gi
+
+import time
+from multiprocessing import Pool
+
 from confidence_interval import conf_interval as conf
 
 """
@@ -24,96 +29,103 @@ def print_data(data):
     print(pd.DataFrame(data))
 
 
-def get_neigbours(data, y, x, d, w):
-    """
-    Calculates the neighbourhood, with modulus
-    """
-    new_data = []
-    m_sum = 0
-    square_weight = 0
-    j_count = 0
-    start = data[y, x]
-    size_y, size_x = data.shape
-
-    iterations = d+d+1
-
-    for _ in range(iterations):
-        new_data.append([])
-
-    startY = (y - d) % size_y
-    startX = (x - d) % size_x
-
-    counterY = 0
-
-    while counterY < iterations:
-        counterX = 0
-        startX = (x - d) % size_x
-        while counterX < iterations:
-            new_data[counterY].append(np.around(data[startY, startX], 2))
-
-            counterX += 1
-            startX += 1
-            startX = startX % size_x
-
-        startY = (startY + 1) % size_y
-        counterY += 1
-
-    for local_y in new_data:
-        m_sum += sum(local_y)
-
-        for local_x in local_y:
-            square_weight += w * w
-
-        j_count += len(local_y)
-
-    return {"sum": m_sum, "square_weight": square_weight, "j_count": j_count}
-
-
-
-def calculate_from_matrix(matrix):
-    """
-    Creates a matrix based on Local Getis and Ord*, (Local Gi*)
-    """
-    # Initialization of variables
-    raw_data = np.matrix(matrix)
-    n = raw_data.size
-    mean = raw_data.mean()
-    num_rows, row_len = raw_data.shape
-    # raw_total = raw_data.sum
-    distance = 1
-    weight = 1
-    square_sum = (np.sum(np.square(raw_data)))
-    gi_matrix = np.zeros(shape=(num_rows, row_len), dtype=float)
-
-    for index, value in np.ndenumerate(raw_data):
-
-        rows, cols = index
-
-        result = get_neigbours(raw_data, rows, cols, distance, weight)
-
-        m_sum = result["sum"]
-        square_weight = result["square_weight"]
-        j_count = result["j_count"]
-
-        numerator = m_sum - (mean * j_count)
-        S = math.sqrt( (square_sum / n) - (mean**2) )
-        denominator = S * math.sqrt( ( (n * j_count) - square_weight**2) / n )
-
-        res = np.around(numerator / denominator, 2)
-
-        gi_matrix[rows][cols] =  res
-
-    result = {
-        "getis": gi_matrix,
-        "conf_levels": {
-                "0.90": conf(gi_matrix, 0.90),
-                "0.95": conf(gi_matrix, 0.95),
-                "0.99": conf(gi_matrix, 0.99)
-                }
-    }
-
-    return result
-
+# def get_neigbours(data, y, x, d, w):
+#     """
+#     Calculates the neighbourhood, with modulus
+#     """
+#     new_data = []
+#     m_sum = 0
+#     square_weight = 0
+#     j_count = 0
+#     start = data[y, x]
+#     size_y, size_x = data.shape
+#
+#     iterations = d+d+1
+#
+#     for _ in range(iterations):
+#         new_data.append([])
+#
+#     startY = (y - d) % size_y
+#     startX = (x - d) % size_x
+#
+#     counterY = 0
+#
+#     while counterY < iterations:
+#         counterX = 0
+#         startX = (x - d) % size_x
+#         while counterX < iterations:
+#             new_data[counterY].append(np.around(data[startY, startX], 2))
+#
+#             counterX += 1
+#             startX += 1
+#             startX = startX % size_x
+#
+#         startY = (startY + 1) % size_y
+#         counterY += 1
+#
+#     for local_y in new_data:
+#         m_sum += sum(local_y)
+#
+#         for local_x in local_y:
+#             square_weight += w * w
+#
+#         j_count += len(local_y)
+#
+#     return {"sum": m_sum, "square_weight": square_weight, "j_count": j_count}
+#
+#
+#
+#
+#
+# def calculate_from_matrix(matrix):
+#     """
+#     Creates a matrix based on Local Getis and Ord*, (Local Gi*)
+#     """
+#     start_time = time.time()
+#     # Initialization of variables
+#     raw_data = np.matrix(matrix)
+#     n = raw_data.size
+#     mean = raw_data.mean()
+#     num_rows, row_len = raw_data.shape
+#     # raw_total = raw_data.sum
+#     distance = 1
+#     weight = 1
+#     square_sum = (np.sum(np.square(raw_data)))
+#     gi_matrix = np.zeros(shape=(num_rows, row_len), dtype=float)
+#
+#     pool = Pool()
+#
+#     for index, value in np.ndenumerate(raw_data):
+#
+#         rows, cols = index
+#
+#
+#         result = pool.map(get_neigbours, [raw_data, rows, cols, distance, weight])
+#
+#         m_sum = result["sum"]
+#         square_weight = result["square_weight"]
+#         j_count = result["j_count"]
+#
+#         numerator = m_sum - (mean * j_count)
+#         S = math.sqrt( (square_sum / n) - (mean**2) )
+#         denominator = S * math.sqrt( ( (n * j_count) - square_weight**2) / n )
+#
+#         res = np.around(numerator / denominator, 2)
+#
+#         gi_matrix[rows][cols] =  res
+#
+#     pool.close()
+#     pool.join()
+#     result = {
+#         "getis": gi_matrix,
+#         "conf_levels": {
+#                 "0.90": conf(gi_matrix, 0.90),
+#                 "0.95": conf(gi_matrix, 0.95),
+#                 "0.99": conf(gi_matrix, 0.99)
+#                 }
+#     }
+#     print("--- %s seconds ---" % (time.time() - start_time))
+#     return result
 # Verify correctness of function calculateGiScoreMatrix with example on page 165 in Chainey and
 # Ratcliffe's book "GIS and Crime Mapping"
 test_matrix = [
@@ -163,4 +175,10 @@ real_test_matrix = [
 
 ]
 # Totalt: 394
-print_data(calculate_from_matrix(real_test_matrix)["getis"])
+# print_data(calculate_from_matrix(real_test_matrix)["getis"])
+start_time = time.time()
+gi = Gi(real_test_matrix)
+gi.calculate()
+print_data(gi.get_result())
+print(gi.confidence_interval(0.97))
+print("--- %s seconds ---" % (time.time() - start_time))
