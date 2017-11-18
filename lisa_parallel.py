@@ -179,6 +179,17 @@ real_test_matrix = [
 start_time = time.time()
 gi = Gi(real_test_matrix)
 gi.calculate()
-print_data(gi.get_result())
-print(gi.confidence_interval(0.97))
+gi.clear_zscore(0.10)
 print("--- %s seconds ---" % (time.time() - start_time))
+print(gi.get_result())
+
+
+start_time = time.time()
+# gi2 = Gi(real_test_matrix)
+#
+# # gi.clear_zscore(0.10)
+# # print(gi.confidence_interval(0.90))
+# gi2.calculate_parallel()
+# gi2.clear_zscore(0.10)
+# print("--- %s seconds ---" % (time.time() - start_time))
+# print(gi2.get_result())
