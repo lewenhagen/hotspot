@@ -4,11 +4,9 @@ Test aoristic method
 """
 import json
 from functools import partial
-from aoristic import date_functions as dt_func
 from aoristic.units import Unit
 from aoristic.units import Hour
 
-# import date_functions as dt_func
 # from units import Unit
 # from units import Hour
 # import parse
@@ -54,6 +52,8 @@ def get_get_unit(unit):
         return Unit.get_month
     elif unit == "Weeks":
         return Unit.get_week
+
+    raise ValueError
 
 
 
@@ -114,7 +114,7 @@ def main():
     unit_x = units["days"]
     unit_y = units["weeks"]
 
-    t_map = [[0 for y in range(unit_x["size"])] for x in range(unit_y["size"])]
+    t_map = [[0 for x in range(unit_x["size"])] for y in range(unit_y["size"])]
     # print(json.dumps(t_map, indent=4))
     aoristic_method(events, t_map, unit_x, unit_y)
     print("--- %s seconds ---" % (time.time() - start_time))

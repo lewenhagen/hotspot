@@ -12,42 +12,32 @@ class Unit():
     """
 
     @staticmethod
-    def get_hour():
+    def get_hour(time):
         """
         Return the hour of the time
         """
-        def get(time):
-            # return event.start.hour
-            return time.hour
-        return get
+        return time.hour
 
     @staticmethod
-    def get_day():
+    def get_day(time):
         """
         Return the weekday of the time
         """
-        def get(time):
-            # return event.start.weekday()
-            return time.weekday()
-        return get
+        return time.weekday()
 
     @staticmethod
-    def get_month():
+    def get_month(time):
         """
         Return the month of the time
         """
-        def get(time):
-            return time.month - 1
-        return get
+        return time.month - 1
 
     @staticmethod
-    def get_week():
+    def get_week(time):
         """
         Return the week number of the time
         """
-        def get(time):
-            return time.isocalendar()[1]
-        return get
+        return time.isocalendar()[1]
 
 
 
@@ -56,8 +46,8 @@ class Unit():
         self.end = self.create_dt_end(event)
         self.duration = self.end - self.start
 
-        self.get_x = get_x()
-        self.get_y = get_y()
+        self.get_x = get_x
+        self.get_y = get_y
 
 
 
@@ -119,6 +109,39 @@ class Unit():
         """
         #remove float?
         return float(self.duration.days)
+
+
+
+    @staticmethod
+    def create_datetime_tupl(date_tupl):
+        """
+        Create datetime object from tuple
+        """
+        return datetime.datetime(day=int(date_tupl[0]),
+            month=Unit.abbr_to_nr_month(date_tupl[1]),
+            year=int(date_tupl[2]), hour=int(date_tupl[3]))
+
+
+
+    @staticmethod
+    def abbr_to_nr_month(month):
+        """
+        convert abbr month to number
+        """
+        return{
+                'Jan' : 1,
+                'Feb' : 2,
+                'Mar' : 3,
+                'Apr' : 4,
+                'May' : 5,
+                'Jun' : 6,
+                'Jul' : 7,
+                'Aug' : 8,
+                'Sep' : 9,
+                'Oct' : 10,
+                'Nov' : 11,
+                'Dec' : 12
+        }[month]
 
 
 
