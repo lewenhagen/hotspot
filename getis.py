@@ -43,7 +43,8 @@ class Gi():
 
     def get_neigbours(self, y, x):
         """
-        Returns the neighbourhood from given x, y
+        Returns the neighbourhood from given x, y.
+        Uses queen's case and modulus to get out of bounds features.
         """
 
         new_data = []
