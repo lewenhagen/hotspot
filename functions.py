@@ -16,6 +16,7 @@ import config
 from aoristic import aoristic
 from aoristic import parse
 from getis import Gi
+import time
 # from shutil import copyfile
 
 
@@ -35,14 +36,20 @@ def get_data_frame(hotspot, datafile_to_use=None):
         # print(t_map)
 
     gi = Gi(t_map)
+    start_time = time.time()
     gi.calculate()
     result = {}
-    result["getis"] = gi.get_result()
     result["conf_levels"] = {
-        "0.90": gi.confidence_interval(0.90),
-        "0.95": gi.confidence_interval(0.95),
-        "0.99": gi.confidence_interval(0.99)
+    "0.90": gi.confidence_interval(0.90),
+    "0.95": gi.confidence_interval(0.95),
+    "0.99": gi.confidence_interval(0.99)
     }
+    
+    if hotspot["pvalue"] != "":
+        gi.clear_zscore(float(hotspot["pvalue"]))
+
+    result["getis"] = gi.get_result()
+    print("--- %s seconds ---" % (time.time() - start_time))
     # result = lisa.calculate_from_matrix(t_map)
 
     df_getis = pandas.DataFrame(data=result["getis"],
@@ -117,6 +124,7 @@ def setup_hotspot(req_form, units):
             "ylabel": units[req_form["setupYticks"]]["unit"]
         },
         "save_me": True if req_form.getlist("savecsv") else False,
+        "pvalue": req_form["setupConfidenceLevel"],
         "units": units
     }
 

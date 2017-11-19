@@ -61,6 +61,18 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="setupConfidenceLevel" class="col-lg-2 control-label">Choose p-value</label>
+                    <div class="col-lg-6">
+                        <select class="form-control" id="setupConfidenceLevel" name="setupConfidenceLevel">
+                            <option value="">All</option>
+                            <option value="0.10">0.10 (90%)</option>
+                            <option value="0.05">0.05 (95%)</option>
+                            <option value="0.01">0.01 (99%)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <label for="setupTitle" class="col-lg-2 control-label">Title</label>
                     <div class="col-lg-6">
                         <input type="text" class="form-control" id="setupTitle" name="setupTitle" placeholder="Title">
