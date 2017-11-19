@@ -45,7 +45,7 @@ def get_data_frame(hotspot, datafile_to_use=None):
     "0.99": gi.confidence_interval(0.99)
     }
 
-    if hotspot["pvalue"] != "":
+    if hotspot["pvalue"] != "all":
         gi.clear_zscore(float(hotspot["pvalue"]))
 
     result["getis"] = gi.get_result()
@@ -137,7 +137,7 @@ def setup_hotspot(req_form, units):
 
 
 
-def create_hotspot(hotspot, use_hotspot, cbar=True):
+def create_hotspot(hotspot, use_hotspot, levels=None, cbar=True):
     """
     Creates a hotspot
     """
@@ -153,7 +153,7 @@ def create_hotspot(hotspot, use_hotspot, cbar=True):
     ax.set_xlabel(hotspot["labels"]["xlabel"], fontsize=14)
     ax.set_ylabel(hotspot["labels"]["ylabel"], fontsize=14)
     if use_hotspot == "getis":
-        ax.set_title(hotspot["title"] + "-Gi*")
+        ax.set_title(hotspot["title"] + "-Gi* p-value: " + levels)
     else:
         ax.set_title(hotspot["title"] + "-Aoristic")
 

@@ -74,7 +74,7 @@ def hotspot():
             hotspot = functions.setup_hotspot(request.form, units)
             # Creates the hotspots
             functions.create_hotspot(hotspot, "data")
-            functions.create_hotspot(hotspot, "getis")
+            functions.create_hotspot(hotspot, "getis", hotspot["pvalue"])
             functions.save_table(hotspot["title"], hotspot["conf_levels"])
 
             filelist = functions.get_saved_png(hotspot["title"])
