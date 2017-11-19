@@ -11,7 +11,7 @@ import random
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
-import lisa # call lisa.get_neigbours(datalist, y, x, distance)
+# import lisa # call lisa.get_neigbours(datalist, y, x, distance)
 import config
 from aoristic import aoristic
 from aoristic import parse
@@ -44,7 +44,7 @@ def get_data_frame(hotspot, datafile_to_use=None):
     "0.95": gi.confidence_interval(0.95),
     "0.99": gi.confidence_interval(0.99)
     }
-    
+
     if hotspot["pvalue"] != "":
         gi.clear_zscore(float(hotspot["pvalue"]))
 
@@ -69,8 +69,8 @@ def get_data_frame(hotspot, datafile_to_use=None):
             print("Creating folder")
             os.makedirs("static/maps/" + hotspot["title"])
 
-        df_getis.to_csv("static/maps/" + hotspot["title"] + "/" + hotspot["filename"] + "_getis.csv", sep=",", encoding="utf-8")
-        df_data.to_csv("static/maps/" + hotspot["title"] + "/" + hotspot["filename"] + "_aoristic.csv", sep=",", encoding="utf-8")
+        df_getis.to_csv("static/maps/" + hotspot["title"] + "/" + hotspot["title"] + "_gi.csv", sep=",", encoding="utf-8")
+        df_data.to_csv("static/maps/" + hotspot["title"] + "/" + hotspot["title"] + "_aoristic.csv", sep=",", encoding="utf-8")
         print("Saved csv files.")
     # lisa.get_neigbours(data, 5, 5, 2)
     return (df_data, df_getis, result["conf_levels"])
@@ -92,7 +92,7 @@ def validate_form(req_form):
     setup_x_ticks = req_form["setupXticks"]
     setup_y_ticks = req_form["setupYticks"]
     setup_title = req_form["setupTitle"]
-    filename = req_form["setupFilename"]
+    filename = req_form["setupTitle"]
 
     if any(field is "" for field in (setup_x_ticks, setup_y_ticks, setup_title, filename)):
         result["valid"] = False
@@ -112,7 +112,7 @@ def setup_hotspot(req_form, units):
     """
 
     hotspot = {
-        "filename": req_form["setupFilename"],
+        # "filename": req_form["setupFilename"],
         "datafilename": req_form["datachosen"],
         "title": req_form["setupTitle"],
         "filtervalue": req_form.get("setupFilter"),
@@ -141,8 +141,8 @@ def create_hotspot(hotspot, use_hotspot, cbar=True):
     """
     Creates a hotspot
     """
-    if use_hotspot == "getis":
-        hotspot["filename"] += "-getis"
+    # if use_hotspot == "getis":
+    #     hotspot["title"] += "-getis"
     # Returns a tuple containing a figure and axes object(s)
     fig, ax = plt.subplots(figsize=(7,7))
 
@@ -152,7 +152,10 @@ def create_hotspot(hotspot, use_hotspot, cbar=True):
     # Sets labels and title
     ax.set_xlabel(hotspot["labels"]["xlabel"], fontsize=14)
     ax.set_ylabel(hotspot["labels"]["ylabel"], fontsize=14)
-    ax.set_title(hotspot["title"])
+    if use_hotspot == "getis":
+        ax.set_title(hotspot["title"] + "-Gi*")
+    else:
+        ax.set_title(hotspot["title"] + "-Aoristic")
 
     # Moves tick marker outside both axis
     ax.tick_params(axis='both', direction="out")
@@ -167,7 +170,11 @@ def create_hotspot(hotspot, use_hotspot, cbar=True):
     # Saves the figure as an image
     if not os.path.exists("static/maps/" + hotspot["title"]):
         os.makedirs("static/maps/" + hotspot["title"])
-    plt.savefig("static/maps/" + hotspot["title"] + "/" + hotspot["filename"] + ".png")
+
+    if use_hotspot == "getis":
+        plt.savefig("static/maps/" + hotspot["title"] + "/" + hotspot["title"] + "-gi.png")
+    else:
+        plt.savefig("static/maps/" + hotspot["title"] + "/" + hotspot["title"] + "-aoristic.png")
 
 
 def get_folders():
