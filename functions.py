@@ -16,7 +16,8 @@ import config
 from aoristic import aoristic
 from aoristic import parse
 from getis import Gi
-import time
+# import time
+# from hotspot import Hotspot
 # from shutil import copyfile
 
 
@@ -28,15 +29,16 @@ def get_data_frame(hotspot, datafile_to_use=None):
     """
     # Use hotspot["city"] to select data.
     # CITYNAME or all
-    t_map = config.create_empty_matrix(hotspot["xticks"], hotspot["yticks"])
-    if hotspot["datafilename"].endswith(".csv"):
-        aoristic.aoristic_method(datafile_to_use, t_map, hotspot["xticks"], hotspot["yticks"])
-    elif hotspot["datafilename"].endswith(".log"):
+    t_map = config.create_empty_matrix(hotspot.xticks, hotspot.yticks)
+
+    if hotspot.datafile.endswith(".csv"):
+        aoristic.aoristic_method(datafile_to_use, t_map, hotspot.xticks, hotspot.yticks)
+    elif hotspot.datafile.endswith(".log"):
         parse.log_to_dict(hotspot, t_map)
         # print(t_map)
 
     gi = Gi(t_map)
-    start_time = time.time()
+    # start_time = time.time()
     gi.calculate()
     result = {}
     result["conf_levels"] = {
@@ -45,32 +47,32 @@ def get_data_frame(hotspot, datafile_to_use=None):
     "0.99": gi.confidence_interval(0.99)
     }
 
-    if hotspot["pvalue"] != "all":
-        gi.clear_zscore(float(hotspot["pvalue"]))
+    if hotspot.pvalue != "all":
+        gi.clear_zscore(float(hotspot.pvalue))
 
     result["getis"] = gi.get_result()
-    print("--- %s seconds ---" % (time.time() - start_time))
+    # print("--- %s seconds ---" % (time.time() - start_time))
     # result = lisa.calculate_from_matrix(t_map)
 
     df_getis = pandas.DataFrame(data=result["getis"],
-                            index=hotspot["yticks"]["ticks"],
-                            columns=hotspot["xticks"]["ticks"])
+                            index=hotspot.yticks["ticks"],
+                            columns=hotspot.xticks["ticks"])
 
     df_data = pandas.DataFrame(data=t_map,
-                            index=hotspot["yticks"]["ticks"],
-                            columns=hotspot["xticks"]["ticks"])
+                            index=hotspot.yticks["ticks"],
+                            columns=hotspot.xticks["ticks"])
 
     # g_map = lisa.calculate_from_matrix(t_map)
     # hotspot["getis"] = lisa.calculate_from_matrix(t_map)
 
-    if hotspot["save_me"]:
+    if hotspot.save_me:
         print("Saving file!")
-        if not os.path.exists("static/maps/" + hotspot["title"]):
+        if not os.path.exists("static/maps/" + hotspot.title):
             print("Creating folder")
-            os.makedirs("static/maps/" + hotspot["title"])
+            os.makedirs("static/maps/" + hotspot.title)
 
-        df_getis.to_csv("static/maps/" + hotspot["title"] + "/" + hotspot["title"] + "_gi.csv", sep=",", encoding="utf-8")
-        df_data.to_csv("static/maps/" + hotspot["title"] + "/" + hotspot["title"] + "_aoristic.csv", sep=",", encoding="utf-8")
+        df_getis.to_csv("static/maps/" + hotspot.title + "/" + hotspot.title + "_gi.csv", sep=",", encoding="utf-8")
+        df_data.to_csv("static/maps/" + hotspot.title + "/" + hotspot.title + "_aoristic.csv", sep=",", encoding="utf-8")
         print("Saved csv files.")
     # lisa.get_neigbours(data, 5, 5, 2)
     return (df_data, df_getis, result["conf_levels"])
@@ -98,7 +100,7 @@ def validate_form(req_form):
         result["valid"] = False
         result["error"] = "You forgot something in the form."
 
-    if filename + ".png" in os.listdir("static"):
+    if os.path.exists("static/maps/" + filename):
         result["valid"] = False
         result["error"] = "Filename already exists."
 
@@ -106,34 +108,51 @@ def validate_form(req_form):
 
 
 
-def setup_hotspot(req_form, units):
-    """
-    Creates the hotspot base dict and returns it
-    """
+# def setup_hotspot(req_form, units):
+#     """
+#     Creates the hotspot base dict and returns it
+#     """
+#     hotspot = Hotspot(req_form, units)
+#
+#     # hotspot.datafile = req_form["datachosen"]
+#     # hotspot.title = req_form["setupTitle"]
+#     # hotspot.filter_value = req_form.get("setupFilter")
+#     # hotspot.filter_column = req_form.get("filtercolumn")
+#     # hotspot.xticks = units[req_form["setupXticks"]]
+#     # hotspot.yticks = units[req_form["setupYticks"]]
+#     # hotspot.labels = {
+#     #     "xlabel": units[req_form["setupXticks"]]["unit"],
+#     #     "ylabel": units[req_form["setupYticks"]]["unit"]
+#     # }
+#     # hotspot.save_me = True if req_form.getlist("savecsv") else False
+#     # hotspot.pvalue = req_form["setupConfidenceLevel"]
+#     # hotspot.units = units
+#
+#     return hotspot
+    # hotspot = {
+    #     # "filename": req_form["setupFilename"],
+    #     "datafilename": req_form["datachosen"],
+    #     "title": req_form["setupTitle"],
+    #     "filtervalue": req_form.get("setupFilter"),
+    #     "filtercolumn": req_form.get("filtercolumn"),
+    #     "xticks": units[req_form["setupXticks"]],
+    #     "yticks": units[req_form["setupYticks"]],
+    #     "labels": {
+    #         "xlabel": units[req_form["setupXticks"]]["unit"],
+    #         "ylabel": units[req_form["setupYticks"]]["unit"]
+    #     },
+    #     "save_me": True if req_form.getlist("savecsv") else False,
+    #     "pvalue": req_form["setupConfidenceLevel"],
+    #     "units": units
+    # }
 
-    hotspot = {
-        # "filename": req_form["setupFilename"],
-        "datafilename": req_form["datachosen"],
-        "title": req_form["setupTitle"],
-        "filtervalue": req_form.get("setupFilter"),
-        "filtercolumn": req_form.get("filtercolumn"),
-        "xticks": units[req_form["setupXticks"]],
-        "yticks": units[req_form["setupYticks"]],
-        "labels": {
-            "xlabel": units[req_form["setupXticks"]]["unit"],
-            "ylabel": units[req_form["setupYticks"]]["unit"]
-        },
-        "save_me": True if req_form.getlist("savecsv") else False,
-        "pvalue": req_form["setupConfidenceLevel"],
-        "units": units
-    }
+    # if req_form["datachosen"].endswith(".csv"):
+    #     hotspot.data, hotspot.getis, hotspot.conf_levels = get_data_frame(hotspot, parse.csv_to_dict(hotspot["filtervalue"], hotspot["filtercolumn"], req_form["datachosen"]))
+    #
+    # elif req_form["datachosen"].endswith(".log"):
+    #     hotspot.data, hotspot.getis, hotspot.conf_levels = get_data_frame(hotspot)
 
-    if req_form["datachosen"].endswith(".csv"):
-        hotspot["data"], hotspot["getis"], hotspot["conf_levels"] = get_data_frame(hotspot, parse.csv_to_dict(hotspot["filtervalue"], hotspot["filtercolumn"], req_form["datachosen"]))
-
-    elif req_form["datachosen"].endswith(".log"):
-        hotspot["data"], hotspot["getis"], hotspot["conf_levels"] = get_data_frame(hotspot)
-    return hotspot
+    # return hotspot
 
 
 
@@ -147,15 +166,21 @@ def create_hotspot(hotspot, use_hotspot, levels=None, cbar=True):
     fig, ax = plt.subplots(figsize=(7,7))
 
     # Creates a heatmap. ax = axes object, cmap = colorscheme, annot = display data in map, fmt = format on annot
-    sns.heatmap(hotspot[use_hotspot], ax=ax, cmap="bwr", annot=True, fmt=".1f", cbar=cbar)
+    if use_hotspot == "getis":
+        sns.heatmap(hotspot.getis, ax=ax, cmap="bwr", annot=True, fmt=".1f", cbar=cbar)
+        ax.set_title(hotspot.title + "-Gi* p-value: " + levels)
+
+    elif use_hotspot == "data":
+        sns.heatmap(hotspot.data, ax=ax, cmap="bwr", annot=True, fmt=".1f", cbar=cbar)
+        ax.set_title(hotspot.title + "-Aoristic")
 
     # Sets labels and title
-    ax.set_xlabel(hotspot["labels"]["xlabel"], fontsize=14)
-    ax.set_ylabel(hotspot["labels"]["ylabel"], fontsize=14)
-    if use_hotspot == "getis":
-        ax.set_title(hotspot["title"] + "-Gi* p-value: " + levels)
-    else:
-        ax.set_title(hotspot["title"] + "-Aoristic")
+    ax.set_xlabel(hotspot.labels["xlabel"], fontsize=14)
+    ax.set_ylabel(hotspot.labels["ylabel"], fontsize=14)
+    # if use_hotspot == "getis":
+    #     ax.set_title(hotspot.title + "-Gi* p-value: " + levels)
+    # else:
+    #     ax.set_title(hotspot.title + "-Aoristic")
 
     # Moves tick marker outside both axis
     ax.tick_params(axis='both', direction="out")
@@ -168,13 +193,14 @@ def create_hotspot(hotspot, use_hotspot, levels=None, cbar=True):
     plt.tight_layout()
 
     # Saves the figure as an image
-    if not os.path.exists("static/maps/" + hotspot["title"]):
-        os.makedirs("static/maps/" + hotspot["title"])
+    if not os.path.exists("static/maps/" + hotspot.title):
+        os.makedirs("static/maps/" + hotspot.title)
 
     if use_hotspot == "getis":
-        plt.savefig("static/maps/" + hotspot["title"] + "/" + hotspot["title"] + "-gi.png")
+        plt.savefig("static/maps/" + hotspot.title + "/" + hotspot.title + "_gi.png")
     else:
-        plt.savefig("static/maps/" + hotspot["title"] + "/" + hotspot["title"] + "-aoristic.png")
+        plt.savefig("static/maps/" + hotspot.title + "/" + hotspot.title + "_aoristic.png")
+
 
 
 def get_folders():

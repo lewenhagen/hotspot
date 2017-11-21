@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Contains class for Local Getis-Ord*
+Contains class for Local Gi*
 """
 
 import numpy as np
@@ -30,6 +30,7 @@ class Gi():
         self.n = self.raw_data.size
         self.mean = self.raw_data.mean()
         self.num_rows, self.row_len = self.raw_data.shape
+        # print(np.square(self.raw_data))
         self.square_sum = (np.sum(np.square(self.raw_data)))
         self.gi_matrix = np.zeros(shape=(self.num_rows, self.row_len), dtype=float)
 
@@ -89,7 +90,7 @@ class Gi():
             j_count += len(local_y)
 
         return (m_sum, square_weight, j_count)
-    # 
+    #
     # def get_neigbours_paralell(self, y, x):
     #     new_data = []
     #     m_sum = 0
@@ -146,7 +147,7 @@ class Gi():
         """
         Calculates the resulting matrix
         """
-
+        # print(self.raw_data)
         for index, value in np.ndenumerate(self.raw_data):
 
             rows, cols = index
@@ -154,10 +155,11 @@ class Gi():
             m_sum, square_weight, j_count = self.get_neigbours(rows, cols)
 
             numerator = m_sum - (self.mean * j_count)
+            # exit()
             S = math.sqrt( (self.square_sum / self.n) - (self.mean**2) )
             denominator = S * math.sqrt( ( (self.n * j_count) - square_weight**2) / self.n )
-
             self.gi_matrix[rows][cols] =  np.around(numerator / denominator, 2)
+
 
 
 
