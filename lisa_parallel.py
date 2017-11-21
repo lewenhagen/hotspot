@@ -176,20 +176,23 @@ real_test_matrix = [
 ]
 # Totalt: 394
 # print_data(calculate_from_matrix(real_test_matrix)["getis"])
+
 # start_time = time.time()
 # gi = Gi(real_test_matrix)
-# gi.calculate()
-# gi.clear_zscore(0.10)
-# print(gi.get_result())
+# gi.calculate_parallel()
+# # gi.clear_zscore(0.10)
 # print("--- %s seconds ---" % (time.time() - start_time))
+# print(gi.get_result())
 #
-# 
+#
 # start_time = time.time()
 # gi2 = Gi(real_test_matrix)
-#
-# # gi.clear_zscore(0.10)
-# # print(gi.confidence_interval(0.90))
-# gi2.calculate_parallel()
+
+# gi.clear_zscore(0.10)
+# print(gi.confidence_interval(0.90))
+# gi2.calculate()
 # gi2.clear_zscore(0.10)
+
 # print("--- %s seconds ---" % (time.time() - start_time))
+# print(gi.get_result())
 # print(gi2.get_result())
