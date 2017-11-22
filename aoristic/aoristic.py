@@ -3,14 +3,16 @@
 Test aoristic method
 """
 import json
-from functools import partial
-from aoristic.units import Unit
-from aoristic.units import Hour
+from functools import partial, reduce
+# from aoristic.units import Unit
+# from aoristic.units import Hour
 
-# from units import Unit
-# from units import Hour
-# import parse
-# import time
+from units import Unit
+from units import Hour
+import parse
+import time
+from multiprocessing.pool import Pool
+import operator
 
 
 def aoristic_method(events, t_map, x, y):
@@ -18,12 +20,48 @@ def aoristic_method(events, t_map, x, y):
     Start aoristic analysis on events
     """
     Unit_class = setup_class(x, y)
+    multi_method = partial(multi_proc, Unit_class=Unit_class, t_map=t_map)
 
-    for event_data in events:
-        event = Unit_class(event_data)
+    matrix = [[0 for x in range(x["size"])] for y in range(y["size"])]
+    test = partial(test1, res=matrix)
 
-        fill_map(t_map, event)
+    with Pool() as p:
+        new_m = p.map(multi_method, events)
+        # matrix = [list(map(operator.add,tmp_map[i], matrix[i])) for i in p.map(multi_method, events))]
+        print("----------------------------------------------")
+        print(len(new_m))
+        # print(tmp_map[0])
+    # for arr in tmp_map:
+        # map(sum, a)
+        # print(reduce(test1, matrix))
 
+        # print(len(list(map(test, new_m))))
+        # [test(i) for i in new_m]
+        for i in new_m:
+            self_sum(i, matrix)
+        # print(matrix)
+        # matrix = [list(map(operator.add,tmp_map[i], matrix[i])) for i in range(len(tmp_map))]
+
+    # print(matrix)
+    return matrix
+
+def test1(tmp_map, res):
+    [list(map(operator.add,res[i], tmp_map[i])) for i in range(len(res))]
+    # hej = [print(res[i], tmp_map[i]) for i in range(len(res))]
+    # print(hej)
+    # exit()
+    # return hej
+
+def self_sum(tmp, res):
+    for x in range(len(tmp)):
+        for y in range(len(tmp[x])):
+            res[x][y] = res[x][y] + tmp[x][y]
+
+def multi_proc(event, Unit_class, t_map):
+    eventO = Unit_class(event)
+    t_map = [[0 for x in range(7)] for y in range(24)]
+    fill_map(t_map, eventO)
+    return t_map
 
 
 def setup_class(x, y):
@@ -96,6 +134,8 @@ def main():
     """
     Starts program
     """
+    # https://www.toptal.com/python/beginners-guide-to-concurrency-and-parallelism-in-python
+    # https://stackoverflow.com/questions/11340299/appending-merging-2d-arrays
     # events = json.load(open("events.json", "r"))
     events = parse.csv_to_dict_no_filter("../datafiles/crime-2014.csv")
     units = json.load(open("../units.json", "r"))
@@ -103,20 +143,28 @@ def main():
     start_time = time.time()
 
     # weekday X time of day [7*24]
-    # unit_x = units["hours"]
-    # unit_y = units["days"]
+    unit_y = units["hours"]
+    unit_x = units["days"]
 
     # weekday X month [7*12]
     # unit_x = units["days"]
     # unit_y = units["months"]
 
     # weekday X weeks [7*52]
-    unit_x = units["days"]
-    unit_y = units["weeks"]
+    # unit_x = units["days"]
+    # unit_y = units["weeks"]
 
     t_map = [[0 for x in range(unit_x["size"])] for y in range(unit_y["size"])]
     # print(json.dumps(t_map, indent=4))
-    aoristic_method(events, t_map, unit_x, unit_y)
+
+    # x = [[1,2,3], [1,2,3]]
+    # y = [[9,8,7], [9,8,7]]
+    # print(list(map(sum, x)))
+    # hej = [list(map(operator.add,x[i], y[i])) for i in range(len(x))]
+    # print([list(map(operator.add,x[i], hej[i])) for i in range(len(x))])
+    # print( [zip(x,y)] )
+    # exit()
+    t_map = aoristic_method(events, t_map, unit_x, unit_y)
     print("--- %s seconds ---" % (time.time() - start_time))
     for i, row in enumerate(t_map):
         print(i, row)
