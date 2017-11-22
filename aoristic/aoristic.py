@@ -11,25 +11,35 @@ from units import Unit
 from units import Hour
 import parse
 import time
-from multiprocessing.pool import Pool
 import operator
 
+from multiprocessing.pool import Pool
+from multiprocessing.sharedctypes import RawArray
+import multiprocessing
+import ctypes
+import numpy as np
 
+
+shared_array_base = multiprocessing.Array(ctypes.c_double, 7*24)
+shared_array = np.ctypeslib.as_array(shared_array_base.get_obj())
+shared_array = shared_array.reshape(7, 24)
 def aoristic_method(events, t_map, x, y):
     """
     Start aoristic analysis on events
     """
     Unit_class = setup_class(x, y)
-    multi_method = partial(multi_proc, Unit_class=Unit_class, t_map=t_map)
 
-    matrix = [[0 for x in range(x["size"])] for y in range(y["size"])]
-    test = partial(test1, res=matrix)
+    # matrix = [[0 for x in range(x["size"])] for y in range(y["size"])]
+    # matrix = RawArray('d', range(x["size"] * y["size"]))
 
-    with Pool() as p:
+    multi_method = partial(multi_proc, Unit_class=Unit_class)
+    # test = partial(test1, res=matrix)
+    with Pool(multiprocessing.cpu_count()-1) as p:
         new_m = p.map(multi_method, events)
         # matrix = [list(map(operator.add,tmp_map[i], matrix[i])) for i in p.map(multi_method, events))]
         print("----------------------------------------------")
         print(len(new_m))
+        # print(matrix)
         # print(tmp_map[0])
     # for arr in tmp_map:
         # map(sum, a)
@@ -37,13 +47,13 @@ def aoristic_method(events, t_map, x, y):
 
         # print(len(list(map(test, new_m))))
         # [test(i) for i in new_m]
-        for i in new_m:
-            self_sum(i, matrix)
+        # for i in new_m:
+        #     self_sum(i, matrix)
         # print(matrix)
         # matrix = [list(map(operator.add,tmp_map[i], matrix[i])) for i in range(len(tmp_map))]
 
     # print(matrix)
-    return matrix
+    # return matrix
 
 def test1(tmp_map, res):
     [list(map(operator.add,res[i], tmp_map[i])) for i in range(len(res))]
@@ -57,11 +67,15 @@ def self_sum(tmp, res):
         for y in range(len(tmp[x])):
             res[x][y] = res[x][y] + tmp[x][y]
 
-def multi_proc(event, Unit_class, t_map):
+def multi_proc(event, Unit_class, t_map=shared_array):
     eventO = Unit_class(event)
-    t_map = [[0 for x in range(7)] for y in range(24)]
+    # t_map = [[0 for x in range(7)] for y in range(24)]
     fill_map(t_map, eventO)
-    return t_map
+    # return t_map
+
+
+def calc_xy(x, y):
+    return (y*7)+x
 
 
 def setup_class(x, y):
@@ -125,8 +139,9 @@ def add_incr(t_map, x, y, incr=1):
     """
     Add incr to t_map for current units(x,y)
     """
-    value = round(t_map[y][x] + incr, 3)
-    t_map[y][x] = value
+    # i = calc_xy(x, y)
+    value = round(t_map[x][y] + incr, 3)
+    t_map[x][y] = value
 
 
 
@@ -154,7 +169,7 @@ def main():
     # unit_x = units["days"]
     # unit_y = units["weeks"]
 
-    t_map = [[0 for x in range(unit_x["size"])] for y in range(unit_y["size"])]
+    # t_map = [[0 for x in range(unit_x["size"])] for y in range(unit_y["size"])]
     # print(json.dumps(t_map, indent=4))
 
     # x = [[1,2,3], [1,2,3]]
@@ -164,9 +179,9 @@ def main():
     # print([list(map(operator.add,x[i], hej[i])) for i in range(len(x))])
     # print( [zip(x,y)] )
     # exit()
-    t_map = aoristic_method(events, t_map, unit_x, unit_y)
+    t_map = aoristic_method(events, 1, unit_x, unit_y)
     print("--- %s seconds ---" % (time.time() - start_time))
-    for i, row in enumerate(t_map):
+    for i, row in enumerate(shared_array):
         print(i, row)
 
     # print(t_map)
