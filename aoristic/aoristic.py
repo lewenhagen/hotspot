@@ -4,13 +4,13 @@ Test aoristic method
 """
 import json
 from functools import partial
-from aoristic.units import Unit
-from aoristic.units import Hour
+# from aoristic.units import Unit
+# from aoristic.units import Hour
 
-# from units import Unit
-# from units import Hour
-# import parse
-# import time
+from units import Unit
+from units import Hour
+import parse
+import time
 
 
 def aoristic_method(events, t_map, x, y):
@@ -103,16 +103,16 @@ def main():
     start_time = time.time()
 
     # weekday X time of day [7*24]
-    # unit_x = units["hours"]
-    # unit_y = units["days"]
+    unit_y = units["hours"]
+    unit_x = units["days"]
 
     # weekday X month [7*12]
     # unit_x = units["days"]
     # unit_y = units["months"]
 
     # weekday X weeks [7*52]
-    unit_x = units["days"]
-    unit_y = units["weeks"]
+    # unit_x = units["days"]
+    # unit_y = units["weeks"]
 
     t_map = [[0 for x in range(unit_x["size"])] for y in range(unit_y["size"])]
     # print(json.dumps(t_map, indent=4))
