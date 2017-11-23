@@ -5,3 +5,5 @@ maps/
 static/*.png
 debug.log
 templates/created/
+*.profile
+access.log
