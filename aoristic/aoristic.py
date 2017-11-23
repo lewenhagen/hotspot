@@ -13,9 +13,10 @@ import parse
 import time
 from multiprocessing.pool import Pool
 import operator
+import cProfile
+import pstats
 
-
-def aoristic_method(events, t_map, x, y):
+def aoristic_method(events, t_map, x, y, ts):
     """
     Start aoristic analysis on events
     """
@@ -34,7 +35,7 @@ def aoristic_method(events, t_map, x, y):
     # for arr in tmp_map:
         # map(sum, a)
         # print(reduce(test1, matrix))
-
+        print("--- %s seconds ---" % (time.time() - ts))
         # print(len(list(map(test, new_m))))
         # [test(i) for i in new_m]
         for i in new_m:
@@ -121,11 +122,12 @@ def fill_map(t_map, event):
 
 
 
+
 def add_incr(t_map, x, y, incr=1):
     """
     Add incr to t_map for current units(x,y)
     """
-    value = round(t_map[y][x] + incr, 3)
+    value = t_map[y][x] + incr
     t_map[y][x] = value
 
 
@@ -157,18 +159,13 @@ def main():
     t_map = [[0 for x in range(unit_x["size"])] for y in range(unit_y["size"])]
     # print(json.dumps(t_map, indent=4))
 
-    # x = [[1,2,3], [1,2,3]]
-    # y = [[9,8,7], [9,8,7]]
-    # print(list(map(sum, x)))
-    # hej = [list(map(operator.add,x[i], y[i])) for i in range(len(x))]
-    # print([list(map(operator.add,x[i], hej[i])) for i in range(len(x))])
-    # print( [zip(x,y)] )
-    # exit()
-    t_map = aoristic_method(events, t_map, unit_x, unit_y)
+    # cProfile.runctx('aoristic_method(events, t_map, unit_x, unit_y)', globals(), locals(), 'myFunction.profile')
+    matrix = aoristic_method(events, t_map, unit_x, unit_y, start_time)
     print("--- %s seconds ---" % (time.time() - start_time))
-    for i, row in enumerate(t_map):
+    # stats = pstats.Stats('myFunction.profile')
+    # stats.strip_dirs().sort_stats('time').print_stats()
+    for i, row in enumerate(matrix):
         print(i, row)
-
     # print(t_map)
 
 
