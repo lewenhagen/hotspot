@@ -5,8 +5,8 @@ Parse data from csv and log files.
 """
 import csv
 import re
-# from aoristic import aoristic
-# from aoristic.units import Unit
+from aoristic import aoristic
+from aoristic.units import Unit
 # import aoristic
 # import time
 
