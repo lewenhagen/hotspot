@@ -3,6 +3,8 @@ maps/
 *.csv
 *.pyc
 static/*.png
+static/maps/
 debug.log
 templates/created/
 *.profile
+datafiles/access.log
