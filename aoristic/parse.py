@@ -7,8 +7,8 @@ import csv
 import re
 # from aoristic import aoristic
 # from aoristic.units import Unit
-# import aoristic
-# import time
+import aoristic
+import time
 
 
 def log_to_dict(hotspot, t_map):

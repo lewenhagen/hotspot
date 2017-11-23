@@ -18,11 +18,13 @@ from multiprocessing.sharedctypes import RawArray
 import multiprocessing
 import ctypes
 import numpy as np
+import cProfile
+import pstats
 
+shared_array_base = multiprocessing.Array(ctypes.c_double, 7*24, lock=False)
+shared_array2 = np.ctypeslib.as_array(shared_array_base)
+shared_array = shared_array2.reshape(24, 7)
 
-shared_array_base = multiprocessing.Array(ctypes.c_double, 7*24)
-shared_array = np.ctypeslib.as_array(shared_array_base.get_obj())
-shared_array = shared_array.reshape(7, 24)
 def aoristic_method(events, t_map, x, y):
     """
     Start aoristic analysis on events
@@ -35,11 +37,11 @@ def aoristic_method(events, t_map, x, y):
     multi_method = partial(multi_proc, Unit_class=Unit_class)
     # test = partial(test1, res=matrix)
     with Pool(multiprocessing.cpu_count()-1) as p:
-        new_m = p.map(multi_method, events)
+        p.map(multi_method, events)
         # matrix = [list(map(operator.add,tmp_map[i], matrix[i])) for i in p.map(multi_method, events))]
-        print("----------------------------------------------")
-        print(len(new_m))
-        # print(matrix)
+        # print("----------------------------------------------")
+        # print(len(new_m))
+        # print(shared_array)
         # print(tmp_map[0])
     # for arr in tmp_map:
         # map(sum, a)
@@ -169,16 +171,16 @@ def main():
     # unit_x = units["days"]
     # unit_y = units["weeks"]
 
-    # t_map = [[0 for x in range(unit_x["size"])] for y in range(unit_y["size"])]
+    t_map = [[0 for x in range(unit_x["size"])] for y in range(unit_y["size"])]
     # print(json.dumps(t_map, indent=4))
     #
-    cProfile.runctx('aoristic_method(events, t_map, unit_x, unit_y)', globals(), locals(), 'myFunction.profile')
-    # aoristic_method(events, t_map, unit_x, unit_y)
+    # cProfile.runctx('aoristic_method(events, t_map, unit_x, unit_y)', globals(), locals(), 'myFunction.profile')
+    aoristic_method(events, t_map, unit_x, unit_y)
     print("--- %s seconds ---" % (time.time() - start_time))
-    stats = pstats.Stats('myFunction.profile')
-    stats.strip_dirs().sort_stats('time').print_stats()
-    # for i, row in enumerate(t_map):
-        # print(i, row)
+    # stats = pstats.Stats('myFunction.profile')
+    # stats.strip_dirs().sort_stats('time').print_stats()
+    for i, row in enumerate(shared_array):
+        print(i, row)
     # print(t_map)
 
 
