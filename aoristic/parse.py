@@ -17,10 +17,10 @@ def log_to_dict(hotspot, t_map):
     """
     # counter = 0
     pattern = re.compile(r"\[([0-9]{2})/([A-z]{3})/(\d{4}):([\d]{2})")
-    get_x = aoristic.get_get_unit(hotspot["xticks"]["unit"])
-    get_y = aoristic.get_get_unit(hotspot["yticks"]["unit"])
+    get_x = aoristic.get_get_unit(hotspot.xticks["unit"])
+    get_y = aoristic.get_get_unit(hotspot.yticks["unit"])
 
-    with open("datafiles/" + hotspot["datafilename"], "r") as filehandler:
+    with open("datafiles/" + hotspot.datafile, "r") as filehandler:
         lines = filehandler.readlines()
 
     for line in lines:
@@ -112,9 +112,9 @@ def main():
         # print(row)
     t_map = [[0 for y in range(53)] for x in range(7)]
     hotspot = {}
-    hotspot["datafilename"] = "access.log"
-    hotspot["yticks"] = "Days"
-    hotspot["xticks"] = "Weeks"
+    hotspot.datafile = "access.log"
+    hotspot.yticks = "Days"
+    hotspot.xticks = "Weeks"
     start_time = time.time()
     log_to_dict(hotspot, t_map)
     print("--- %s seconds ---" % (time.time() - start_time))

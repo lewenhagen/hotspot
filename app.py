@@ -11,7 +11,8 @@ import functions
 import config
 from flask import Flask, render_template, request
 import os, glob
-
+from aoristic import parse
+from hotspot import Hotspot
 
 
 app = Flask(__name__)
@@ -71,17 +72,27 @@ def hotspot():
 
         else:
             # Setup the hotspot
-            hotspot = functions.setup_hotspot(request.form, units)
+            # hotspot = functions.setup_hotspot(request.form, units)
+            hotspot = Hotspot(request.form, units)
+
+            if hotspot.datafile.endswith(".csv"):
+                hotspot.data, hotspot.getis, hotspot.conf_levels = functions.get_data_frame(hotspot, parse.csv_to_dict(hotspot.filter_value, hotspot.filter_column, hotspot.datafile))
+
+            elif hotspot.datafile.endswith(".log"):
+                hotspot.data, hotspot.getis, hotspot.conf_levels = functions.get_data_frame(hotspot)
+
+
             # Creates the hotspots
             functions.create_hotspot(hotspot, "data")
-            functions.create_hotspot(hotspot, "getis", hotspot["pvalue"])
-            functions.save_table(hotspot["title"], hotspot["conf_levels"])
+            functions.create_hotspot(hotspot, "getis", hotspot.pvalue)
+            
+            functions.save_table(hotspot.title, hotspot.conf_levels)
 
-            filelist = functions.get_saved_png(hotspot["title"])
+            filelist = functions.get_saved_png(hotspot.title)
             #os.listdir('static/maps/' + hotspot["title"])
 
 
-    return render_template("hotspot.html", folder=hotspot["title"], hotspots=filelist, lisa=hotspot["conf_levels"])
+    return render_template("hotspot.html", folder=hotspot.title, hotspots=filelist, lisa=hotspot.conf_levels)
 
 
 

@@ -135,13 +135,13 @@ def fill_map(t_map, event):
 
 
 
+
 def add_incr(t_map, x, y, incr=1):
     """
     Add incr to t_map for current units(x,y)
     """
-    # i = calc_xy(x, y)
-    value = round(t_map[x][y] + incr, 3)
-    t_map[x][y] = value
+    value = t_map[y][x] + incr
+    t_map[y][x] = value
 
 
 
@@ -171,19 +171,14 @@ def main():
 
     # t_map = [[0 for x in range(unit_x["size"])] for y in range(unit_y["size"])]
     # print(json.dumps(t_map, indent=4))
-
-    # x = [[1,2,3], [1,2,3]]
-    # y = [[9,8,7], [9,8,7]]
-    # print(list(map(sum, x)))
-    # hej = [list(map(operator.add,x[i], y[i])) for i in range(len(x))]
-    # print([list(map(operator.add,x[i], hej[i])) for i in range(len(x))])
-    # print( [zip(x,y)] )
-    # exit()
-    t_map = aoristic_method(events, 1, unit_x, unit_y)
+    #
+    cProfile.runctx('aoristic_method(events, t_map, unit_x, unit_y)', globals(), locals(), 'myFunction.profile')
+    # aoristic_method(events, t_map, unit_x, unit_y)
     print("--- %s seconds ---" % (time.time() - start_time))
-    for i, row in enumerate(shared_array):
-        print(i, row)
-
+    stats = pstats.Stats('myFunction.profile')
+    stats.strip_dirs().sort_stats('time').print_stats()
+    # for i, row in enumerate(t_map):
+        # print(i, row)
     # print(t_map)
 
 

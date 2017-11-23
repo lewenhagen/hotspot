@@ -158,9 +158,10 @@ class Unit():
         """
         Iterate over dates
         """
+        dt = self.create_timedelta()
         while self.start < self.end:
             yield self.start
-            self.start += self.create_timedelta()
+            self.start += dt
 
 
 
