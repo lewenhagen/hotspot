@@ -4,15 +4,15 @@ Test aoristic method
 """
 import json
 from functools import partial
-from aoristic.units import Unit
-from aoristic.units import Hour
+# from aoristic.units import Unit
+# from aoristic.units import Hour
 
-# from units import Unit
-# from units import Hour
-# import parse
-# import time
-# import cProfile
-# import pstats
+from units import Unit
+from units import Hour
+import parse
+import time
+import cProfile
+import pstats
 
 def aoristic_method(events, t_map, x, y):
     """
@@ -35,7 +35,7 @@ def setup_class(x, y):
     get_x = get_get_unit(x["unit"])
     get_y = get_get_unit(y["unit"])
 
-    unit_class = partial(Hour, get_x=get_x, get_y=get_y)
+    unit_class = partial(unit_class, get_x=get_x, get_y=get_y)
 
     return unit_class
 
@@ -119,13 +119,13 @@ def main():
     t_map = [[0 for x in range(unit_x["size"])] for y in range(unit_y["size"])]
     # print(json.dumps(t_map, indent=4))
     #
-    cProfile.runctx('aoristic_method(events, t_map, unit_x, unit_y)', globals(), locals(), 'myFunction.profile')
-    # aoristic_method(events, t_map, unit_x, unit_y)
+    # cProfile.runctx('aoristic_method(events, t_map, unit_x, unit_y)', globals(), locals(), 'myFunction.profile')
+    aoristic_method(events, t_map, unit_x, unit_y)
     print("--- %s seconds ---" % (time.time() - start_time))
-    stats = pstats.Stats('myFunction.profile')
-    stats.strip_dirs().sort_stats('time').print_stats()
-    # for i, row in enumerate(t_map):
-        # print(i, row)
+    # stats = pstats.Stats('myFunction.profile')
+    # stats.strip_dirs().sort_stats('time').print_stats()
+    for i, row in enumerate(t_map):
+        print(i, row)
     # print(t_map)
 
 

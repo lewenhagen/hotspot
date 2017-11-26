@@ -7,4 +7,4 @@ static/maps/
 debug.log
 templates/created/
 *.profile
-datafiles/access.log
+access.log
