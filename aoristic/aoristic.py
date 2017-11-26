@@ -4,15 +4,15 @@ Test aoristic method
 """
 import json
 from functools import partial
-# from aoristic.units import Unit
-# from aoristic.units import Hour
+from aoristic.units import Unit
+from aoristic.units import Hour
 
-from units import Unit
-from units import Hour
-import parse
-import time
-import cProfile
-import pstats
+# from units import Unit
+# from units import Hour
+# import parse
+# import time
+# import cProfile
+# import pstats
 
 def aoristic_method(events, t_map, x, y):
     """
