@@ -89,7 +89,7 @@ class Unit():
         Calculate and return the aoristic value
         """
         time_span = self.get_duration()
-        return round(1 / time_span, 3)
+        return 1.0 / time_span
 
 
 
@@ -193,4 +193,4 @@ class Hour(Unit):
         Return events durations as hours, rounded up.
         """
         #remove float?
-        return float(math.ceil((self.duration.total_seconds()/3600)))
+        return math.ceil((self.duration.total_seconds()/3600))

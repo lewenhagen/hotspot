@@ -35,7 +35,7 @@ def setup_class(x, y):
     get_x = get_get_unit(x["unit"])
     get_y = get_get_unit(y["unit"])
 
-    unit_class = partial(Hour, get_x=get_x, get_y=get_y)
+    unit_class = partial(unit_class, get_x=get_x, get_y=get_y)
 
     return unit_class
 
