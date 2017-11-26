@@ -13,6 +13,7 @@ import parse
 import time
 import cProfile
 import pstats
+import math
 
 def aoristic_method(events, t_map, x, y):
     """
@@ -20,9 +21,13 @@ def aoristic_method(events, t_map, x, y):
     """
     Unit_class = setup_class(x, y)
 
+    # events = events[1]
     for event_data in events:
         event = Unit_class(event_data)
-
+    # event = Unit_class(events)
+    # print(event)
+    # print(event.start)
+    # print(event.duration)
         fill_map(t_map, event)
 
 
@@ -35,7 +40,7 @@ def setup_class(x, y):
     get_x = get_get_unit(x["unit"])
     get_y = get_get_unit(y["unit"])
 
-    unit_class = partial(Hour, get_x=get_x, get_y=get_y)
+    unit_class = partial(unit_class, get_x=get_x, get_y=get_y)
 
     return unit_class
 
@@ -78,19 +83,41 @@ def fill_map(t_map, event):
     """
     a_value = event.calc_aoristic_value()
 
-    for e in event:
-        x, y = event.get_x(e), event.get_y(e)
-        add_incr(t_map, x, y, a_value)
+    x, y = event.get_x(event.start), event.get_y(event.start)
+    i = get_i(x, y)
+
+    for _ in range(event.get_duration()):
+        add_incr(t_map, i, a_value)
+        i = incr_i(i)
 
 
 
+def get_i(x,y):
+    """
+    return list index based on x,y cord. Based on days X hours, where hours in on Y.
+    """
+    return (y * 7) + x
 
-def add_incr(t_map, x, y, incr=1):
+
+
+def incr_i(i):
+    """
+    Get next list index. Based on days X hours, where hours in on Y.
+    """
+    tmp = i + 7
+    if tmp >= 174: # 7*24+6:
+        return 0
+    else:
+        return tmp % 168 + divmod(tmp, 168)[0] # 7*24
+
+
+
+def add_incr(t_map, i, incr=1):
     """
     Add incr to t_map for current units(x,y)
     """
-    value = t_map[y][x] + incr
-    t_map[y][x] = value
+    value = t_map[i] + incr
+    t_map[i] = value
 
 
 
@@ -102,7 +129,6 @@ def main():
     events = parse.csv_to_dict_no_filter("../datafiles/crime-2014.csv")
     units = json.load(open("../units.json", "r"))
 
-    start_time = time.time()
 
     # weekday X time of day [7*24]
     unit_y = units["hours"]
@@ -116,15 +142,18 @@ def main():
     # unit_x = units["days"]
     # unit_y = units["weeks"]
 
-    t_map = [[0 for x in range(unit_x["size"])] for y in range(unit_y["size"])]
+    # t_map = [[0 for x in range(unit_x["size"])] for y in range(unit_y["size"])]
+    t_map = [0 for x in range(7*24)]
     # print(json.dumps(t_map, indent=4))
+    start_time = time.time()
     #
     # cProfile.runctx('aoristic_method(events, t_map, unit_x, unit_y)', globals(), locals(), 'myFunction.profile')
     aoristic_method(events, t_map, unit_x, unit_y)
     print("--- %s seconds ---" % (time.time() - start_time))
     # stats = pstats.Stats('myFunction.profile')
     # stats.strip_dirs().sort_stats('time').print_stats()
-    for i, row in enumerate(t_map):
+    t_map2 = [t_map[i:i+7] for i in range(0, len(t_map), 7)]
+    for i, row in enumerate(t_map2):
         print(i, row)
     # print(t_map)
 

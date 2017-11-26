@@ -89,7 +89,7 @@ class Unit():
         Calculate and return the aoristic value
         """
         time_span = self.get_duration()
-        return round(1 / time_span, 3)
+        return 1.0 / time_span
 
 
 
@@ -156,13 +156,35 @@ class Unit():
     # Generator method
     def __iter__(self):
         """
-        Iterate over dates
+        Iterate over dates. Works with range but slower than in aoristic.py
         """
-        dt = self.create_timedelta()
-        while self.start < self.end:
-            yield self.start
-            self.start += dt
+        i = self.get_i(self.get_x(self.start), self.get_y(self.start))
+        counter = 0
+        stop = self.get_duration()
 
+        while counter < stop:
+            yield i
+            i = self.incr_i(i)
+            counter += 1
+
+
+    def get_i(self, x, y):
+        """
+        return list index based on x,y cord. Based on days X hours, where hours in on Y.
+        """
+        return (y * 7) + x
+
+
+
+    def incr_i(self, i):
+        """
+        Get next list index. Based on days X hours, where hours in on Y.
+        """
+        tmp = i + 7
+        if tmp >= 174: # 7*24+6:
+            return 0
+        else:
+            return tmp % 168 + divmod(tmp, 168)[0] # 7*24
 
 
 class Hour(Unit):
@@ -193,4 +215,4 @@ class Hour(Unit):
         Return events durations as hours, rounded up.
         """
         #remove float?
-        return float(math.ceil((self.duration.total_seconds()/3600)))
+        return math.ceil((self.duration.total_seconds()/3600))
