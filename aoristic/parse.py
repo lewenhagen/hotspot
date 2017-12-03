@@ -7,9 +7,10 @@ import csv
 import re
 # from aoristic import aoristic
 # from aoristic.units import Unit
-from units import Unit
-import aoristic
-import time
+# from units import Unit
+# import aoristic
+# import time
+
 
 
 def log_to_dict(hotspot, t_map):
@@ -118,6 +119,7 @@ def main():
     hotspot["datafilename"] = "access-80k.log"
     hotspot["xticks"] = "Days"
     hotspot["yticks"] = "Hours"
+
     start_time = time.time()
     log_to_dict(hotspot, t_map)
     print("--- %s seconds ---" % (time.time() - start_time))

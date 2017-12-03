@@ -10,11 +10,15 @@ from functools import partial
 from units import Unit
 from units import Hour
 import parse
+import timeit
 import time
 import cProfile
 import pstats
 import math
+from memory_profiler import profile
 
+
+# @profile
 def aoristic_method(events, t_map, x, y):
     """
     Start aoristic analysis on events
@@ -24,10 +28,6 @@ def aoristic_method(events, t_map, x, y):
     # events = events[1]
     for event_data in events:
         event = Unit_class(event_data)
-    # event = Unit_class(events)
-    # print(event)
-    # print(event.start)
-    # print(event.duration)
         fill_map(t_map, event)
 
 
@@ -120,7 +120,7 @@ def add_incr(t_map, i, incr=1):
     t_map[i] = value
 
 
-
+@profile
 def main():
     """
     Starts program
