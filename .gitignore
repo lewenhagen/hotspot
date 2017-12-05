@@ -7,4 +7,5 @@ static/maps/
 debug.log
 templates/created/
 *.profile
+*.dat
 access.log
