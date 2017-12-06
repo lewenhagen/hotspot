@@ -126,8 +126,7 @@ def main():
     Starts program
     """
     # events = json.load(open("events.json", "r"))
-    # events = parse.csv_to_dict_no_filter("../datafiles/crime-2014.csv")
-    events = parse.csv_to_dict_no_filter("../datafiles/crime-extended.csv")
+    events = parse.csv_to_dict_no_filter("../datafiles/crime-2014.csv")
     units = json.load(open("../units.json", "r"))
 
 
@@ -155,7 +154,7 @@ def main():
     # stats.strip_dirs().sort_stats('time').print_stats()
     # t_map2 = [t_map[i:i+7] for i in range(0, len(t_map), 7)]
     # for i, row in enumerate(t_map2):
-        # print(i, row)
+    #     print(i, row)
     # print(t_map)
 
 
