@@ -10,12 +10,12 @@ from functools import partial
 from units import Unit
 from units import Hour
 import parse
-import timeit
+# import timeit
 import time
-import cProfile
-import pstats
+# import cProfile
+# import pstats
 import math
-from memory_profiler import profile
+# from memory_profiler import profile
 
 
 # @profile
@@ -120,7 +120,7 @@ def add_incr(t_map, i, incr=1):
     t_map[i] = value
 
 
-@profile
+# @profile
 def main():
     """
     Starts program
