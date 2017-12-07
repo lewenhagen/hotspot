@@ -10,6 +10,7 @@ import math
 from multiprocessing import Process
 from itertools import product
 from multiprocessing import Pool
+import multiprocessing
 
 from joblib import Parallel, delayed
 
@@ -46,18 +47,19 @@ class Gi():
         return st.norm.interval(conf, loc=mean, scale=std)
 
 
-
-    def get_neigbours(self, y, x):
-
+    def get_neigbours(self, y, x, result):
+        """
+        Returns the neighbourhood from given x, y.
+        Uses queen's case and modulus to get out of bounds features.
+        """
         new_data = []
         m_sum = 0
         square_weight = 0
         j_count = 0
 
-        iterations = self.distance + self.distance + 1
 
-        for _ in range(iterations):
-            new_data.append([])
+        iterations = (self.distance * 2) + 1
+
 
         startY = (y - self.distance) % self.num_rows
         startX = (x - self.distance) % self.row_len
@@ -68,28 +70,60 @@ class Gi():
             counterX = 0
             startX = (x - self.distance) % self.row_len
             while counterX < iterations:
-                new_data[counterY].append(np.around(self.raw_data[startY, startX], 2))
+
+                new_data.append(self.raw_data[startY, startX])
 
                 counterX += 1
-                startX += 1
-                startX = startX % self.row_len
+
+                startX = (startX + 1) % self.row_len
 
             startY = (startY + 1) % self.num_rows
             counterY += 1
 
-        for local_y in new_data:
-            m_sum += sum(local_y)
-
-            for local_x in local_y:
-                square_weight += self.weight**2
-
-            j_count += len(local_y)
+        m_sum = sum(new_data)
+        square_weight = (self.weight**2) * len(new_data)
+        j_count = len(new_data)
 
         numerator = m_sum - (self.mean * j_count)
         S = math.sqrt( (self.square_sum / self.n) - (self.mean**2) )
         denominator = S * math.sqrt( ( (self.n * j_count) - square_weight**2) / self.n )
+        # print("y:", y)
+        # print("x:", x)
 
-        return np.around(numerator / denominator, 2)
+        # self.gi_matrix[y][x] = numerator / denominator
+        result.append(numerator / denominator)
+
+
+
+
+    # def get_neigbours_part(self, y, x):
+    #     new_data = []
+    #
+    #     iterations = self.distance + self.distance + 1
+    #
+    #     for _ in range(iterations):
+    #         new_data.append([])
+    #
+    #     startY = (y - self.distance) % self.num_rows
+    #     startX = (x - self.distance) % self.row_len
+    #
+    #     counterY = 0
+    #
+    #     while counterY < iterations:
+    #         counterX = 0
+    #         startX = (x - self.distance) % self.row_len
+    #         while counterX < iterations:
+    #             new_data[counterY].append(self.raw_data[startY, startX])
+    #
+    #             counterX += 1
+    #             startX += 1
+    #             startX = startX % self.row_len
+    #
+    #         startY = (startY + 1) % self.num_rows
+    #         counterY += 1
+    #
+    #
+    #     return new_data
 
 
 
@@ -106,7 +140,26 @@ class Gi():
 
     def calculate(self):
 
-        self.gi_matrix = Parallel()(delayed(self.get_neigbours)(y, x) for (y, x), value in np.ndenumerate(self.gi_matrix))
+        jobs = []
+        manager = multiprocessing.Manager()
+        result = manager.list()
+        for y in range(self.num_rows):
+            for x in range(self.row_len):
+                p = Process(target=self.get_neigbours, args=(y, x, result))
+                jobs.append(p)
+                p.start()
+
+        for proc in jobs:
+            proc.join()
+
+
+        self.gi_matrix = result
+
+
+                # temp.append((y, x))
+
+        # self.gi_matrix = temp
+        # self.gi_matrix = Parallel()(delayed(self.get_neigbours)(y, x) for (y, x), value in np.ndenumerate(self.gi_matrix))
 
 
 
