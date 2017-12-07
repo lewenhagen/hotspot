@@ -7,8 +7,10 @@ import csv
 import re
 # from aoristic import aoristic
 # from aoristic.units import Unit
+# from units import Unit
 # import aoristic
 # import time
+
 
 
 def log_to_dict(hotspot, t_map):
@@ -17,20 +19,22 @@ def log_to_dict(hotspot, t_map):
     """
     # counter = 0
     pattern = re.compile(r"\[([0-9]{2})/([A-z]{3})/(\d{4}):([\d]{2})")
-    get_x = aoristic.get_get_unit(hotspot.xticks["unit"])
-    get_y = aoristic.get_get_unit(hotspot.yticks["unit"])
+    get_x = aoristic.get_get_unit(hotspot["xticks"])
+    get_y = aoristic.get_get_unit(hotspot["yticks"])
 
-    with open("datafiles/" + hotspot.datafile, "r") as filehandler:
+    with open("../datafiles/" + hotspot["datafilename"], "r") as filehandler:
         lines = filehandler.readlines()
 
     for line in lines:
         match = pattern.search(line)
         try:
             new_date = Unit.create_datetime_tupl(match.groups())
-        except:
+        except Exception as e:
             print("Error regex parsing log line: ", line)
+            print(e)
             continue
-        aoristic.add_incr(t_map, get_x(new_date), get_y(new_date))
+        i = aoristic.get_i(get_x(new_date), get_y(new_date))
+        aoristic.add_incr(t_map, i)
         # counter += 1
 
 
@@ -110,11 +114,12 @@ def main():
     """
     # for row in csv_to_dict_no_filter():
         # print(row)
-    t_map = [[0 for y in range(53)] for x in range(7)]
+    t_map = [0 for x in range(7*24)]
     hotspot = {}
-    hotspot.datafile = "access.log"
-    hotspot.yticks = "Days"
-    hotspot.xticks = "Weeks"
+    hotspot["datafilename"] = "access-80k.log"
+    hotspot["xticks"] = "Days"
+    hotspot["yticks"] = "Hours"
+
     start_time = time.time()
     log_to_dict(hotspot, t_map)
     print("--- %s seconds ---" % (time.time() - start_time))

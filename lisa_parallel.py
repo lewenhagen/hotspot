@@ -91,7 +91,6 @@ real_test_matrix = [
 # stats = pstats.Stats('gi.calculate.profile')
 # stats.strip_dirs().sort_stats('time').print_stats()
 
-
 def run_test_original():
     gi = getis.Gi(real_test_matrix)
     start_time = time.time()
@@ -99,6 +98,7 @@ def run_test_original():
     print("--- %s seconds ---" % (time.time() - start_time))
     print_data(gi.get_result())
 
+# @profile
 def run_test_pool():
     start_time = time.time()
     gi = getis_pool.Gi(real_test_matrix)
@@ -113,9 +113,9 @@ def run_test_parallel():
     print(gi.get_result())
     print("--- %s seconds ---" % (time.time() - start_time))
 
-
-run_test_original()
-# run_test_pool()
-# run_test_parallel()
+if __name__ == '__main__':
+    # run_test_original()
+    # run_test_pool()
+    run_test_parallel()
 
 # analyze()

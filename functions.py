@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 import config
 from aoristic import aoristic
 from aoristic import parse
-from getis import Gi
+from gi.getis import Gi
 # import time
 # from hotspot import Hotspot
 # from shutil import copyfile

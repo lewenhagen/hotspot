@@ -1,6 +1,6 @@
 [
-    {"timestart": "10:00:00", "timeend": "11:00:00", "datestart": "2017-01-11", "dateend": "2017-01-11"},
-    {"timestart": "20:20:13", "timeend": "21:20:13", "datestart": "2017-01-28", "dateend": "2017-02-01"},
-    {"timestart": "10:00:00", "timeend": "09:0:00", "datestart": "2017-02-27", "dateend": "2017-02-28"},
-    {"timestart": "07:00:00", "timeend": "21:52:12", "datestart": "2017-02-25", "dateend": "2017-02-25"}
+    {"timestart": "22:00:00", "timeend": "00:30:10", "datestart": "2017-01-11", "day":"wend", "dateend": "2017-01-12"},
+    {"timestart": "20:20:13", "timeend": "21:20:13", "datestart": "2017-01-28", "day":"sat", "dateend": "2017-02-01"},
+    {"timestart": "10:00:00", "timeend": "09:0:00", "datestart": "2017-02-27", "day":"mond", "dateend": "2017-02-28"},
+    {"timestart": "07:00:00", "timeend": "21:52:12", "datestart": "2017-02-25", "day":"sat", "dateend": "2017-02-25"}
 ]

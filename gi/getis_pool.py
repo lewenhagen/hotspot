@@ -46,7 +46,8 @@ class Gi():
 
 
 
-    def get_neigbours(self, y, x):
+    def get_neigbours(self, part):
+        y, x = part
         new_data = []
         m_sum = 0
         square_weight = 0
@@ -101,11 +102,11 @@ class Gi():
             for x in range(self.row_len):
                 temp.append((y, x))
 
-        with Pool() as p:
-            temp = p.starmap_async(self.get_neigbours, temp)
-            p.close()
-            p.join()
-            self.gi_matrix = temp.get()
+        with Pool(1) as p:
+            self.gi_matrix = p.map(self.get_neigbours, temp)
+            # p.close()
+            # p.join()
+            # self.gi_matrix = temp.get()
 
 
 
