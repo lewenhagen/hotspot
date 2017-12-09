@@ -12,57 +12,33 @@ from units import Hour
 import parse
 import time
 from multiprocessing.pool import Pool
-import operator
 # import cProfile
 # import pstats
 
-def aoristic_method(events, t_map, x, y, ts):
+def aoristic_method(events, x, y, ts):
     """
     Start aoristic analysis on events
     """
     Unit_class = setup_class(x, y)
     multi_method = partial(multi_proc, Unit_class=Unit_class)
 
-    matrix = [0 for y in range(7*24)]
-    # test = partial(test1, res=matrix)
 
     with Pool() as p:
         new_m = p.map(multi_method, events)
-        # matrix = [list(map(operator.add,tmp_map[i], matrix[i])) for i in p.map(multi_method, events))]
-        # print("----------------------------------------------")
-        # print(len(new_m))
-        # print(tmp_map[0])
-    # for arr in tmp_map:
-        # map(sum, a)
-        # print(reduce(test1, matrix))
-        print("--- %s seconds ---" % (time.time() - ts))
-        # print(len(list(map(test, new_m))))
-        # [test(i) for i in new_m]
-        # for i in new_m:
-            # self_sum(i, matrix)
-        # print(matrix)
-        # matrix = [list(map(operator.add,tmp_map[i], matrix[i])) for i in range(len(tmp_map))]
 
-    # print(matrix)
+        print("--- %s seconds ---" % (time.time() - ts))
+    matrix = [sum(i) for i in zip(*new_m)]
+
     return matrix
 
-def test1(tmp_map, res):
-    [list(map(operator.add,res[i], tmp_map[i])) for i in range(len(res))]
-    # hej = [print(res[i], tmp_map[i]) for i in range(len(res))]
-    # print(hej)
-    # exit()
-    # return hej
 
-def self_sum(tmp, res):
-    for x in range(len(tmp)):
-        for y in range(len(tmp[x])):
-            res[x][y] = res[x][y] + tmp[x][y]
 
 def multi_proc(event, Unit_class):
     eventO = Unit_class(event)
     t_map = [0 for y in range(7*24)]
     fill_map(t_map, eventO)
     return t_map
+
 
 
 def setup_class(x, y):
@@ -158,8 +134,6 @@ def main():
     """
     Starts program
     """
-    # https://www.toptal.com/python/beginners-guide-to-concurrency-and-parallelism-in-python
-    # https://stackoverflow.com/questions/11340299/appending-merging-2d-arrays
     # events = json.load(open("events.json", "r"))
     # events = parse.csv_to_dict_no_filter("../datafiles/crime-2014.csv")
     events = parse.csv_to_dict_no_filter("../datafiles/crime-extended.csv")
@@ -179,19 +153,16 @@ def main():
     # unit_y = units["weeks"]
 
     # t_map = [[0 for x in range(unit_x["size"])] for y in range(unit_y["size"])]
-    t_map = [0 for x in range(7*24)]
+    # t_map = [0 for x in range(7*24)]
     # print(json.dumps(t_map, indent=4))
     start_time = time.time()
-    #
-    # cProfile.runctx('aoristic_method(events, t_map, unit_x, unit_y)', globals(), locals(), 'myFunction.profile')
-    aoristic_method(events, t_map, unit_x, unit_y, start_time)
+
+    t_map = aoristic_method(events, unit_x, unit_y, start_time)
     print("--- %s seconds ---" % (time.time() - start_time))
-    # stats = pstats.Stats('myFunction.profile')
-    # stats.strip_dirs().sort_stats('time').print_stats()
-    # t_map2 = [t_map[i:i+7] for i in range(0, len(t_map), 7)]
-    # for i, row in enumerate(t_map2):
-        # print(i, row)
-    # print(t_map)
+
+    t_map2 = [t_map[i:i+7] for i in range(0, len(t_map), 7)]
+    for i, row in enumerate(t_map2):
+        print(i, row)
 
 
 
