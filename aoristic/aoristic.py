@@ -17,46 +17,28 @@ from multiprocessing.pool import Pool
 from multiprocessing.sharedctypes import RawArray
 import multiprocessing
 import ctypes
-import numpy as np
-import cProfile
-import pstats
+# import numpy as np
 
+
+
+# https://stackoverflow.com/questions/1675766/how-to-combine-pool-map-with-array-shared-memory-in-python-multiprocessing
 shared_array_base = multiprocessing.Array(ctypes.c_double, 7*24, lock=False)
-shared_array2 = np.ctypeslib.as_array(shared_array_base)
-shared_array = shared_array2.reshape(24, 7)
+# shared_array2 = np.ctypeslib.as_array(shared_array_base)
+# shared_array = shared_array2.reshape(24, 7)
 
-# @profile
-def aoristic_method(events, t_map, x, y):
+def aoristic_method(events, x, y):
     """
     Start aoristic analysis on events
     """
     Unit_class = setup_class(x, y)
 
-    # matrix = [[0 for x in range(x["size"])] for y in range(y["size"])]
-    # matrix = RawArray('d', range(x["size"] * y["size"]))
 
     multi_method = partial(multi_proc, Unit_class=Unit_class)
-    # test = partial(test1, res=matrix)
+
     with Pool(multiprocessing.cpu_count()-1) as p:
         p.map(multi_method, events)
-        # matrix = [list(map(operator.add,tmp_map[i], matrix[i])) for i in p.map(multi_method, events))]
-        # print("----------------------------------------------")
-        # print(len(new_m))
-        # print(shared_array)
-        # print(tmp_map[0])
-    # for arr in tmp_map:
-        # map(sum, a)
-        # print(reduce(test1, matrix))
 
-        # print(len(list(map(test, new_m))))
-        # [test(i) for i in new_m]
-        # for i in new_m:
-        #     self_sum(i, matrix)
-        # print(matrix)
-        # matrix = [list(map(operator.add,tmp_map[i], matrix[i])) for i in range(len(tmp_map))]
 
-    # print(matrix)
-    # return matrix
 
 def test1(tmp_map, res):
     [list(map(operator.add,res[i], tmp_map[i])) for i in range(len(res))]
@@ -70,11 +52,11 @@ def self_sum(tmp, res):
         for y in range(len(tmp[x])):
             res[x][y] = res[x][y] + tmp[x][y]
 
-def multi_proc(event, Unit_class, t_map=shared_array):
+def multi_proc(event, Unit_class, t_map=shared_array_base):
     eventO = Unit_class(event)
-    # t_map = [[0 for x in range(7)] for y in range(24)]
+
     fill_map(t_map, eventO)
-    # return t_map
+
 
 
 def calc_xy(x, y):
@@ -174,11 +156,9 @@ def main():
     """
     Starts program
     """
-    # https://www.toptal.com/python/beginners-guide-to-concurrency-and-parallelism-in-python
-    # https://stackoverflow.com/questions/11340299/appending-merging-2d-arrays
     # events = json.load(open("events.json", "r"))
-    # events = parse.csv_to_dict_no_filter("../datafiles/crime-2014.csv")
-    events = parse.csv_to_dict_no_filter("../datafiles/crime-extended.csv")
+    events = parse.csv_to_dict_no_filter("../datafiles/crime-2014.csv")
+    # events = parse.csv_to_dict_no_filter("../datafiles/crime-extended.csv")
     units = json.load(open("../units.json", "r"))
 
 
@@ -195,19 +175,15 @@ def main():
     # unit_y = units["weeks"]
 
     # t_map = [[0 for x in range(unit_x["size"])] for y in range(unit_y["size"])]
-    t_map = [0 for x in range(7*24)]
+    # t_map = [0 for x in range(7*24)]
     # print(json.dumps(t_map, indent=4))
     start_time = time.time()
-    #
-    # cProfile.runctx('aoristic_method(events, t_map, unit_x, unit_y)', globals(), locals(), 'myFunction.profile')
-    aoristic_method(events, t_map, unit_x, unit_y)
+    aoristic_method(events, unit_x, unit_y)
     print("--- %s seconds ---" % (time.time() - start_time))
-    # stats = pstats.Stats('myFunction.profile')
-    # stats.strip_dirs().sort_stats('time').print_stats()
-    # t_map2 = [t_map[i:i+7] for i in range(0, len(t_map), 7)]
-    # for i, row in enumerate(t_map2):
-        # print(i, row)
-    # print(t_map)
+
+    t_map2 = [shared_array_base[i:i+7] for i in range(0, len(shared_array_base), 7)]
+    for i, row in enumerate(t_map2):
+        print(i, row)
 
 
 
