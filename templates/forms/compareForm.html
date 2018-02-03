@@ -1,0 +1,32 @@
+<form class="form-horizontal" method="POST" action="{{ url_for('compare') }}">
+    <fieldset>
+        <legend>Compare:</legend>
+        <div class="col-md-3">
+            <div class="form-group">
+                <select class="form-control" id="chooseCompareOne" name="chooseCompareOne">
+                    <option selected="">Choose a hotspot...</option>
+                    {% for hotspot in created %}
+                        <option value="{{ hotspot }}">{{ hotspot }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="col-md-1"><p style="text-align:center;margin-top:10px">and</hp></div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <select class="form-control" id="chooseCompareTwo" name="chooseCompareTwo">
+                    <option selected="">Choose a hotspot...</option>
+                    {% for hotspot in created %}
+                        <option value="{{ hotspot }}">{{ hotspot }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    <!-- </div> -->
+    <!-- <div class="row"> -->
+        <div class="col-md-1">
+            <button type="submit" class="btn btn-primary">Compare!</button>
+        </div>
+    </fieldset>
+</form>
+<!-- </div> -->

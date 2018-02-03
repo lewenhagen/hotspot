@@ -85,7 +85,7 @@ def hotspot():
             # Creates the hotspots
             functions.create_hotspot(hotspot, "data")
             functions.create_hotspot(hotspot, "getis", hotspot.pvalue)
-            
+
             functions.save_table(hotspot.title, hotspot.conf_levels)
 
             filelist = functions.get_saved_png(hotspot.title)
@@ -110,6 +110,23 @@ def show(folder=None):
         view_hotspots = functions.get_saved_png(folder)
 
     return render_template("show.html", created=sorted(all_folders), view_hotspots=view_hotspots, folder=folder)
+
+
+
+@app.route('/compare/', methods=["POST", "GET"])
+# @app.route('/compare/<folder>', methods=["POST", "GET"])
+def compare():
+    """
+    Compare route
+    """
+    all_folders = functions.get_folders()
+
+    # if folder is None:
+    #     view_hotspots = []
+    # elif folder in functions.get_folders():
+    #     view_hotspots = functions.get_saved_png(folder)
+
+    return render_template("compare.html", created=sorted(all_folders))
 
 
 
