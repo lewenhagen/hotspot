@@ -1,8 +1,14 @@
 {% include 'header.html' %}
     <div class="container-fluid" role="main">
         <div class="row">
-            <div class="col-md-1 col-md-offset-1"></div>
-            {% include 'forms/compareForm.html' %}
+            {% if comparing %}
+            {% else %}
+                <div class="col-md-1 col-md-offset-1"></div>
+                {% include 'forms/compareForm.html' %}
+            {% endif %}
         </div>
     </div>
+    {% if error %}
+        <div class="error well"><h2>{{ error }}</h2></div>
+    {% endif %}
 {% include 'footer.html' %}

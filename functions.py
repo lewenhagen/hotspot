@@ -16,6 +16,7 @@ import config
 from aoristic import aoristic
 from aoristic import parse
 from gi.getis import Gi
+from compare import compare
 # import time
 # from hotspot import Hotspot
 # from shutil import copyfile
@@ -226,6 +227,20 @@ def get_saved_png(folder):
 
 
 
+def get_saved_csv(folder):
+    """
+    Returns a list of the saved csv's
+    """
+    created_csvs = []
+    # ändra här för att jämföra fler alternativ! (pil nedåt)
+    for csv_file in os.listdir("static/maps/" + folder):
+        if csv_file.endswith("_gi.csv"):
+            created_csvs.append(csv_file)
+
+    return created_csvs
+
+
+
 def save_table(folder, lisa):
     """
     Saves a copy of the html table
@@ -251,3 +266,19 @@ def save_table(folder, lisa):
 
     with open("templates/created/" + folder + "/getis_table.html", "w+") as f:
         f.write(table)
+
+def init_compare(hotspot_one, hotspot_two):
+    """
+    Initialize comparison of hotspots
+    """
+    path_for_one = "static/maps/" + hotspot_one + "/" + get_saved_csv(hotspot_one)[0]
+    path_for_two = "static/maps/" + hotspot_two + "/" + get_saved_csv(hotspot_two)[0]
+
+    csv_one = parse.csv_to_dict_no_filter(path_for_one)
+    csv_two = parse.csv_to_dict_no_filter(path_for_two)
+
+    compare(csv_one, csv_two)
+
+    # print(hotspot_two)
+
+    # hs_one = parse.csv_to_dict_no_filter(hotspot_one)

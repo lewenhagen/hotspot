@@ -15,6 +15,7 @@ from aoristic import parse
 from hotspot import Hotspot
 
 
+
 app = Flask(__name__)
 
 
@@ -119,14 +120,20 @@ def compare():
     """
     Compare route
     """
+    comparing = False
+    error = False
     all_folders = functions.get_folders()
 
-    # if folder is None:
-    #     view_hotspots = []
-    # elif folder in functions.get_folders():
-    #     view_hotspots = functions.get_saved_png(folder)
+    if request.method == "POST":
+        if request.form["chooseCompareOne"] != request.form["chooseCompareTwo"]:
+            comparing = True
+            functions.init_compare(request.form["chooseCompareOne"], request.form["chooseCompareTwo"])
+        else:
+            error = "Can not compare the same hotspots."
 
-    return render_template("compare.html", created=sorted(all_folders))
+
+
+    return render_template("compare.html", created=sorted(all_folders), error=error, comparing=comparing)
 
 
 
