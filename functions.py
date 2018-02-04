@@ -17,6 +17,8 @@ from aoristic import aoristic
 from aoristic import parse
 from gi.getis import Gi
 from compare import compare
+
+import csv
 # import time
 # from hotspot import Hotspot
 # from shutil import copyfile
@@ -274,8 +276,8 @@ def init_compare(hotspot_one, hotspot_two):
     path_for_one = "static/maps/" + hotspot_one + "/" + get_saved_csv(hotspot_one)[0]
     path_for_two = "static/maps/" + hotspot_two + "/" + get_saved_csv(hotspot_two)[0]
 
-    csv_one = parse.csv_to_dict_no_filter(path_for_one)
-    csv_two = parse.csv_to_dict_no_filter(path_for_two)
+    csv_one = pandas.read_csv(path_for_one, usecols=["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], encoding="utf-8").values#parse.csv_to_dict_no_filter(path_for_one)
+    csv_two = pandas.read_csv(path_for_two, usecols=["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], encoding="utf-8").values#parse.csv_to_dict_no_filter(path_for_two)
 
     compare(csv_one, csv_two)
 
