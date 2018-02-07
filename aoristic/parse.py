@@ -51,7 +51,10 @@ def csv_to_dict(filter_v, filter_c, file_name="temp.csv", deli=";"):
     if filter_index == -1:
         read_csv_rows(result, reader, headers)
     else:
-        read_csv_rows_filter(result, reader, headers, filter_index, filter_v)
+        if "date" in filter_c or "time" in filter_c:
+            read_csv_rows_filter_datetime(result, reader, headers, filter_index, filter_v)
+        else:
+            read_csv_rows_filter(result, reader, headers, filter_index, filter_v)
 
     return result
 
@@ -74,7 +77,15 @@ def read_csv_rows_filter(res, reader, headers, fi, fv):
     for row in reader:
         if row[fi] == fv:
             res.append(create_row(row, headers))
+    return res
 
+def read_csv_rows_filter_datetime(res, reader, headers, fi, fv):
+    """
+    Read a csv row and filter
+    """
+    for row in reader:
+        if fv in row[fi]:
+            res.append(create_row(row, headers))
     return res
 
 

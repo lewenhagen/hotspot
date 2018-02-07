@@ -25,7 +25,7 @@ def get_datafiles():
 
 def get_column_as_list(file_name, column):
     """
-    Returns a unique values from column in a file
+    Returns unique values from a column in a file
     """
     return sorted(list(set(pd.read_csv("datafiles/" + file_name, sep=";", usecols=[column])[column].tolist())))
 
