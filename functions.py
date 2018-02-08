@@ -23,22 +23,41 @@ import csv
 # from hotspot import Hotspot
 # from shutil import copyfile
 
+def calculate_hotspot(hotspot, data=None):
+    """
+    call methods to calculate hotspot
+    """
+    t_map = config.create_empty_matrix(hotspot.xticks, hotspot.yticks)
+
+    get_matrix(hotspot, t_map, data)
+    res = get_data_frame(hotspot, t_map)
+
+    return res
 
 
 
-def get_data_frame(hotspot, datafile_to_use=None):
+def get_matrix(hotspot, t_map, data):
+    """
+    Returns matrix with data
+    """
+
+    if hotspot.datafile.endswith(".csv"):
+        aoristic.aoristic_method(data, t_map, hotspot.xticks, hotspot.yticks)
+    elif hotspot.datafile.endswith(".log"):
+        parse.log_to_dict(hotspot, t_map)
+
+
+
+def get_data_frame(hotspot, t_map):
     """
     Returns DataFrame (2D-list) with data
     """
     # Use hotspot["city"] to select data.
     # CITYNAME or all
-    t_map = config.create_empty_matrix(hotspot.xticks, hotspot.yticks)
 
-    if hotspot.datafile.endswith(".csv"):
-        aoristic.aoristic_method(datafile_to_use, t_map, hotspot.xticks, hotspot.yticks)
-    elif hotspot.datafile.endswith(".log"):
-        parse.log_to_dict(hotspot, t_map)
-        # print(t_map)
+
+    print(t_map)
+    print(hotspot)
 
     gi = Gi(t_map)
     # start_time = time.time()

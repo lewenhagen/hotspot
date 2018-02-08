@@ -77,10 +77,10 @@ def hotspot():
             hotspot = Hotspot(request.form, units)
 
             if hotspot.datafile.endswith(".csv"):
-                hotspot.data, hotspot.getis, hotspot.conf_levels = functions.get_data_frame(hotspot, parse.csv_to_dict(hotspot.filter_value, hotspot.filter_column, hotspot.datafile))
+                hotspot.data, hotspot.getis, hotspot.conf_levels = functions.calculate_hotspot(hotspot, parse.csv_to_dict(hotspot.filter_value, hotspot.filter_column, hotspot.datafile))
 
             elif hotspot.datafile.endswith(".log"):
-                hotspot.data, hotspot.getis, hotspot.conf_levels = functions.get_data_frame(hotspot)
+                hotspot.data, hotspot.getis, hotspot.conf_levels = functions.calculate_hotspot(hotspot)
 
 
             # Creates the hotspots
