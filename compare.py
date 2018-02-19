@@ -20,12 +20,21 @@ def print_data(data):
     """
     print(pd.DataFrame(data))
 
+def get_percentage(file_a, file_b):
+    """
+    Returns the percentage of overlap
+    """
+    file_a = file_a.flatten()
+    file_b = file_b.flatten()
+
+    return(len(set(file_a)&set(file_b)) / float(len(set(file_a) | set(file_b))) * 100)
+
 def compare(file_a, file_b):
     """
     Compare two hotspots
     """
 
-
+    print("Percentage: {}".format(get_percentage(file_a, file_b)) )
     # print(np.allclose(file_a, file_b))
     # a = np.matrix(file_a)
     # b = np.matrix(file_b)
