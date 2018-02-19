@@ -224,6 +224,15 @@ def create_hotspot(hotspot, use_hotspot, levels=None, cbar=True):
         plt.savefig("static/maps/" + hotspot.title + "/" + hotspot.title + "_aoristic.png")
 
 
+def create_compared_heatmap(data):
+    """
+    Create heatmap with overlap from comparison
+    """
+    heatmap = sns.heatmap(data, cmap="bwr", annot=True, fmt=".1f")
+    heatmap.figure.savefig("static/compare/compare.png")
+    print("Saved compared png!")
+
+
 
 def get_folders():
     """
@@ -295,11 +304,7 @@ def init_compare(hotspot_one, hotspot_two):
     path_for_one = "static/maps/" + hotspot_one + "/" + get_saved_csv(hotspot_one)[0]
     path_for_two = "static/maps/" + hotspot_two + "/" + get_saved_csv(hotspot_two)[0]
 
-    csv_one = pandas.read_csv(path_for_one, usecols=["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], encoding="utf-8").values#parse.csv_to_dict_no_filter(path_for_one)
-    csv_two = pandas.read_csv(path_for_two, usecols=["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], encoding="utf-8").values#parse.csv_to_dict_no_filter(path_for_two)
+    csv_one = pandas.read_csv(path_for_one, usecols=["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], encoding="utf-8").values
+    csv_two = pandas.read_csv(path_for_two, usecols=["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], encoding="utf-8").values
 
-    compare(csv_one, csv_two)
-
-    # print(hotspot_two)
-
-    # hs_one = parse.csv_to_dict_no_filter(hotspot_one)
+    return compare(csv_one, csv_two)

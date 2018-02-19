@@ -122,18 +122,22 @@ def compare():
     """
     comparing = False
     error = False
+    compared_pngs = []
     all_folders = functions.get_folders()
 
     if request.method == "POST":
         if request.form["chooseCompareOne"] != request.form["chooseCompareTwo"]:
             comparing = True
-            functions.init_compare(request.form["chooseCompareOne"], request.form["chooseCompareTwo"])
+            compared_hotspot = functions.init_compare(request.form["chooseCompareOne"], request.form["chooseCompareTwo"])
+            functions.create_compared_heatmap(compared_hotspot)
+            compared_pngs.append(request.form["chooseCompareOne"])
+            compared_pngs.append(request.form["chooseCompareTwo"])
         else:
             error = "Can not compare the same hotspots."
 
 
 
-    return render_template("compare.html", created=sorted(all_folders), error=error, comparing=comparing)
+    return render_template("compare.html", created=sorted(all_folders), error=error, comparing=comparing, compared_pngs=compared_pngs)
 
 
 
