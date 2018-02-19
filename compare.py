@@ -29,12 +29,30 @@ def get_percentage(file_a, file_b):
 
     return(len(set(file_a)&set(file_b)) / float(len(set(file_a) | set(file_b))) * 100)
 
+def manual_traverse(a, b):
+    num_rows, row_len = a.shape
+    result = np.zeros(shape=(num_rows, row_len), dtype=float)
+    for y_index, y_val in enumerate(a):
+        for x_index, x_val in enumerate(y_val):
+            if a[y_index][x_index] > 0 and b[y_index][x_index] > 0:
+                result[y_index][x_index] += 1
+                print("here: {}".format(float(a[y_index][x_index]) % float(b[y_index][x_index])))
+            # elif a[y_index][x_index] < b[y_index][x_index]:
+            #     result[y_index][x_index] -= 1
+            # else:
+            #     result[y_index][x_index] = a[y_index][x_index]
+    # print(result)
+    # for index, val in enumerate(resul):
+    #     print("index: ", index)
+    #     print("val: ", val)
+
+
 def compare(file_a, file_b):
     """
     Compare two hotspots
     """
-
-    print("Percentage: {}".format(get_percentage(file_a, file_b)) )
+    manual_traverse(file_a, file_b)
+    print("Percentage: {}".format(get_percentage(file_a, file_b)))
     # print(np.allclose(file_a, file_b))
     # a = np.matrix(file_a)
     # b = np.matrix(file_b)
