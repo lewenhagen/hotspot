@@ -115,7 +115,6 @@ def show(folder=None):
 
 
 @app.route('/compare/', methods=["POST", "GET"])
-# @app.route('/compare/<folder>', methods=["POST", "GET"])
 def compare():
     """
     Compare route
@@ -124,12 +123,24 @@ def compare():
     error = False
     compared_pngs = []
     all_folders = functions.get_folders()
+    compared_hotspot = {
+        "all_percentage": 0,
+        "data": []
+    }
+    try:
+        os.remove("static/compare/compare.png")
+        print("Removed compare.png!")
+    except Exception as e:
+        print("No such file: ", e)
 
     if request.method == "POST":
         if request.form["chooseCompareOne"] != request.form["chooseCompareTwo"]:
             comparing = True
-            compared_hotspot = functions.init_compare(request.form["chooseCompareOne"], request.form["chooseCompareTwo"])
-            functions.create_compared_heatmap(compared_hotspot)
+            if "overlap" in request.form:
+                compared_hotspot = functions.init_compare(request.form["chooseCompareOne"], request.form["chooseCompareTwo"], True)
+            else:
+                compared_hotspot = functions.init_compare(request.form["chooseCompareOne"], request.form["chooseCompareTwo"])
+            functions.create_compared_heatmap(compared_hotspot["data"])
             compared_pngs.append(request.form["chooseCompareOne"])
             compared_pngs.append(request.form["chooseCompareTwo"])
         else:
@@ -137,7 +148,7 @@ def compare():
 
 
 
-    return render_template("compare.html", created=sorted(all_folders), error=error, comparing=comparing, compared_pngs=compared_pngs)
+    return render_template("compare.html", created=sorted(all_folders), error=error, comparing=comparing, compared_pngs=compared_pngs, percent=compared_hotspot["all_percentage"])
 
 
 

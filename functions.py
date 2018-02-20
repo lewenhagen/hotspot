@@ -228,7 +228,28 @@ def create_compared_heatmap(data):
     """
     Create heatmap with overlap from comparison
     """
-    heatmap = sns.heatmap(data, cmap="bwr", annot=True, fmt=".1f")
+    ticks = {
+        "yticks": [
+            "00:00", "01:00", "02:00", "03:00", "04:00", "05:00",
+            "06:00", "07:00", "08:00", "09:00", "10:00", "11:00",
+            "12:00", "13:00", "14:00", "15:00", "16:00", "17:00",
+            "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"
+        ],
+        "xticks": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    }
+    fig, ax = plt.subplots(figsize=(7,7))
+    ax.set_title("Comparing hotspots")
+    ax.tick_params(axis='both', direction="out")
+
+    # ax.set_xlabel(ticks["xticks"], fontsize=14)
+    # ax.set_ylabel(ticks["yticks"], fontsize=14)
+    # Config for the axis ticks
+    plt.yticks(rotation=0,fontsize=8);
+    plt.xticks(rotation=0, fontsize=8);
+
+    # Makes sure the image (labels) is not cut off
+    plt.tight_layout()
+    heatmap = sns.heatmap(data, ax=ax, annot=True, fmt=".1f", cbar=True)
     heatmap.figure.savefig("static/compare/compare.png")
     print("Saved compared png!")
 
@@ -297,14 +318,29 @@ def save_table(folder, lisa):
     with open("templates/created/" + folder + "/getis_table.html", "w+") as f:
         f.write(table)
 
-def init_compare(hotspot_one, hotspot_two):
+def init_compare(hotspot_one, hotspot_two, overlap=False):
     """
     Initialize comparison of hotspots
     """
+    compared = {}
     path_for_one = "static/maps/" + hotspot_one + "/" + get_saved_csv(hotspot_one)[0]
     path_for_two = "static/maps/" + hotspot_two + "/" + get_saved_csv(hotspot_two)[0]
 
     csv_one = pandas.read_csv(path_for_one, usecols=["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], encoding="utf-8").values
     csv_two = pandas.read_csv(path_for_two, usecols=["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], encoding="utf-8").values
 
-    return compare(csv_one, csv_two)
+    return compare(csv_one, csv_two, overlap)
+
+
+
+# def init_compare_overlap(hotspot_one, hotspot_two):
+#     """
+#     Initialize comparison of hotspots, only overlap
+#     """
+#     path_for_one = "static/maps/" + hotspot_one + "/" + get_saved_csv(hotspot_one)[0]
+#     path_for_two = "static/maps/" + hotspot_two + "/" + get_saved_csv(hotspot_two)[0]
+#
+#     csv_one = pandas.read_csv(path_for_one, usecols=["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], encoding="utf-8").values
+#     csv_two = pandas.read_csv(path_for_two, usecols=["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], encoding="utf-8").values
+#
+#     return compare_overlap(csv_one, csv_two)
