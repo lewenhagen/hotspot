@@ -7,6 +7,7 @@ import pandas as pd
 
 from scipy.stats import norm
 from numpy.linalg import eig
+from sklearn.metrics import jaccard_similarity_score
 import numpy as np
 # get percent
 # from difflib import SequenceMatcher
@@ -88,6 +89,8 @@ def manual_traverse_overlap(a, b):
     """
     num_rows, row_len = a.shape
     result = np.zeros(shape=(num_rows, row_len), dtype=float)
+
+
     for y_index, y_val in enumerate(a):
         for x_index, x_val in enumerate(y_val):
             old_nr = round(a[y_index][x_index], 1)
@@ -118,7 +121,28 @@ def manual_traverse_overlap(a, b):
                 result[y_index][x_index] = None
     return result
 
+def calculate_jaccard(file_a, file_b):
+    """
+    Sets up two matrices to be used for jaccard calculation
+    calculates the jaccard index
+    """
+    num_rows, row_len = file_a.shape
+    j_matrix_left = np.zeros(shape=(num_rows, row_len), dtype=int)
+    j_matrix_right = np.zeros(shape=(num_rows, row_len), dtype=int)
 
+    for y_index, y_val in enumerate(file_a):
+        for x_index, x_val in enumerate(y_val):
+            if file_a[y_index][x_index] > 0.0:
+                j_matrix_left[y_index][x_index] = 1
+            if file_b[y_index][x_index] > 0.0:
+                j_matrix_right[y_index][x_index] = 1
+    print("left:")
+    print(j_matrix_left)
+
+    print("right:")
+    print(j_matrix_right)
+
+    return round(jaccard_similarity_score(j_matrix_left, j_matrix_right), 3)
 
 def compare(file_a, file_b, overlap):
     """
@@ -127,7 +151,8 @@ def compare(file_a, file_b, overlap):
     if overlap:
         result = {
             "data": manual_traverse_overlap(file_a, file_b),
-            "all_percentage": get_percentage(file_a, file_b)
+            "all_percentage": get_percentage(file_a, file_b),
+            "jaccard": calculate_jaccard(file_a, file_b)
         }
     else:
         result = {

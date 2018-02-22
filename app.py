@@ -125,6 +125,7 @@ def compare():
     all_folders = functions.get_folders()
     compared_hotspot = {
         "all_percentage": 0,
+        "jaccard": 0,
         "data": []
     }
     try:
@@ -148,7 +149,7 @@ def compare():
 
 
 
-    return render_template("compare.html", created=sorted(all_folders), error=error, comparing=comparing, compared_pngs=compared_pngs, percent=compared_hotspot["all_percentage"])
+    return render_template("compare.html", created=sorted(all_folders), error=error, comparing=comparing, compared_pngs=compared_pngs, percent=compared_hotspot["all_percentage"], jaccard=compared_hotspot["jaccard"])
 
 
 
