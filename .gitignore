@@ -9,4 +9,4 @@ debug.log
 templates/created/
 *.profile
 *.dat
-access.log
+*.log
