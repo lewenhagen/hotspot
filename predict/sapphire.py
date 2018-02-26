@@ -10,20 +10,20 @@ from gi.getis import Gi
 
 
 class Sapphire:
-    def __init__(self, pre, goal):
-        self.pre = pre
+    def __init__(self, pre_lists, goal):
+        self.pre_lists = pre_lists
         self.goal = goal
-        self.res_mat = numpy.zeros(shape=(24*7))
+        self.res_sum_mat = numpy.zeros(shape=(24*7))
 
     def add(self):
-        # add all pre make hotspots
+        # add all pre_lists make hotspots
         # compare with goal hotspot
-        for mat in self.pre.items():
-            self.res_mat = self.res_mat + mat[1]
+        for mat in self.pre_lists.items():
+            self.res_sum_mat = self.res_sum_mat + mat[1]
         # print(res)
 
     def calc_gi(self):
-        gi = Gi(self.res_mat)
+        gi = Gi(self.res_sum_mat)
         # start_time = time.time()
         gi.calculate()
         result = {}
@@ -36,8 +36,15 @@ class Sapphire:
         gi.clear_zscore(0.05) # ?
         # gi.clear_zscore(0.95) ?
 
-        result["getis"] = gi.get_result()
-        print(result["getis"])
+        result["getis"] = gi.get_result().reshape(24, 7)
+        # print(result["getis"])
+        self.pprint(result["getis"])
+
+    @staticmethod
+    def pprint(matrix):
+        for i, row in enumerate(matrix):
+            print(i, row)
+
 
 
 if __name__ == "__main__":
