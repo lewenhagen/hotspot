@@ -17,7 +17,7 @@ from aoristic import aoristic
 from aoristic import parse
 from gi.getis import Gi
 from compare import compare
-
+import calendar
 import csv
 # import time
 # from hotspot import Hotspot
@@ -56,8 +56,8 @@ def get_data_frame(hotspot, t_map):
     # CITYNAME or all
 
 
-    print(t_map)
-    print(hotspot)
+    # print(t_map)
+    # print(hotspot)
 
     gi = Gi(t_map)
     # start_time = time.time()
@@ -238,7 +238,7 @@ def create_compared_heatmap(data):
         "xticks": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
     }
     fig, ax = plt.subplots(figsize=(7,7))
-    ax.set_title("Comparing hotspots")
+    ax.set_title("Percentual increase/decrease")
     ax.tick_params(axis='both', direction="out")
 
     # ax.set_xlabel(ticks["xticks"], fontsize=14)
@@ -250,8 +250,13 @@ def create_compared_heatmap(data):
     # Makes sure the image (labels) is not cut off
     plt.tight_layout()
     heatmap = sns.heatmap(data, ax=ax, annot=True, fmt=".1f", cbar=True)
+
+    if not os.path.exists("static/compare/"):
+        os.makedirs("static/compare")
+        print(">>> Created folder: static/compare")
+
     heatmap.figure.savefig("static/compare/compare.png")
-    print("Saved compared png!")
+    print(">>> Saved compared png!")
 
 
 
@@ -330,6 +335,61 @@ def init_compare(hotspot_one, hotspot_two, overlap=False):
     csv_two = pandas.read_csv(path_for_two, usecols=["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], encoding="utf-8").values
 
     return compare(csv_one, csv_two, overlap)
+
+
+
+def split_csv(big_file):
+    """
+    Splits csv into months dict
+    """
+    splitted_months = {}
+    months = calendar.month_name
+
+    for mon in range(1, 13):
+        splitted_months[months[mon]] = []
+
+    all_months = pandas.read_csv("datafiles/" + big_file, encoding="utf-8").values
+
+    for row in all_months:
+        part = np.core.defchararray.split(row.astype(str), ";")
+
+        if "2014-01" in part[0][1]:
+            splitted_months["January"].append(row)
+        elif "2014-02" in part[0][1]:
+            splitted_months["February"].append(row)
+        elif "2014-03" in part[0][1]:
+            splitted_months["March"].append(row)
+        elif "2014-04" in part[0][1]:
+            splitted_months["April"].append(row)
+        elif "2014-05" in part[0][1]:
+            splitted_months["May"].append(row)
+        elif "2014-06" in part[0][1]:
+            splitted_months["June"].append(row)
+        elif "2014-07" in part[0][1]:
+            splitted_months["July"].append(row)
+        elif "2014-08" in part[0][1]:
+            splitted_months["August"].append(row)
+        elif "2014-09" in part[0][1]:
+            splitted_months["September"].append(row)
+        elif "2014-10" in part[0][1]:
+            splitted_months["October"].append(row)
+        elif "2014-11" in part[0][1]:
+            splitted_months["November"].append(row)
+        elif "2014-12" in part[0][1]:
+            splitted_months["December"].append(row)
+
+
+    return all_months
+
+
+
+
+
+def init_visualization():
+    """
+    Initialize the visualization
+    """
+    # months = split_csv()
 
 
 

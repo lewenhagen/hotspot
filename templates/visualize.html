@@ -1,0 +1,18 @@
+{% include 'header.html' %}
+
+<div class="container" role="main">
+    <div class="page-header">
+        <h1>Create visualization</h1>
+    </div>
+    <div class="container-fluid">
+        {% if choose_data %}
+            {% include 'forms/choose_visualize.html' %}
+        {% endif %}
+
+        {% if error %}
+            <div class="error well"><h2>{{ error }}</h2></div>
+        {% endif %}
+    </div>
+</div>
+
+{% include 'footer.html' %}

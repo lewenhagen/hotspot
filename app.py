@@ -13,10 +13,12 @@ from flask import Flask, render_template, request
 import os, glob
 from aoristic import parse
 from hotspot import Hotspot
+from visual import Visual
 
 
 
 app = Flask(__name__)
+app.config["CACHE_TYPE"] = "null"
 
 
 units_json = config.get_units()
@@ -141,15 +143,41 @@ def compare():
                 compared_hotspot = functions.init_compare(request.form["chooseCompareOne"], request.form["chooseCompareTwo"], True)
             else:
                 compared_hotspot = functions.init_compare(request.form["chooseCompareOne"], request.form["chooseCompareTwo"])
+                compared_hotspot["jaccard"] = "N/A"
             functions.create_compared_heatmap(compared_hotspot["data"])
             compared_pngs.append(request.form["chooseCompareOne"])
             compared_pngs.append(request.form["chooseCompareTwo"])
+            # ugly fast fix
         else:
             error = "Can not compare the same hotspots."
 
 
 
     return render_template("compare.html", created=sorted(all_folders), error=error, comparing=comparing, compared_pngs=compared_pngs, percent=compared_hotspot["all_percentage"], jaccard=compared_hotspot["jaccard"])
+
+
+
+@app.route('/visualize/', methods=["POST", "GET"])
+def visualize():
+    """
+    Visualize route
+    """
+
+    if request.method == "GET":
+        choose_data = config.get_datafiles()
+        return render_template("visualize.html", choose_data=choose_data)
+    elif request.method == "POST":
+        empty_hotspots = []
+
+        all_months = functions.split_csv(request.form["setupData"])
+        conflevel = request.form["setupConfidenceLevel"]
+
+        for key, val in all_months.items():
+            empty_hotspots.append(Visual(key, val, conflevel, units))
+            # print(empty_hotspots)
+            # functions.init_visualization()
+
+        return render_template("visualize.html")
 
 
 

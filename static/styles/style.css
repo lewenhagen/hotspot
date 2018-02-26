@@ -40,6 +40,17 @@ body {
     float: left;
 }
 
+/* .drag_base {
+    outline: 1px dotted black;
+    height: 500px;
+    width: 500px;
+}
+
+.drag_img {
+    height: 500px;
+    width: 500px;
+} */
+
 label {
     font-size: 1.15em !important;
 }

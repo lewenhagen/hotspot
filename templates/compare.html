@@ -3,7 +3,7 @@
         <div class="row">
             {% if comparing %}
                 {% for view_image in compared_pngs %}
-                    <div class="col-md-5 ">
+                    <div class="col-md-5">
                         <img class="hotspot" src="{{ url_for('static', filename='maps/' + view_image + '/' + view_image + '_gi.png') }}">
                     </div>
                 {% endfor %}

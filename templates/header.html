@@ -32,6 +32,7 @@
             <li {%- if request.path == "/" %} class="active" {% endif %}><a href="{{ url_for('main') }}">Start</a></li>
             <li {%- if request.path == "/show" %} class="active" {% endif %}><a href="{{ url_for('show') }}">Show</a></li>
             <li {%- if request.path == "/compare" %} class="active" {% endif %}><a href="{{ url_for('compare') }}">Compare</a></li>
+            <li {%- if request.path == "/visualize" %} class="active" {% endif %}><a href="{{ url_for('visualize') }}">Visualize</a></li>
           </ul>
         </div>
       </div>

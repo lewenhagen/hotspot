@@ -10,7 +10,7 @@ class Hotspot():
 
     def __init__(self, req_form, units):
         """
-        inti method
+        init method
         """
         self.datafile = req_form["datachosen"]
         self.title = req_form["setupTitle"]

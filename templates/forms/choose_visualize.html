@@ -1,0 +1,33 @@
+<form class="form-horizontal" method="POST" action="{{ url_for('visualize') }}">
+    <fieldset>
+        <legend>Setup</legend>
+        <div class="form-group">
+            <label for="setupData" class="col-lg-2 control-label">Choose data</label>
+            <div class="col-lg-6">
+                <select class="form-control" id="setupData" name="setupData">
+                    <option value="">Choose data...</option>
+                    {% for data in choose_data %}
+                        <option value="{{ data }}">{{ data }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="setupConfidenceLevel" class="col-lg-2 control-label">Choose p-value</label>
+            <div class="col-lg-6">
+                <select class="form-control" id="setupConfidenceLevel" name="setupConfidenceLevel">
+                    <option value="all">All</option>
+                    <option value="0.10">0.10 (90%)</option>
+                    <option value="0.05">0.05 (95%)</option>
+                    <option value="0.01">0.01 (99%)</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-lg-10 col-lg-offset-2">
+                <!-- <button type="reset" class="btn btn-default">Cancel</button> -->
+                <button type="submit" class="btn btn-primary">Create visualization</button>
+            </div>
+        </div>
+    </fieldset>
+</form>
