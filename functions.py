@@ -294,6 +294,9 @@ def split_csv(big_file):
     """
     Splits csv into months dict
     """
+    # csv_to_dict(filter_v, filter_c, file_name="temp.csv", deli=";"):
+    # filter_v = 2014-01
+    # filter_c = datestart
     splitted_months = {}
     months = calendar.month_name
 
@@ -303,35 +306,35 @@ def split_csv(big_file):
     all_months = pandas.read_csv("datafiles/" + big_file, encoding="utf-8").values
 
     for row in all_months:
-        part = np.core.defchararray.split(row.astype(str), ";")
+        part = np.core.defchararray.split(row.astype(str), ";").tolist()
 
         if "2014-01" in part[0][1]:
-            splitted_months["January"].append(row)
+            splitted_months["January"].append(row.tolist())
         elif "2014-02" in part[0][1]:
-            splitted_months["February"].append(row)
+            splitted_months["February"].append(row.tolist())
         elif "2014-03" in part[0][1]:
-            splitted_months["March"].append(row)
+            splitted_months["March"].append(row.tolist())
         elif "2014-04" in part[0][1]:
-            splitted_months["April"].append(row)
+            splitted_months["April"].append(row.tolist())
         elif "2014-05" in part[0][1]:
-            splitted_months["May"].append(row)
+            splitted_months["May"].append(row.tolist())
         elif "2014-06" in part[0][1]:
-            splitted_months["June"].append(row)
+            splitted_months["June"].append(row.tolist())
         elif "2014-07" in part[0][1]:
-            splitted_months["July"].append(row)
+            splitted_months["July"].append(row.tolist())
         elif "2014-08" in part[0][1]:
-            splitted_months["August"].append(row)
+            splitted_months["August"].append(row.tolist())
         elif "2014-09" in part[0][1]:
-            splitted_months["September"].append(row)
+            splitted_months["September"].append(row.tolist())
         elif "2014-10" in part[0][1]:
-            splitted_months["October"].append(row)
+            splitted_months["October"].append(row.tolist())
         elif "2014-11" in part[0][1]:
-            splitted_months["November"].append(row)
+            splitted_months["November"].append(row.tolist())
         elif "2014-12" in part[0][1]:
-            splitted_months["December"].append(row)
+            splitted_months["December"].append(row.tolist())
 
 
-    return all_months
+    return all_months.tolist()
 
 
 
