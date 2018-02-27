@@ -170,11 +170,12 @@ def create_hotspot(hotspot, use_hotspot, levels=None, cbar=True):
 
     # Makes sure the image (labels) is not cut off
     plt.tight_layout()
-
-    if use_hotspot == "getis":
-        save_figure(plt, "static/maps/", hotspot.title, "_gi.png")
-    else:
-        save_figure(plt, "static/maps/", hotspot.title, "_aoristic.png")
+    
+    return plt
+    # if use_hotspot == "getis":
+    #     save_figure(plt, "static/maps/", hotspot.title, "_gi.png")
+    # else:
+    #     save_figure(plt, "static/maps/", hotspot.title, "_aoristic.png")
 
 
 

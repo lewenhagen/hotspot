@@ -85,15 +85,18 @@ def hotspot():
                 hotspot.data, hotspot.getis, hotspot.conf_levels = functions.calculate_hotspot(hotspot)
 
 
-            # Creates the hotspots
-            functions.create_hotspot(hotspot, "data")
-            functions.create_hotspot(hotspot, "getis", hotspot.pvalue)
-
+            # Creates the getis hotspot
+            getis_hotspot = functions.create_hotspot(hotspot, "getis", hotspot.pvalue)
+            # Creates the aoristic hotspot
+            aoristic_hotspot = functions.create_hotspot(hotspot, "data")
+            # Save the hotspots as pngs
+            functions.save_figure(getis_hotspot, "static/maps/", hotspot.title, "_gi.png")
+            functions.save_figure(aoristic_hotspot, "static/maps/", hotspot.title, "_aoristic.png")
+            # Save the html table of confidence levels
             functions.save_table(hotspot.title, hotspot.conf_levels)
-
+            # Get the saved pngs
             filelist = functions.get_saved_png(hotspot.title)
             #os.listdir('static/maps/' + hotspot["title"])
-
 
     return render_template("hotspot.html", folder=hotspot.title, hotspots=filelist, lisa=hotspot.conf_levels)
 
