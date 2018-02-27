@@ -175,10 +175,12 @@ def visualize():
         all_months = functions.split_csv(request.form["setupData"])
         conflevel = request.form["setupConfidenceLevel"]
 
-        for val in all_months:
-            # empty_hotspots.append(functions.calculate_hotspot(Visual(key, val, conflevel, units)))
-            # print("key:", key)
-            print("value:", val)
+        for month in all_months:
+            # for key, val in month.items():
+            empty_hotspots.append(functions.calculate_hotspot(Visual(month["name"], conflevel, units)))
+            # hotspot.data, hotspot.getis, hotspot.conf_levels = functions.calculate_hotspot(hotspot, parse.csv_to_dict(hotspot.filter_value, hotspot.filter_column, hotspot.datafile))
+                print("key:", key)
+                print("value:", val)
 
             # functions.init_visualization()
 

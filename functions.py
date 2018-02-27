@@ -297,44 +297,46 @@ def split_csv(big_file):
     # csv_to_dict(filter_v, filter_c, file_name="temp.csv", deli=";"):
     # filter_v = 2014-01
     # filter_c = datestart
-    splitted_months = {}
-    months = calendar.month_name
+    splitted_months = []
+    # month = {
+    #     "name": "",
+    #     "data": []
+    # }
+    # months = calendar.month_name
 
-    for mon in range(1, 13):
-        splitted_months[months[mon]] = []
+    # for mon in range(1, 13):
+    #     splitted_months[months[mon]] = []
 
-    all_months = pandas.read_csv("datafiles/" + big_file, encoding="utf-8").values
-
-    for row in all_months:
-        part = np.core.defchararray.split(row.astype(str), ";").tolist()
-
-        if "2014-01" in part[0][1]:
-            splitted_months["January"].append(row.tolist())
-        elif "2014-02" in part[0][1]:
-            splitted_months["February"].append(row.tolist())
-        elif "2014-03" in part[0][1]:
-            splitted_months["March"].append(row.tolist())
-        elif "2014-04" in part[0][1]:
-            splitted_months["April"].append(row.tolist())
-        elif "2014-05" in part[0][1]:
-            splitted_months["May"].append(row.tolist())
-        elif "2014-06" in part[0][1]:
-            splitted_months["June"].append(row.tolist())
-        elif "2014-07" in part[0][1]:
-            splitted_months["July"].append(row.tolist())
-        elif "2014-08" in part[0][1]:
-            splitted_months["August"].append(row.tolist())
-        elif "2014-09" in part[0][1]:
-            splitted_months["September"].append(row.tolist())
-        elif "2014-10" in part[0][1]:
-            splitted_months["October"].append(row.tolist())
-        elif "2014-11" in part[0][1]:
-            splitted_months["November"].append(row.tolist())
-        elif "2014-12" in part[0][1]:
-            splitted_months["December"].append(row.tolist())
+    # all_months = pandas.read_csv("datafiles/" + big_file, encoding="utf-8").values
+    splitted_months.append({ "name": "January", "data": parse.csv_to_dict("2014-01", "datestart", big_file) })
+    splitted_months.append({ "name": "February", "data": parse.csv_to_dict("2014-02", "datestart", big_file) })
+    splitted_months.append({ "name": "March", "data": parse.csv_to_dict("2014-03", "datestart", big_file) })
+    splitted_months.append({ "name": "April", "data": parse.csv_to_dict("2014-04", "datestart", big_file) })
+    splitted_months.append({ "name": "May", "data": parse.csv_to_dict("2014-05", "datestart", big_file) })
+    splitted_months.append({ "name": "June", "data": parse.csv_to_dict("2014-06", "datestart", big_file) })
+    splitted_months.append({ "name": "July", "data": parse.csv_to_dict("2014-07", "datestart", big_file) })
+    splitted_months.append({ "name": "August", "data": parse.csv_to_dict("2014-08", "datestart", big_file) })
+    splitted_months.append({ "name": "September", "data": parse.csv_to_dict("2014-09", "datestart", big_file) })
+    splitted_months.append({ "name": "October", "data": parse.csv_to_dict("2014-10", "datestart", big_file) })
+    splitted_months.append({ "name": "November", "data": parse.csv_to_dict("2014-11", "datestart", big_file) })
+    splitted_months.append({ "name": "December", "data": parse.csv_to_dict("2014-12", "datestart", big_file) })
 
 
-    return all_months.tolist()
+    # splitted_months["January"] = parse.csv_to_dict("2014-01", "datestart", big_file)
+    # splitted_months["February"] = parse.csv_to_dict("2014-02", "datestart", big_file)
+    # splitted_months["March"] = parse.csv_to_dict("2014-03", "datestart", big_file)
+    # splitted_months["April"] = parse.csv_to_dict("2014-04", "datestart", big_file)
+    # splitted_months["May"] = parse.csv_to_dict("2014-05", "datestart", big_file)
+    # splitted_months["June"] = parse.csv_to_dict("2014-06", "datestart", big_file)
+    # splitted_months["July"] = parse.csv_to_dict("2014-07", "datestart", big_file)
+    # splitted_months["August"] = parse.csv_to_dict("2014-08", "datestart", big_file)
+    # splitted_months["September"] = parse.csv_to_dict("2014-09", "datestart", big_file)
+    # splitted_months["October"] = parse.csv_to_dict("2014-10", "datestart", big_file)
+    # splitted_months["November"] = parse.csv_to_dict("2014-11", "datestart", big_file)
+    # splitted_months["December"] = parse.csv_to_dict("2014-12", "datestart", big_file)
+
+
+    return splitted_months
 
 
 

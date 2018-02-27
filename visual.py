@@ -8,7 +8,7 @@ class Visual():
     Visual class
     """
 
-    def __init__(self, month, data, conflevel, units):
+    def __init__(self, month, conflevel, units):
         """
         init method
         """
