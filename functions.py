@@ -19,9 +19,31 @@ from gi.getis import Gi
 from compare import compare
 import calendar
 import csv
-# import time
-# from hotspot import Hotspot
-# from shutil import copyfile
+
+
+def save_csv(file_to_save, file_path, file_name, file_ending):
+    """
+    Saves file as csv
+    """
+    print("Saving file!")
+    if not os.path.exists(file_path + file_name):
+        print("Creating folder:", file_path + file_name)
+        os.makedirs(file_path + file_name)
+
+    file_to_save.to_csv(file_path + file_name + "/" + file_name + file_ending, sep=",", encoding="utf-8")
+    print("Saved csv files.")
+
+
+def save_figure(file_to_save, file_path, file_name, file_ending):
+    """
+    Saves file as png
+    """
+    if not os.path.exists(file_path + file_name):
+        os.makedirs(file_path + file_name)
+
+    file_to_save.savefig(file_path + file_name + "/" + file_name + file_ending)
+
+
 
 def calculate_hotspot(hotspot, data=None):
     """
@@ -55,12 +77,10 @@ def get_data_frame(hotspot, t_map):
     # Use hotspot["city"] to select data.
     # CITYNAME or all
 
-
     # print(t_map)
     # print(hotspot)
 
     gi = Gi(t_map)
-    # start_time = time.time()
     gi.calculate()
     result = {}
     result["conf_levels"] = {
@@ -73,8 +93,6 @@ def get_data_frame(hotspot, t_map):
         gi.clear_zscore(float(hotspot.pvalue))
 
     result["getis"] = gi.get_result()
-    # print("--- %s seconds ---" % (time.time() - start_time))
-    # result = lisa.calculate_from_matrix(t_map)
 
     df_getis = pandas.DataFrame(data=result["getis"],
                             index=hotspot.yticks["ticks"],
@@ -84,19 +102,12 @@ def get_data_frame(hotspot, t_map):
                             index=hotspot.yticks["ticks"],
                             columns=hotspot.xticks["ticks"])
 
-    # g_map = lisa.calculate_from_matrix(t_map)
-    # hotspot["getis"] = lisa.calculate_from_matrix(t_map)
-
     if hotspot.save_me:
-        print("Saving file!")
-        if not os.path.exists("static/maps/" + hotspot.title):
-            print("Creating folder")
-            os.makedirs("static/maps/" + hotspot.title)
+        print("Saving getis csv...")
+        save_csv(df_getis, "static/maps/", hotspot.title, "_gi.csv")
+        print("Saving aoristic csv...")
+        save_csv(df_data, "static/maps/", hotspot.title, "_aoristic.csv")
 
-        df_getis.to_csv("static/maps/" + hotspot.title + "/" + hotspot.title + "_gi.csv", sep=",", encoding="utf-8")
-        df_data.to_csv("static/maps/" + hotspot.title + "/" + hotspot.title + "_aoristic.csv", sep=",", encoding="utf-8")
-        print("Saved csv files.")
-    # lisa.get_neigbours(data, 5, 5, 2)
     return (df_data, df_getis, result["conf_levels"])
 
 
@@ -130,61 +141,11 @@ def validate_form(req_form):
 
 
 
-# def setup_hotspot(req_form, units):
-#     """
-#     Creates the hotspot base dict and returns it
-#     """
-#     hotspot = Hotspot(req_form, units)
-#
-#     # hotspot.datafile = req_form["datachosen"]
-#     # hotspot.title = req_form["setupTitle"]
-#     # hotspot.filter_value = req_form.get("setupFilter")
-#     # hotspot.filter_column = req_form.get("filtercolumn")
-#     # hotspot.xticks = units[req_form["setupXticks"]]
-#     # hotspot.yticks = units[req_form["setupYticks"]]
-#     # hotspot.labels = {
-#     #     "xlabel": units[req_form["setupXticks"]]["unit"],
-#     #     "ylabel": units[req_form["setupYticks"]]["unit"]
-#     # }
-#     # hotspot.save_me = True if req_form.getlist("savecsv") else False
-#     # hotspot.pvalue = req_form["setupConfidenceLevel"]
-#     # hotspot.units = units
-#
-#     return hotspot
-    # hotspot = {
-    #     # "filename": req_form["setupFilename"],
-    #     "datafilename": req_form["datachosen"],
-    #     "title": req_form["setupTitle"],
-    #     "filtervalue": req_form.get("setupFilter"),
-    #     "filtercolumn": req_form.get("filtercolumn"),
-    #     "xticks": units[req_form["setupXticks"]],
-    #     "yticks": units[req_form["setupYticks"]],
-    #     "labels": {
-    #         "xlabel": units[req_form["setupXticks"]]["unit"],
-    #         "ylabel": units[req_form["setupYticks"]]["unit"]
-    #     },
-    #     "save_me": True if req_form.getlist("savecsv") else False,
-    #     "pvalue": req_form["setupConfidenceLevel"],
-    #     "units": units
-    # }
-
-    # if req_form["datachosen"].endswith(".csv"):
-    #     hotspot.data, hotspot.getis, hotspot.conf_levels = get_data_frame(hotspot, parse.csv_to_dict(hotspot["filtervalue"], hotspot["filtercolumn"], req_form["datachosen"]))
-    #
-    # elif req_form["datachosen"].endswith(".log"):
-    #     hotspot.data, hotspot.getis, hotspot.conf_levels = get_data_frame(hotspot)
-
-    # return hotspot
-
-
-
 def create_hotspot(hotspot, use_hotspot, levels=None, cbar=True):
     """
     Creates a hotspot
     """
-    # if use_hotspot == "getis":
-    #     hotspot["title"] += "-getis"
-    # Returns a tuple containing a figure and axes object(s)
+
     fig, ax = plt.subplots(figsize=(7,7))
 
     # Creates a heatmap. ax = axes object, cmap = colorscheme, annot = display data in map, fmt = format on annot
@@ -199,10 +160,6 @@ def create_hotspot(hotspot, use_hotspot, levels=None, cbar=True):
     # Sets labels and title
     ax.set_xlabel(hotspot.labels["xlabel"], fontsize=14)
     ax.set_ylabel(hotspot.labels["ylabel"], fontsize=14)
-    # if use_hotspot == "getis":
-    #     ax.set_title(hotspot.title + "-Gi* p-value: " + levels)
-    # else:
-    #     ax.set_title(hotspot.title + "-Aoristic")
 
     # Moves tick marker outside both axis
     ax.tick_params(axis='both', direction="out")
@@ -214,14 +171,11 @@ def create_hotspot(hotspot, use_hotspot, levels=None, cbar=True):
     # Makes sure the image (labels) is not cut off
     plt.tight_layout()
 
-    # Saves the figure as an image
-    if not os.path.exists("static/maps/" + hotspot.title):
-        os.makedirs("static/maps/" + hotspot.title)
-
     if use_hotspot == "getis":
-        plt.savefig("static/maps/" + hotspot.title + "/" + hotspot.title + "_gi.png")
+        save_figure(plt, "static/maps/", hotspot.title, "_gi.png")
     else:
-        plt.savefig("static/maps/" + hotspot.title + "/" + hotspot.title + "_aoristic.png")
+        save_figure(plt, "static/maps/", hotspot.title, "_aoristic.png")
+
 
 
 def create_compared_heatmap(data):
@@ -241,8 +195,6 @@ def create_compared_heatmap(data):
     ax.set_title("Percentual increase/decrease")
     ax.tick_params(axis='both', direction="out")
 
-    # ax.set_xlabel(ticks["xticks"], fontsize=14)
-    # ax.set_ylabel(ticks["yticks"], fontsize=14)
     # Config for the axis ticks
     plt.yticks(rotation=0,fontsize=8);
     plt.xticks(rotation=0, fontsize=8);
@@ -265,7 +217,6 @@ def get_folders():
     Returns saved folders
     """
     return [ name for name in os.listdir("static/maps") if os.path.isdir(os.path.join("static/maps", name)) ]
-    # return os.listdir('static')
 
 
 
@@ -390,17 +341,3 @@ def init_visualization():
     Initialize the visualization
     """
     # months = split_csv()
-
-
-
-# def init_compare_overlap(hotspot_one, hotspot_two):
-#     """
-#     Initialize comparison of hotspots, only overlap
-#     """
-#     path_for_one = "static/maps/" + hotspot_one + "/" + get_saved_csv(hotspot_one)[0]
-#     path_for_two = "static/maps/" + hotspot_two + "/" + get_saved_csv(hotspot_two)[0]
-#
-#     csv_one = pandas.read_csv(path_for_one, usecols=["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], encoding="utf-8").values
-#     csv_two = pandas.read_csv(path_for_two, usecols=["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], encoding="utf-8").values
-#
-#     return compare_overlap(csv_one, csv_two)
