@@ -8,11 +8,11 @@ class Visual():
     Visual class
     """
 
-    def __init__(self, month, conflevel, units):
+    def __init__(self, datafile, month, conflevel, units):
         """
         init method
         """
-        # self.datafile = req_form["datachosen"]
+        self.datafile = datafile
         self.title = month
         # self.filter_value = req_form.get("setupFilter")
         # self.filter_column = req_form.get("filtercolumn")

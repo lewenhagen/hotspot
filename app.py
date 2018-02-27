@@ -181,6 +181,7 @@ def visualize():
         choose_data = config.get_datafiles()
         return render_template("visualize.html", choose_data=choose_data)
     elif request.method == "POST":
+        month_names = []
         hotspots = []
         hotspot = {}
         conflevel = request.form["setupConfidenceLevel"]
@@ -190,23 +191,19 @@ def visualize():
         empty_hotspots = []
         splitted_months = functions.split_csv(request.form["setupData"])
         for mon in range(1, 13):
-            empty_hotspots.append(Visual(months[mon], conflevel, units))
+            hotspot = Visual(request.form["setupData"], months[mon], conflevel, units)
+            hotspot.getis, hotspot.conf_levels = functions.calculate_hotspot(hotspot, splitted_months[mon-1]["data"], "getis")
+            functions.save_csv(hotspot.getis, "static/visualize/", hotspot.title, ".csv")
+            # Creates the getis hotspot
+            getis_hotspot = functions.create_hotspot(hotspot, "getis_visual", hotspot.pvalue)
+            # Save getis hotspot as png
+            functions.save_figure(getis_hotspot, "static/visualize/", hotspot.title, ".png")
 
-        for mon in range(1, 13):
-            hotspot.getis, hotspot.conf_levels = functions.calculate_hotspot(empty_hotspots[mon], splitted_months[mon]["data"], "getis")
-            hotspots.append(hotspot)
+            month_names.append(months[mon])
+            # hotspots.append(hotspot)
 
 
-        # for month in all_months:
-        #     # for key, val in month.items():
-        #     empty_hotspots.append(functions.calculate_hotspot(Visual(month["name"], conflevel, units)))
-        #     # hotspot.data, hotspot.getis, hotspot.conf_levels = functions.calculate_hotspot(hotspot, parse.csv_to_dict(hotspot.filter_value, hotspot.filter_column, hotspot.datafile))
-        #         print("key:", key)
-        #         print("value:", val)
-        #
-        #     # functions.init_visualization()
-
-        return render_template("visualize.html")
+        return render_template("visualize.html", months=month_names, csvfile=request.form["setupData"], conf=conflevel)
 
 
 
