@@ -14,6 +14,7 @@ import os, glob
 from aoristic import parse
 from hotspot import Hotspot
 from visual import Visual
+import calendar
 
 
 
@@ -79,18 +80,28 @@ def hotspot():
             hotspot = Hotspot(request.form, units)
 
             if hotspot.datafile.endswith(".csv"):
-                hotspot.data, hotspot.getis, hotspot.conf_levels = functions.calculate_hotspot(hotspot, parse.csv_to_dict(hotspot.filter_value, hotspot.filter_column, hotspot.datafile))
+                datafile_as_dict = parse.csv_to_dict(hotspot.filter_value, hotspot.filter_column, hotspot.datafile)
+                hotspot.getis, hotspot.conf_levels = functions.calculate_hotspot(hotspot, datafile_as_dict, "getis")
+                hotspot.data = functions.calculate_hotspot(hotspot, datafile_as_dict)
 
             elif hotspot.datafile.endswith(".log"):
                 hotspot.data, hotspot.getis, hotspot.conf_levels = functions.calculate_hotspot(hotspot)
 
+            if hotspot.save_me:
+                print("Saving aoristic csv...")
+                functions.save_csv(hotspot.data, "static/maps/", hotspot.title, "_aoristic.csv")
+
+                print("Saving getis csv...")
+                functions.save_csv(hotspot.getis, "static/maps/", hotspot.title, "_gi.csv")
+
 
             # Creates the getis hotspot
             getis_hotspot = functions.create_hotspot(hotspot, "getis", hotspot.pvalue)
+            # Save getis hotspot as png
+            functions.save_figure(getis_hotspot, "static/maps/", hotspot.title, "_gi.png")
             # Creates the aoristic hotspot
             aoristic_hotspot = functions.create_hotspot(hotspot, "data")
-            # Save the hotspots as pngs
-            functions.save_figure(getis_hotspot, "static/maps/", hotspot.title, "_gi.png")
+            # Save aoristic hotspot as png
             functions.save_figure(aoristic_hotspot, "static/maps/", hotspot.title, "_aoristic.png")
             # Save the html table of confidence levels
             functions.save_table(hotspot.title, hotspot.conf_levels)
@@ -170,19 +181,30 @@ def visualize():
         choose_data = config.get_datafiles()
         return render_template("visualize.html", choose_data=choose_data)
     elif request.method == "POST":
-        empty_hotspots = []
-
-        all_months = functions.split_csv(request.form["setupData"])
+        hotspots = []
+        hotspot = {}
         conflevel = request.form["setupConfidenceLevel"]
 
-        for month in all_months:
-            # for key, val in month.items():
-            empty_hotspots.append(functions.calculate_hotspot(Visual(month["name"], conflevel, units)))
-            # hotspot.data, hotspot.getis, hotspot.conf_levels = functions.calculate_hotspot(hotspot, parse.csv_to_dict(hotspot.filter_value, hotspot.filter_column, hotspot.datafile))
-                print("key:", key)
-                print("value:", val)
+        months = calendar.month_name
+        dates = ["", "2014-01", "2014-02", "2014-03", "2014-04", "2014-05", "2014-06", "2014-07", "2014-08", "2014-09", "2014-10", "2014-11", "2014-12"]
+        empty_hotspots = []
+        splitted_months = functions.split_csv(request.form["setupData"])
+        for mon in range(1, 13):
+            empty_hotspots.append(Visual(months[mon], conflevel, units))
 
-            # functions.init_visualization()
+        for mon in range(1, 13):
+            hotspot.getis, hotspot.conf_levels = functions.calculate_hotspot(empty_hotspots[mon], splitted_months[mon]["data"], "getis")
+            hotspots.append(hotspot)
+
+
+        # for month in all_months:
+        #     # for key, val in month.items():
+        #     empty_hotspots.append(functions.calculate_hotspot(Visual(month["name"], conflevel, units)))
+        #     # hotspot.data, hotspot.getis, hotspot.conf_levels = functions.calculate_hotspot(hotspot, parse.csv_to_dict(hotspot.filter_value, hotspot.filter_column, hotspot.datafile))
+        #         print("key:", key)
+        #         print("value:", val)
+        #
+        #     # functions.init_visualization()
 
         return render_template("visualize.html")
 

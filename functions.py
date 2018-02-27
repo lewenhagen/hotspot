@@ -21,7 +21,7 @@ import calendar
 import csv
 
 
-def save_csv(file_to_save, file_path, file_name, file_ending):
+def save_csv(file_to_save, file_path, file_name, file_ending=""):
     """
     Saves file as csv
     """
@@ -45,14 +45,17 @@ def save_figure(file_to_save, file_path, file_name, file_ending):
 
 
 
-def calculate_hotspot(hotspot, data=None):
+def calculate_hotspot(hotspot, data=None, hs_type=None):
     """
     call methods to calculate hotspot
     """
     t_map = config.create_empty_matrix(hotspot.xticks, hotspot.yticks)
 
     get_matrix(hotspot, t_map, data)
-    res = get_data_frame(hotspot, t_map)
+    if hs_type == "getis":
+        res = get_data_frame_getis(hotspot, t_map)
+    else:
+        res = get_data_frame_aoristic(hotspot, t_map)
 
     return res
 
@@ -69,46 +72,42 @@ def get_matrix(hotspot, t_map, data):
         parse.log_to_dict(hotspot, t_map)
 
 
-
-def get_data_frame(hotspot, t_map):
+def get_data_frame_getis(data, t_map):
     """
-    Returns DataFrame (2D-list) with data
+    Returns DataFrame (2D-list) with getis data
     """
-    # Use hotspot["city"] to select data.
-    # CITYNAME or all
-
-    # print(t_map)
-    # print(hotspot)
-
     gi = Gi(t_map)
     gi.calculate()
     result = {}
     result["conf_levels"] = {
-    "0.90": gi.confidence_interval(0.90),
-    "0.95": gi.confidence_interval(0.95),
-    "0.99": gi.confidence_interval(0.99)
+        "0.90": gi.confidence_interval(0.90),
+        "0.95": gi.confidence_interval(0.95),
+        "0.99": gi.confidence_interval(0.99)
     }
-
-    if hotspot.pvalue != "all":
-        gi.clear_zscore(float(hotspot.pvalue))
+    if data.pvalue != "all":
+        gi.clear_zscore(float(data.pvalue))
 
     result["getis"] = gi.get_result()
 
     df_getis = pandas.DataFrame(data=result["getis"],
-                            index=hotspot.yticks["ticks"],
-                            columns=hotspot.xticks["ticks"])
+                            index=data.yticks["ticks"],
+                            columns=data.xticks["ticks"])
+
+    return (df_getis, result["conf_levels"])
+
+
+def get_data_frame_aoristic(data, t_map):
+    """
+    Returns DataFrame (2D-list) with aoristic data
+    """
+    # Use hotspot["city"] to select data.
+    # CITYNAME or all
 
     df_data = pandas.DataFrame(data=t_map,
-                            index=hotspot.yticks["ticks"],
-                            columns=hotspot.xticks["ticks"])
+                            index=data.yticks["ticks"],
+                            columns=data.xticks["ticks"])
 
-    if hotspot.save_me:
-        print("Saving getis csv...")
-        save_csv(df_getis, "static/maps/", hotspot.title, "_gi.csv")
-        print("Saving aoristic csv...")
-        save_csv(df_data, "static/maps/", hotspot.title, "_aoristic.csv")
-
-    return (df_data, df_getis, result["conf_levels"])
+    return (df_data)
 
 
 
@@ -302,24 +301,31 @@ def split_csv(big_file):
     #     "name": "",
     #     "data": []
     # }
-    # months = calendar.month_name
-
-    # for mon in range(1, 13):
+    months = calendar.month_name
+    dates = ["", "2014-01", "2014-02", "2014-03", "2014-04", "2014-05", "2014-06", "2014-07", "2014-08", "2014-09", "2014-10", "2014-11", "2014-12"]
+    # result_list = []
+    # save_csv(file_to_save, file_path, file_name, file_ending)
+    for mon in range(1, 13):
+        splitted_months.append({"data": parse.csv_to_dict(dates[mon], "datestart", big_file), "name": months[mon]})
+        # calculate_hotspot(single_csv, )
+    return splitted_months
+        # print(single_csv)
+        # save_csv(single_csv, "static/visualize/", months[mon], ".csv")
     #     splitted_months[months[mon]] = []
 
     # all_months = pandas.read_csv("datafiles/" + big_file, encoding="utf-8").values
-    splitted_months.append({ "name": "January", "data": parse.csv_to_dict("2014-01", "datestart", big_file) })
-    splitted_months.append({ "name": "February", "data": parse.csv_to_dict("2014-02", "datestart", big_file) })
-    splitted_months.append({ "name": "March", "data": parse.csv_to_dict("2014-03", "datestart", big_file) })
-    splitted_months.append({ "name": "April", "data": parse.csv_to_dict("2014-04", "datestart", big_file) })
-    splitted_months.append({ "name": "May", "data": parse.csv_to_dict("2014-05", "datestart", big_file) })
-    splitted_months.append({ "name": "June", "data": parse.csv_to_dict("2014-06", "datestart", big_file) })
-    splitted_months.append({ "name": "July", "data": parse.csv_to_dict("2014-07", "datestart", big_file) })
-    splitted_months.append({ "name": "August", "data": parse.csv_to_dict("2014-08", "datestart", big_file) })
-    splitted_months.append({ "name": "September", "data": parse.csv_to_dict("2014-09", "datestart", big_file) })
-    splitted_months.append({ "name": "October", "data": parse.csv_to_dict("2014-10", "datestart", big_file) })
-    splitted_months.append({ "name": "November", "data": parse.csv_to_dict("2014-11", "datestart", big_file) })
-    splitted_months.append({ "name": "December", "data": parse.csv_to_dict("2014-12", "datestart", big_file) })
+    # splitted_months.append({ "name": "January", "data": parse.csv_to_dict("2014-01", "datestart", big_file) })
+    # splitted_months.append({ "name": "February", "data": parse.csv_to_dict("2014-02", "datestart", big_file) })
+    # splitted_months.append({ "name": "March", "data": parse.csv_to_dict("2014-03", "datestart", big_file) })
+    # splitted_months.append({ "name": "April", "data": parse.csv_to_dict("2014-04", "datestart", big_file) })
+    # splitted_months.append({ "name": "May", "data": parse.csv_to_dict("2014-05", "datestart", big_file) })
+    # splitted_months.append({ "name": "June", "data": parse.csv_to_dict("2014-06", "datestart", big_file) })
+    # splitted_months.append({ "name": "July", "data": parse.csv_to_dict("2014-07", "datestart", big_file) })
+    # splitted_months.append({ "name": "August", "data": parse.csv_to_dict("2014-08", "datestart", big_file) })
+    # splitted_months.append({ "name": "September", "data": parse.csv_to_dict("2014-09", "datestart", big_file) })
+    # splitted_months.append({ "name": "October", "data": parse.csv_to_dict("2014-10", "datestart", big_file) })
+    # splitted_months.append({ "name": "November", "data": parse.csv_to_dict("2014-11", "datestart", big_file) })
+    # splitted_months.append({ "name": "December", "data": parse.csv_to_dict("2014-12", "datestart", big_file) })
 
 
     # splitted_months["January"] = parse.csv_to_dict("2014-01", "datestart", big_file)
@@ -336,7 +342,7 @@ def split_csv(big_file):
     # splitted_months["December"] = parse.csv_to_dict("2014-12", "datestart", big_file)
 
 
-    return splitted_months
+    # return splitted_months
 
 
 

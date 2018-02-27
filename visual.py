@@ -16,8 +16,8 @@ class Visual():
         self.title = month
         # self.filter_value = req_form.get("setupFilter")
         # self.filter_column = req_form.get("filtercolumn")
-        self.xticks = "days" #units[req_form["setupXticks"]]
-        self.yticks = "hours" #units[req_form["setupYticks"]]
+        self.xticks = units["days"] #units[req_form["setupXticks"]]
+        self.yticks = units["hours"] #units[req_form["setupYticks"]]
         self.labels = {
             "xlabel": units["days"]["unit"],
             "ylabel": units["hours"]["unit"]
