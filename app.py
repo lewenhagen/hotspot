@@ -10,17 +10,21 @@ Generates the heatmap and render the image in template
 import functions
 import config
 from flask import Flask, render_template, request
+# from nocache import nocache
+# from flask.ext.cache import Cache
 import os, glob
 from aoristic import parse
 from hotspot import Hotspot
 from visual import Visual
 import calendar
+import shutil
 
 
 
 app = Flask(__name__)
-app.config["CACHE_TYPE"] = "null"
 
+# app.config["CACHE_TYPE"] = "null"
+# cache = Cache(app,config={'CACHE_TYPE': 'null'})
 
 units_json = config.get_units()
 
@@ -131,6 +135,7 @@ def show(folder=None):
 
 
 @app.route('/compare/', methods=["POST", "GET"])
+# @nocache
 def compare():
     """
     Compare route
@@ -172,15 +177,26 @@ def compare():
 
 
 @app.route('/visualize/', methods=["POST", "GET"])
+# @nocache
 def visualize():
     """
     Visualize route
     """
+    # cache.init_app(app, config={'CACHE_TYPE': 'null'})
+    #
+    # with app.app_context():
+    #     cache.clear()
 
     if request.method == "GET":
         choose_data = config.get_datafiles()
         return render_template("visualize.html", choose_data=choose_data)
     elif request.method == "POST":
+        try:
+            shutil.rmtree("static/visualize")
+            print(">>> Removed folder: visualized")
+        except Exception as e:
+            print("No such folder: ", e)
+
         month_names = []
         hotspots = []
         hotspot = {}

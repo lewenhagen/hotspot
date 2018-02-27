@@ -7,6 +7,7 @@ var isPaused = true;
 var backbtn = document.getElementById("back");
 var playpausebtn = document.getElementById("playpause");
 var nextbtn = document.getElementById("next");
+var speedbtns = document.getElementsByClassName("speed");
 
 var timer = 2000;
 var slideInterval = setInterval(nextSlide, timer);
@@ -26,7 +27,7 @@ function nextSlide() {
 
 backbtn.addEventListener("click", function() {
     slides[currentSlide].className = 'slide';
-    currentSlide = (currentSlide-1)%slides.length;
+    currentSlide = (currentSlide > 0) ? (currentSlide-1)%slides.length : 0;
     slides[currentSlide].className = 'slide showing';
     progress.style.width = (progressStep * currentSlide) +'%';
 });
@@ -43,3 +44,10 @@ playpausebtn.addEventListener("click", function(event) {
     console.log(event.target);
     event.target.innerHTML = isPaused ? "Play" : "Pause";
 });
+
+for (var i = 0; i < speedbtns.length; i++) {
+    speedbtns[i].addEventListener("click", function(event) {
+        window.clearInterval(slideInterval);
+        slideInterval = setInterval(nextSlide, parseInt(event.target.innerHTML) * 1000);
+    });
+}
