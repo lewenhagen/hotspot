@@ -165,12 +165,12 @@ def create_hotspot(hotspot, use_hotspot, levels=None, cbar=True):
     ax.tick_params(axis='both', direction="out")
 
     # Config for the axis ticks
-    plt.yticks(rotation=0,fontsize=8);
-    plt.xticks(rotation=0, fontsize=8);
+    plt.yticks(rotation=0,fontsize=8)
+    plt.xticks(rotation=0, fontsize=8)
 
     # Makes sure the image (labels) is not cut off
     plt.tight_layout()
-    
+
     return plt
     # if use_hotspot == "getis":
     #     save_figure(plt, "static/maps/", hotspot.title, "_gi.png")
