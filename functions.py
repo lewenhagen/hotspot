@@ -304,3 +304,18 @@ def split_csv(big_file):
     for mon in range(1, 13):
         splitted_months.append({"data": parse.csv_to_dict(dates[mon], "datestart", big_file), "name": months[mon]})
     return splitted_months
+
+
+
+def get_dots(hotspot):
+    """
+    Returns coordinates where there are a hotspot
+    """
+    holder = ()
+    print(hotspot.max())
+    # for index, row in hotspot.iterrows():
+    #     # holder =
+    #     print("Index:", index)
+    #     # print("name:", row["Name"])
+    #     print("Row:", row["Monday"])
+    return None

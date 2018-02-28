@@ -15,6 +15,7 @@ from flask import Flask, render_template, request
 import os, glob
 from aoristic import parse
 from hotspot import Hotspot
+from timeline import Timeline
 from visual import Visual
 import calendar
 import shutil
@@ -197,6 +198,7 @@ def visualize():
         except Exception as e:
             print("No such folder: ", e)
 
+        data_for_timeline = {}
         month_names = []
         hotspots = []
         hotspot = {}
@@ -209,6 +211,9 @@ def visualize():
         for mon in range(1, 13):
             hotspot = Visual(request.form["setupData"], months[mon], conflevel, units)
             hotspot.getis, hotspot.conf_levels = functions.calculate_hotspot(hotspot, splitted_months[mon-1]["data"], "getis")
+
+            data_for_timeline[months[mon]] = hotspot.getis
+
             functions.save_csv(hotspot.getis, "static/visualize/", hotspot.title, ".csv")
             # Creates the getis hotspot
             getis_hotspot = functions.create_hotspot(hotspot, "getis_visual", hotspot.pvalue)
@@ -218,6 +223,8 @@ def visualize():
             month_names.append(months[mon])
             # hotspots.append(hotspot)
 
+        timeline = Timeline(data_for_timeline)
+        timeline.setup_data()
 
         return render_template("visualize.html", months=month_names, csvfile=request.form["setupData"], conf=conflevel)
 
