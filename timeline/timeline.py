@@ -24,8 +24,13 @@ class Timeline():
         Loops through dataframes and counts hotspots and coldspots
         """
         print(self.data["January"])
-        # for index, row in self.data.iterrows():
-        #     if float(row) > 0.0:
+        for key, val in self.data.items():
+            if key == "January":
+                for index, row in val:
+                    if float(row) > 0.0:
+                        print(index[row])
+                # print("key:", key)
+                # print("val:", val)
 
 
 

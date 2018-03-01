@@ -9,19 +9,12 @@ from scipy.stats import norm
 from numpy.linalg import eig
 from sklearn.metrics import jaccard_similarity_score
 import numpy as np
+
 # get percent
 # from difflib import SequenceMatcher
 #
 # def similar(a, b):
 #     return SequenceMatcher(None, a, b).ratio()
-
-
-
-def print_data(data):
-    """
-    Pretty print matrix in terminal
-    """
-    print(pd.DataFrame(data))
 
 def get_percentage(file_a, file_b):
     """

@@ -25,13 +25,13 @@ def save_csv(file_to_save, file_path, file_name, file_ending=""):
     """
     Saves file as csv
     """
-    print("Saving file!")
+    # print("Saving file!")
     if not os.path.exists(file_path + file_name):
-        print("Creating folder:", file_path + file_name)
+        # print("Creating folder:", file_path + file_name)
         os.makedirs(file_path + file_name)
 
     file_to_save.to_csv(file_path + file_name + "/" + file_name + file_ending, sep=",", encoding="utf-8")
-    print("Saved csv files.")
+    # print("Saved csv files.")
 
 
 def save_figure(file_to_save, file_path, file_name, file_ending):
@@ -312,7 +312,7 @@ def get_dots(hotspot):
     Returns coordinates where there are a hotspot
     """
     holder = ()
-    print(hotspot.max())
+    # print(hotspot.max())
     # for index, row in hotspot.iterrows():
     #     # holder =
     #     print("Index:", index)

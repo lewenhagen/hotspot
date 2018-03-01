@@ -15,7 +15,7 @@ from flask import Flask, render_template, request
 import os, glob
 from aoristic import parse
 from hotspot import Hotspot
-from timeline import Timeline
+from timeline.timeline import Timeline
 from visual import Visual
 import calendar
 import shutil
@@ -223,6 +223,7 @@ def visualize():
             month_names.append(months[mon])
             # hotspots.append(hotspot)
 
+        # Timeline takes a list of dataFrame
         timeline = Timeline(data_for_timeline)
         timeline.setup_data()
 

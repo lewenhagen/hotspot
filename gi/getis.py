@@ -166,7 +166,7 @@ class Gi():
         """
         confidence = 1 - conf
         low, high = self.confidence_interval(confidence)
-        print("min:", low, "max", high)
+        # print("min:", low, "max", high)
         for index, value in np.ndenumerate(self.gi_matrix):
              if low < value < high:
                  self.gi_matrix[index] = 0.00
