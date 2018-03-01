@@ -6,7 +6,7 @@ Timeline file
 import pandas
 import numpy as np
 import matplotlib.pyplot as plt
-# from scipy.interpolate import spline
+from scipy.interpolate import spline
 # from matplotlib import rcParams
 
 class Timeline():
@@ -74,66 +74,46 @@ class Timeline():
 
     def create_timeline(self):
         """
-        Creates the timeline and saves it
+        Creates the timeline and returns the plot
         """
-        # rcParams.update({'figure.autolayout': True})
-
-        # df_data1 = pandas.DataFrame(data=self.hotspot_percent,
-        #                         index=[1, 0.8, 0.6, 0.4, 0.2, 0, -0.2, -0.4, -0.6, -0.8, -1],
-        #                         columns=["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"])
 
         plt.close("all")
-        fig, ax = plt.subplots(figsize=(7,4))
+
+        fig, ax = plt.subplots(figsize=(6,2))
 
         hot = self.hotspot_percent
         cold = self.coldspot_percent
-        # print(len(hot))
-        # print(len(cold))
-        # print("")
+        mid = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
-        # xnew_hot = np.linspace(min(hot),max(hot),300)
-        # xnew_cold = np.linspace(min(cold),max(cold),300)
+        ax.set_xticks(np.arange(12))
 
-
-        # power_smooth_hot = spline(hot,cold,xnew_hot)
-        # power_smooth_cold = spline(hot,cold,xnew)
-
-
-        ax.set_xticks(np.arange(len(hot)))
         x_ticks_labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
         ax.set_xticklabels(x_ticks_labels, fontsize=9)
-        # fig.gca().set_prop_cycle(['red', 'blue'])
+
+        # ax.set_title("Overview")
 
         ax.plot(hot, marker='o', linestyle='-', color='r', label='Hotspot')
         ax.plot(cold, marker='o', linestyle='-', color='b', label='Coldspot')
+        ax.plot(mid)
+        ax.tick_params(labelsize=9, direction="out")
+        ax.set_ylim([-1, 1])
 
-        # ax.plot(x, y)
-        # ax.plot(y, y)
-        # plt.plot(x, 3 * x)
-        # plt.plot(x, 4 * x)
+        xticks, xticklabels = plt.xticks()
 
-        ax.legend(['Hotspot', 'Coldspot'], loc='upper left')
+        xmin = (3*xticks[0] - xticks[1])/3
+        xmax = (3*xticks[-1] - xticks[-2])/2
+        plt.xlim(xmin, xmax)
+        plt.xticks(xticks)
+
+        yticks, yticklabels = plt.yticks()
+
+        ymin = (3*yticks[0] - yticks[1])/2
+        ymax = (3*yticks[-1] - yticks[-2])/2
+        plt.ylim(ymin, ymax)
+        plt.yticks(yticks)
+
         plt.tight_layout()
 
-        plt.show()
-
-
-# fig, ax = plt.subplots(figsize=(7,4))
-
-# month = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
-# hot = [0.6, 0.75, 0.2, 0, 0.9, 0.7, 0.5, 0.3, 0.6, 0.5, 0.4, 1]
-# cold = [-0.6, -0.75, -0.2, -0.4, -0.9, -0.7, 0, -0.3, -0.6, -0.5, -0.4, -1]
-# # plt.plot(radius, area, label='Circle')
-# x_ticks_labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-# ax.set_xticks(hot)
-# # Set ticks labels for x-axis
-# ax.set_xticklabels(x_ticks_labels, fontsize=9)
-# # ax.tick_params(axis='both', direction="out")
-# ax.plot(hot, marker='o', linestyle='-', color='r', label='Hotspot')
-# ax.plot(cold, marker='o', linestyle='-', color='b', label='Coldspot')
-# plt.xlabel('Month')
-# plt.ylabel('# of hotspots')
-# plt.title('TEsting')
-#
-# ax.legend(['Hotspot', 'Coldspot'], loc='upper left')
-# plt.show()
+        return plt
+        # plt.show()
+        # plt.close("all")

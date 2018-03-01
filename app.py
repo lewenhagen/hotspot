@@ -9,7 +9,7 @@ Generates the heatmap and render the image in template
 
 import functions
 import config
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, make_response
 # from nocache import nocache
 # from flask.ext.cache import Cache
 import os, glob
@@ -24,6 +24,8 @@ import shutil
 
 
 app = Flask(__name__)
+
+
 
 # app.config["CACHE_TYPE"] = "null"
 # cache = Cache(app,config={'CACHE_TYPE': 'null'})
@@ -184,6 +186,11 @@ def visualize():
     """
     Visualize route
     """
+    # resp = Response("")
+    # resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    # resp.headers["Pragma"] = "no-cache"
+    # resp.headers["Expires"] = "0"
+
     # cache.init_app(app, config={'CACHE_TYPE': 'null'})
     #
     # with app.app_context():
@@ -228,9 +235,18 @@ def visualize():
         timeline = Timeline(data_for_timeline)
         timeline.calculate_total()
         timeline.calculate_percentage()
-        timeline.create_timeline()
+        timeline_result = timeline.create_timeline()
+
+        functions.save_figure(timeline_result, "static/visualize/", "timeline", ".png")
 
         return render_template("visualize.html", months=month_names, csvfile=request.form["setupData"], conf=conflevel)
+        # r = make_response(render_template("visualize.html", months=month_names, csvfile=request.form["setupData"], conf=conflevel))
+        # r.headers.set("Cache-Control", "no-cache, no-store, must-revalidate")
+        # r.headers.set("Pragma", "no-cache")
+        # r.headers.set("Expires", "0")
+        # return r
+
+        # return render_template("visualize.html", months=month_names, csvfile=request.form["setupData"], conf=conflevel)
 
 
 

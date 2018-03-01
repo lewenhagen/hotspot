@@ -157,7 +157,9 @@ def create_hotspot(hotspot, use_hotspot, levels=None, cbar=True):
         ax.set_title(hotspot.title + "-Aoristic")
 
     elif use_hotspot == "getis_visual":
-        sns.heatmap(hotspot.getis, ax=ax, cmap="bwr", annot=True, cbar=False)
+        sns.heatmap(hotspot.getis, ax=ax, cmap="bwr")
+        sns.heatmap(hotspot.getis, mask=hotspot.getis==0.0, cbar=False, cmap="bwr",
+            annot=True)
         ax.set_title(hotspot.title)
 
     # Sets labels and title
