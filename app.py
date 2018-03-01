@@ -13,6 +13,7 @@ from flask import Flask, render_template, request
 # from nocache import nocache
 # from flask.ext.cache import Cache
 import os, glob
+import collections
 from aoristic import parse
 from hotspot import Hotspot
 from timeline.timeline import Timeline
@@ -198,7 +199,7 @@ def visualize():
         except Exception as e:
             print("No such folder: ", e)
 
-        data_for_timeline = {}
+        data_for_timeline = collections.OrderedDict()
         month_names = []
         hotspots = []
         hotspot = {}
@@ -225,7 +226,9 @@ def visualize():
 
         # Timeline takes a list of dataFrame
         timeline = Timeline(data_for_timeline)
-        timeline.setup_data()
+        timeline.calculate_total()
+        timeline.calculate_percentage()
+        timeline.create_timeline()
 
         return render_template("visualize.html", months=month_names, csvfile=request.form["setupData"], conf=conflevel)
 
