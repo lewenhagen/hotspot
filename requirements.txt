@@ -2,3 +2,7 @@ pandas
 seaborn
 sklearn
 Flask-Cache
+numpy
+joblib
+flask
+statsmodels

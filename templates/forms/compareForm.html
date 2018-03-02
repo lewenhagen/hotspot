@@ -1,6 +1,6 @@
 <form class="form-horizontal" method="POST" action="{{ url_for('compare') }}">
     <fieldset>
-        <legend>Compare:</legend>
+        <legend>Compare overlap:</legend>
         <div class="col-md-3">
             <div class="form-group">
                 <select class="form-control" id="chooseCompareOne" name="chooseCompareOne">
@@ -25,12 +25,7 @@
     <!-- </div> -->
     <!-- <div class="row"> -->
         <div class="col-md-2">
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" name="overlap" value="no"> Overlap
-                </label>
-                <button type="submit" class="btn btn-primary">Compare!</button>
-            </div>
+            <button type="submit" class="btn btn-primary">Compare!</button>
         </div>
     </fieldset>
 </form>

@@ -19,7 +19,7 @@
             <ul id="slides">
                 <li class="slide showing">File: {{ csvfile }}<br>Confidence: {{ conf }}<br>Press "Play" to start...</li>
                 {% for mon in months %}
-                <li class="slide" style="background-image: url( {{ url_for('static', filename='visualize/' + mon + '/' + mon + '.png') }} ); background-repeat: no-repeat;background-size: 500px;"></li>
+                <li class="slide" style="background-image: url( {{ url_for('static', filename='visualize/' + mon + '/' + mon + '.png') }}{{ time | e }} ); background-repeat: no-repeat;background-size: 500px;"></li>
                 {% endfor %}
             </ul>
         </div>
@@ -47,7 +47,7 @@
             </div>
             <div class="row timeline">
                 <h4>Overview</h4>
-                <img src="{{ url_for('static', filename='visualize/timeline/timeline.png') }}" alt="timeline" class="timeline_image">
+                <img src="{{ url_for('static', filename='visualize/timeline/timeline.png') }}{{ time | e }}" alt="timeline" class="timeline_image">
             </div>
 
 
