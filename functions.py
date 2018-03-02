@@ -157,9 +157,7 @@ def create_hotspot(hotspot, use_hotspot, levels=None, cbar=True):
         ax.set_title(hotspot.title + "-Aoristic")
 
     elif use_hotspot == "getis_visual":
-        sns.heatmap(hotspot.getis, ax=ax, cmap="bwr")
-        sns.heatmap(hotspot.getis, mask=hotspot.getis==0.0, cbar=False, cmap="bwr",
-            annot=True)
+        sns.heatmap(hotspot.getis, ax=ax, cmap="bwr", cbar=True, annot=True, fmt=".1f", mask=(hotspot.getis==0.0))
         ax.set_title(hotspot.title)
 
     # Sets labels and title
@@ -198,16 +196,29 @@ def create_compared_heatmap(data):
         "xticks": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
     }
     fig, ax = plt.subplots(figsize=(7,7))
+    heatmap = sns.heatmap(data, ax=ax, annot=True, cmap="bwr", fmt=".1f", cbar=False)
+
     ax.set_title("Percentual increase/decrease")
     ax.tick_params(axis='both', direction="out")
 
     # Config for the axis ticks
+    # ax.set_xlabel(ticks["xticks"], fontsize=14)
+    # ax.set_ylabel(ticks["yticks"], fontsize=14)
+
+    ax.set_xticklabels(ticks["xticks"], fontsize=9)
+    ax.set_yticklabels(ticks["yticks"], fontsize=9)
+
+    ax.set_xlabel("Days", fontsize=14)
+    ax.set_ylabel("Hours", fontsize=14)
+
+    ax.tick_params(axis="both", direction="out")
     plt.yticks(rotation=0,fontsize=8);
     plt.xticks(rotation=0, fontsize=8);
 
+
     # Makes sure the image (labels) is not cut off
     plt.tight_layout()
-    heatmap = sns.heatmap(data, ax=ax, annot=True, fmt=".1f", cbar=True)
+
 
     if not os.path.exists("static/compare/"):
         os.makedirs("static/compare")
@@ -280,18 +291,17 @@ def save_table(folder, lisa):
     with open("templates/created/" + folder + "/getis_table.html", "w+") as f:
         f.write(table)
 
-def init_compare(hotspot_one, hotspot_two, overlap=False):
+def init_compare(hotspot_one, hotspot_two):
     """
     Initialize comparison of hotspots
     """
-    compared = {}
     path_for_one = "static/maps/" + hotspot_one + "/" + get_saved_csv(hotspot_one)[0]
     path_for_two = "static/maps/" + hotspot_two + "/" + get_saved_csv(hotspot_two)[0]
 
     csv_one = pandas.read_csv(path_for_one, usecols=["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], encoding="utf-8").values
     csv_two = pandas.read_csv(path_for_two, usecols=["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], encoding="utf-8").values
 
-    return compare(csv_one, csv_two, overlap)
+    return compare(csv_one, csv_two)
 
 
 

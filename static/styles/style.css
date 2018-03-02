@@ -22,10 +22,9 @@ body {
 }
 
 .hotspot {
-    display: inline-block;
-    margin-bottom: 50px;
-    /*float: left;*/
-    width: 500px;
+    /*display: inline-block;*/
+    margin-bottom: 20px;
+    width: 450px;
 }
 
 .error {
@@ -53,15 +52,4 @@ body {
 
 label {
     font-size: 1.15em !important;
-}
-
-/*input[type="checkbox"] {
-    position: inherit !important;
-}*/
-
-
-.high {
-    /*position: absolute;
-    min-height: 100%;*/
-    /*height: 100%;*/
 }

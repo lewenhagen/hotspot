@@ -8,7 +8,7 @@
     <title>Hotspot</title>
 
     <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"> -->
-    <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/superhero/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static',filename='bootstrap/bootstrap-superhero.min.css') }}" rel="stylesheet">
 
     <!-- Private stylesheet, loads last -->
     <link rel="stylesheet" href="{{ url_for('static',filename='styles/style.css') }}">

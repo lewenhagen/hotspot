@@ -10,8 +10,7 @@ Generates the heatmap and render the image in template
 import functions
 import config
 from flask import Flask, render_template, request, make_response
-# from nocache import nocache
-# from flask.ext.cache import Cache
+import time
 import os, glob
 import collections
 from aoristic import parse
@@ -26,9 +25,6 @@ import shutil
 app = Flask(__name__)
 
 
-
-# app.config["CACHE_TYPE"] = "null"
-# cache = Cache(app,config={'CACHE_TYPE': 'null'})
 
 units_json = config.get_units()
 
@@ -162,39 +158,25 @@ def compare():
     if request.method == "POST":
         if request.form["chooseCompareOne"] != request.form["chooseCompareTwo"]:
             comparing = True
-            if "overlap" in request.form:
-                compared_hotspot = functions.init_compare(request.form["chooseCompareOne"], request.form["chooseCompareTwo"], True)
-            else:
-                compared_hotspot = functions.init_compare(request.form["chooseCompareOne"], request.form["chooseCompareTwo"])
-                compared_hotspot["jaccard"] = "N/A"
+
+            compared_hotspot = functions.init_compare(request.form["chooseCompareOne"], request.form["chooseCompareTwo"])
             functions.create_compared_heatmap(compared_hotspot["data"])
             compared_pngs.append(request.form["chooseCompareOne"])
             compared_pngs.append(request.form["chooseCompareTwo"])
-            # ugly fast fix
         else:
             error = "Can not compare the same hotspots."
 
 
 
-    return render_template("compare.html", created=sorted(all_folders), error=error, comparing=comparing, compared_pngs=compared_pngs, percent=compared_hotspot["all_percentage"], jaccard=compared_hotspot["jaccard"])
+    return render_template("compare.html", created=sorted(all_folders), error=error, comparing=comparing, compared_pngs=compared_pngs, percent=compared_hotspot["all_percentage"], jaccard=compared_hotspot["jaccard"], time="?"+str(time.time()))
 
 
 
 @app.route('/visualize/', methods=["POST", "GET"])
-# @nocache
 def visualize():
     """
     Visualize route
     """
-    # resp = Response("")
-    # resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-    # resp.headers["Pragma"] = "no-cache"
-    # resp.headers["Expires"] = "0"
-
-    # cache.init_app(app, config={'CACHE_TYPE': 'null'})
-    #
-    # with app.app_context():
-    #     cache.clear()
 
     if request.method == "GET":
         choose_data = config.get_datafiles()
@@ -231,7 +213,7 @@ def visualize():
             month_names.append(months[mon])
             # hotspots.append(hotspot)
 
-        # Timeline takes a list of dataFrame
+        # Timeline takes a list of dataFrames
         timeline = Timeline(data_for_timeline)
         timeline.calculate_total()
         timeline.calculate_percentage()
@@ -239,14 +221,7 @@ def visualize():
 
         functions.save_figure(timeline_result, "static/visualize/", "timeline", ".png")
 
-        return render_template("visualize.html", months=month_names, csvfile=request.form["setupData"], conf=conflevel)
-        # r = make_response(render_template("visualize.html", months=month_names, csvfile=request.form["setupData"], conf=conflevel))
-        # r.headers.set("Cache-Control", "no-cache, no-store, must-revalidate")
-        # r.headers.set("Pragma", "no-cache")
-        # r.headers.set("Expires", "0")
-        # return r
-
-        # return render_template("visualize.html", months=month_names, csvfile=request.form["setupData"], conf=conflevel)
+        return render_template("visualize.html", months=month_names, csvfile=request.form["setupData"], conf=conflevel, time="?"+str(time.time()))
 
 
 

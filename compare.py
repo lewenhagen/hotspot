@@ -3,10 +3,10 @@
 Main file for comparison
 """
 # remove later
-import pandas as pd
+# import pandas as pd
 
-from scipy.stats import norm
-from numpy.linalg import eig
+# from scipy.stats import norm
+# from numpy.linalg import eig
 from sklearn.metrics import jaccard_similarity_score
 import numpy as np
 
@@ -38,40 +38,6 @@ def get_decrease(old, new):
     """
     decrease = old - new
     return ((decrease / old) * 100) * -1
-
-def manual_traverse(a, b):
-    """
-    Manually traverse the hotspots and find overlap
-    Works on both increased and decreased values
-    """
-    num_rows, row_len = a.shape
-    result = np.zeros(shape=(num_rows, row_len), dtype=float)
-    for y_index, y_val in enumerate(a):
-        for x_index, x_val in enumerate(y_val):
-            old_nr = round(a[y_index][x_index], 1)
-            new_nr = round(b[y_index][x_index], 1)
-            if old_nr != 0.0 and new_nr != 0.0:
-                if old_nr > 0.0 and new_nr > 0.0:
-                    if old_nr > new_nr:
-                        result[y_index][x_index] = get_decrease(old_nr, new_nr)
-                    elif old_nr < new_nr:
-                        result[y_index][x_index] = get_increase(old_nr, new_nr)
-                    elif old_nr == new_nr:
-                        result[y_index][x_index] = 0.0
-                if old_nr < 0.0 and new_nr < 0.0:
-                    if old_nr > new_nr:
-                        result[y_index][x_index] = get_increase(old_nr, new_nr)
-                    elif old_nr < new_nr:
-                        result[y_index][x_index] = get_decrease(old_nr, new_nr)
-                    elif old_nr == new_nr:
-                        result[y_index][x_index] = 0.0
-            elif old_nr == 0.0 and new_nr != 0.0:
-                result[y_index][x_index] = new_nr * 100
-            elif old_nr != 0.0 and new_nr == 0.0:
-                result[y_index][x_index] = old_nr * 100
-            elif old_nr == 0.0 and new_nr == 0.0:
-                result[y_index][x_index] = None
-    return result
 
 
 
@@ -137,28 +103,23 @@ def calculate_jaccard(file_a, file_b):
 
     return round(jaccard_similarity_score(j_matrix_left, j_matrix_right), 3)
 
-def compare(file_a, file_b, overlap):
+def compare(file_a, file_b):
     """
     Compare two hotspots
     """
-    if overlap:
-        result = {
-            "data": manual_traverse_overlap(file_a, file_b),
-            "all_percentage": get_percentage(file_a, file_b),
-            "jaccard": calculate_jaccard(file_a, file_b)
-        }
-    else:
-        result = {
-            "data": np.sign(file_a - file_b),#manual_traverse(file_a, file_b),
-            "all_percentage": get_percentage(file_a, file_b)
-        }
+    result = {
+        "data": manual_traverse_overlap(file_a, file_b),
+        "all_percentage": get_percentage(file_a, file_b),
+        "jaccard": calculate_jaccard(file_a, file_b)
+    }
+
 
     # print("Percentage same values: {}".format(get_percentage(file_a, file_b)))
 
     # print(np.allclose(file_a, file_b))
     # get -1, 0 and 1
-    y = np.sign(file_a - file_b)
-    print(y)
+    # y = np.sign(file_a - file_b)
+    # print(y)
     return result
     # a = np.matrix(file_a)
     # b = np.matrix(file_b)
