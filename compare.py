@@ -10,6 +10,14 @@ Main file for comparison
 from sklearn.metrics import jaccard_similarity_score
 import numpy as np
 
+from math import*
+
+def jaccard_similarity(x,y):
+
+ intersection_cardinality = len(set.intersection(*[set(x), set(y)]))
+ union_cardinality = len(set.union(*[set(x), set(y)]))
+ return intersection_cardinality/float(union_cardinality)
+
 # get percent
 # from difflib import SequenceMatcher
 #
@@ -86,22 +94,33 @@ def calculate_jaccard(file_a, file_b):
     calculates the jaccard index
     """
     num_rows, row_len = file_a.shape
-    j_matrix_left = np.zeros(shape=(num_rows, row_len), dtype=int)
-    j_matrix_right = np.zeros(shape=(num_rows, row_len), dtype=int)
+    j_matrix_left = []#np.zeros(shape=(num_rows, row_len), dtype=int)
+    j_matrix_right = []#np.zeros(shape=(num_rows, row_len), dtype=int)
 
     for y_index, y_val in enumerate(file_a):
         for x_index, x_val in enumerate(y_val):
-            if file_a[y_index][x_index] > 0.0:
-                j_matrix_left[y_index][x_index] = 1
-            if file_b[y_index][x_index] > 0.0:
-                j_matrix_right[y_index][x_index] = 1
+            if file_a[y_index][x_index] > 0.0 or file_a[y_index][x_index] < 0.0:
+                j_matrix_left.append(1)#[y_index][x_index] = 1
+            else:
+                j_matrix_left.append(0)
+            if file_b[y_index][x_index] > 0.0 or file_b[y_index][x_index] < 0.0:
+                j_matrix_right.append(1)#[y_index][x_index] = 1
+            else:
+                j_matrix_right.append(0)
     # print("left:")
     # print(j_matrix_left)
     #
     # print("right:")
     # print(j_matrix_right)
 
-    return round(jaccard_similarity_score(j_matrix_left, j_matrix_right), 3)
+    # j_matrix_left =  [0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    # j_matrix_right = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    # print(set(j_matrix_left.flatten()).intersection(j_matrix_right.flatten()))
+    # print(set(j_matrix_left.flatten()).union(j_matrix_right.flatten()))
+
+
+
+    return round(jaccard_similarity(j_matrix_left, j_matrix_right), 3)
 
 def compare(file_a, file_b):
     """
