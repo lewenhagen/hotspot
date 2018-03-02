@@ -147,6 +147,7 @@ def compare():
     compared_hotspot = {
         "all_percentage": 0,
         "jaccard": 0,
+        "jaccard_unique": 0,
         "data": []
     }
     try:
@@ -160,6 +161,7 @@ def compare():
             comparing = True
 
             compared_hotspot = functions.init_compare(request.form["chooseCompareOne"], request.form["chooseCompareTwo"])
+            compared_hotspot["jaccard_unique"] = round(float(1 - compared_hotspot["jaccard"]), 3)
             functions.create_compared_heatmap(compared_hotspot["data"])
             compared_pngs.append(request.form["chooseCompareOne"])
             compared_pngs.append(request.form["chooseCompareTwo"])
@@ -168,7 +170,7 @@ def compare():
 
 
 
-    return render_template("compare.html", created=sorted(all_folders), error=error, comparing=comparing, compared_pngs=compared_pngs, percent=compared_hotspot["all_percentage"], jaccard=compared_hotspot["jaccard"], time="?"+str(time.time()))
+    return render_template("compare.html", created=sorted(all_folders), error=error, comparing=comparing, compared_pngs=compared_pngs, percent=compared_hotspot["all_percentage"], jaccard=compared_hotspot["jaccard"], unique=compared_hotspot["jaccard_unique"], time="?"+str(time.time()))
 
 
 

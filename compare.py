@@ -95,11 +95,11 @@ def calculate_jaccard(file_a, file_b):
                 j_matrix_left[y_index][x_index] = 1
             if file_b[y_index][x_index] > 0.0:
                 j_matrix_right[y_index][x_index] = 1
-    print("left:")
-    print(j_matrix_left)
-
-    print("right:")
-    print(j_matrix_right)
+    # print("left:")
+    # print(j_matrix_left)
+    #
+    # print("right:")
+    # print(j_matrix_right)
 
     return round(jaccard_similarity_score(j_matrix_left, j_matrix_right), 3)
 

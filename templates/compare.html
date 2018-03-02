@@ -16,7 +16,8 @@
             <div class="col-md-5 col-md-offset-1">
                 <h4>Comparison data</h4>
                 <p>Overall identical percentage: {{ percent }}%</p>
-                <p>Jaccard similarity coefficient: {{ jaccard }}</p>
+                <p>Jaccard shared: {{ jaccard }}</p>
+                <p>Jaccard distinct: {{ unique }}</p>
             </div>
             {% else %}
                 <div class="col-md-1 col-md-offset-1"></div>
