@@ -78,9 +78,9 @@ if __name__ == "__main__":
     del dic[len(dic)-1]
     #
     s = Sapphire(dic, res)
-    s.setup()
-    # s.add()
-    # s.calc_gi()
+    #s.setup()
+    s.add()
+    s.calc_gi()
 
 # 1 skapa en hotspot av alla tidigare hur skiljer den hotspot från framtid?
 # 2 kan man kolla skillnad mellan matriser och försöka bygga den nya från den innan med hjälpa av average skillnader?
