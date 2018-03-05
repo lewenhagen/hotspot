@@ -94,6 +94,8 @@ just for appearance; change whatever you want
 }
 
 .marker {
+    transition-timing-function: ease-in;
+    transition: 0.5s;
     height: 200px;
     width: 34px;
     z-index: 10;
@@ -102,12 +104,6 @@ just for appearance; change whatever you want
     top: 0px;
     left: 0px;
     background-color: green;
-
-    -webkit-transition: opacity 3s ease-in-out;
-    -moz-transition: opacity 3s ease-in-out;
-    -ms-transition: opacity 3s ease-in-out;
-    -o-transition: opacity 3s ease-in-out;
-
     opacity: 0.5;
 }
 

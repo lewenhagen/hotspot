@@ -22,9 +22,6 @@ document.getElementsByClassName("timeline_wrapper")[0].appendChild(marker);
 
 function setMarker() {
     marker.style.left = months[currentSlide-1] + "px";
-    // console.log(marker);
-    // console.log(currentSlide);
-    // console.log(months[currentSlide]);
 }
 
 function nextSlide() {
