@@ -5,7 +5,7 @@ Main file for comparison
 # remove later
 # import pandas as pd
 
-# from scipy.stats import norm
+from scipy.stats import norm
 # from numpy.linalg import eig
 from sklearn.metrics import jaccard_similarity_score
 import numpy as np
@@ -19,10 +19,10 @@ def jaccard_similarity(x,y):
  return intersection_cardinality/float(union_cardinality)
 
 # get percent
-# from difflib import SequenceMatcher
+from difflib import SequenceMatcher
 #
-# def similar(a, b):
-#     return SequenceMatcher(None, a, b).ratio()
+def similar(a, b):
+    return SequenceMatcher(None, a, b).ratio()
 
 def get_percentage(file_a, file_b):
     """
@@ -95,45 +95,47 @@ def calculate_jaccard(file_a, file_b):
     """
     num_rows, row_len = file_a.shape
     counter = 1
-    j_matrix_left = []#np.zeros(shape=(num_rows, row_len), dtype=int)
-    j_matrix_right = []#np.zeros(shape=(num_rows, row_len), dtype=int)
+    j_matrix_left = np.zeros(shape=(num_rows, row_len), dtype=int)
+    j_matrix_right = np.zeros(shape=(num_rows, row_len), dtype=int)
 
     for y_index, y_val in enumerate(file_a):
         for x_index, x_val in enumerate(y_val):
             if file_a[y_index][x_index] > 0.0 or file_a[y_index][x_index] < 0.0:
-                j_matrix_left.append(counter)#[y_index][x_index] = 1
-            else:
-                j_matrix_left.append(0)
+                j_matrix_left[y_index][x_index] = 1
+            # else:
+                # j_matrix_left.append(0)
             if file_b[y_index][x_index] > 0.0 or file_b[y_index][x_index] < 0.0:
-                j_matrix_right.append(counter)#[y_index][x_index] = 1
-            else:
-                j_matrix_right.append(0)
+                j_matrix_right[y_index][x_index] = 1
+            # else:
+                # j_matrix_right.append(0)
             counter += 1
-    print("left:")
-    print(j_matrix_left)
-
-    print("right:")
-    print(j_matrix_right)
-
+    # print("left:")
+    # print(j_matrix_left)
+    #
+    # print("right:")
+    # print(j_matrix_right)
     # j_matrix_left =  [0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     # j_matrix_right = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     # print(set(j_matrix_left.flatten()).intersection(j_matrix_right.flatten()))
     # print(set(j_matrix_left.flatten()).union(j_matrix_right.flatten()))
+    # print(np.ones((2, 2)))
+    # # print(norm.pdf(j_matrix_left))
+    # j_matrix_left =  [1, 1, 0, 0, 0]
+    # j_matrix_right = [0, 1, 0, 0, 0]
 
 
-
-    return round(jaccard_similarity(j_matrix_left, j_matrix_right), 3)
+    return round(jaccard_similarity_score(j_matrix_left, j_matrix_right), 3)
 
 def compare(file_a, file_b):
     """
     Compare two hotspots
     """
+    # print(similar(file_a.flatten(), file_b.flatten()))
     result = {
         "data": manual_traverse_overlap(file_a, file_b),
         "all_percentage": get_percentage(file_a, file_b),
         "jaccard": calculate_jaccard(file_a, file_b)
     }
-
 
     # print("Percentage same values: {}".format(get_percentage(file_a, file_b)))
 
@@ -141,6 +143,7 @@ def compare(file_a, file_b):
     # get -1, 0 and 1
     # y = np.sign(file_a - file_b)
     # print(y)
+    # print(np.count_nonzero(file_a == file_b))
     return result
     # a = np.matrix(file_a)
     # b = np.matrix(file_b)
@@ -153,7 +156,6 @@ def compare(file_a, file_b):
     # get nr of elements are the same
     # print((file_a == file_b).sum())
     # ELLER
-    # print(np.count_nonzero(file_a == file_b))
 
     # does not work for matrices (yet)
     # print(similar(file_a, file_b))

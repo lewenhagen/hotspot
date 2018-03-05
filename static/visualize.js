@@ -1,9 +1,9 @@
 var slides = document.querySelectorAll('#slides .slide');
 var months = [57, 100, 144, 189, 233, 277, 322, 367, 410, 455, 499, 543];
-var progress = document.getElementById("progress");
-var currentSlide = 0;
 
+var currentSlide = 0;
 var isPaused = true;
+var progress = document.getElementById("progress");
 var backbtn = document.getElementById("back");
 var playpausebtn = document.getElementById("playpause");
 var nextbtn = document.getElementById("next");
@@ -11,7 +11,7 @@ var speedbtns = document.getElementsByClassName("speed");
 
 var timer = 2000;
 var slideInterval = setInterval(nextSlide, timer);
-// progress.setAttribute("aria-valuemax", "12");
+
 
 var progressStep = (100 / months.length);
 
