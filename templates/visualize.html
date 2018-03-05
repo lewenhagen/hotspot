@@ -47,7 +47,9 @@
             </div>
             <div class="row timeline">
                 <h4>Overview</h4>
-                <img src="{{ url_for('static', filename='visualize/timeline/timeline.png') }}{{ time | e }}" alt="timeline" class="timeline_image">
+                <div class="timeline_wrapper">
+                    <img src="{{ url_for('static', filename='visualize/timeline/timeline.png') }}{{ time | e }}" alt="timeline" class="timeline_image">
+                </div>
             </div>
 
 

@@ -94,24 +94,26 @@ def calculate_jaccard(file_a, file_b):
     calculates the jaccard index
     """
     num_rows, row_len = file_a.shape
+    counter = 1
     j_matrix_left = []#np.zeros(shape=(num_rows, row_len), dtype=int)
     j_matrix_right = []#np.zeros(shape=(num_rows, row_len), dtype=int)
 
     for y_index, y_val in enumerate(file_a):
         for x_index, x_val in enumerate(y_val):
             if file_a[y_index][x_index] > 0.0 or file_a[y_index][x_index] < 0.0:
-                j_matrix_left.append(1)#[y_index][x_index] = 1
+                j_matrix_left.append(counter)#[y_index][x_index] = 1
             else:
                 j_matrix_left.append(0)
             if file_b[y_index][x_index] > 0.0 or file_b[y_index][x_index] < 0.0:
-                j_matrix_right.append(1)#[y_index][x_index] = 1
+                j_matrix_right.append(counter)#[y_index][x_index] = 1
             else:
                 j_matrix_right.append(0)
-    # print("left:")
-    # print(j_matrix_left)
-    #
-    # print("right:")
-    # print(j_matrix_right)
+            counter += 1
+    print("left:")
+    print(j_matrix_left)
+
+    print("right:")
+    print(j_matrix_right)
 
     # j_matrix_left =  [0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     # j_matrix_right = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]

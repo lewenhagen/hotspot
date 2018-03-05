@@ -1,5 +1,5 @@
 var slides = document.querySelectorAll('#slides .slide');
-var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+var months = [57, 100, 144, 189, 233, 277, 322, 367, 410, 455, 499, 543];
 var progress = document.getElementById("progress");
 var currentSlide = 0;
 
@@ -15,6 +15,17 @@ var slideInterval = setInterval(nextSlide, timer);
 
 var progressStep = (100 / months.length);
 
+var marker = document.createElement("div");
+marker.className = "marker";
+
+document.getElementsByClassName("timeline_wrapper")[0].appendChild(marker);
+
+function setMarker() {
+    marker.style.left = months[currentSlide-1] + "px";
+    // console.log(marker);
+    // console.log(currentSlide);
+    // console.log(months[currentSlide]);
+}
 
 function nextSlide() {
     if (!isPaused) {
@@ -22,6 +33,7 @@ function nextSlide() {
         currentSlide = (currentSlide+1)%slides.length;
         slides[currentSlide].className = 'slide showing';
         progress.style.width = (progressStep * currentSlide) +'%';
+        setMarker();
     }
 }
 
@@ -30,6 +42,7 @@ backbtn.addEventListener("click", function() {
     currentSlide = (currentSlide > 0) ? (currentSlide-1)%slides.length : 0;
     slides[currentSlide].className = 'slide showing';
     progress.style.width = (progressStep * currentSlide) +'%';
+    setMarker();
 });
 
 nextbtn.addEventListener("click", function() {
@@ -37,6 +50,7 @@ nextbtn.addEventListener("click", function() {
     currentSlide = (currentSlide+1)%slides.length;
     slides[currentSlide].className = 'slide showing';
     progress.style.width = (progressStep * currentSlide) +'%';
+    setMarker();
 });
 
 playpausebtn.addEventListener("click", function(event) {
