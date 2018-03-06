@@ -5,7 +5,8 @@ Main file for comparison
 # remove later
 # import pandas as pd
 
-from scipy.stats import norm
+# from scipy.stats import norm
+import scipy.stats
 # from numpy.linalg import eig
 from sklearn.metrics import jaccard_similarity_score
 import numpy as np
@@ -94,7 +95,7 @@ def calculate_jaccard(file_a, file_b):
     calculates the jaccard index
     """
     num_rows, row_len = file_a.shape
-    counter = 1
+    # counter = 1
     j_matrix_left = np.zeros(shape=(num_rows, row_len), dtype=int)
     j_matrix_right = np.zeros(shape=(num_rows, row_len), dtype=int)
 
@@ -108,7 +109,7 @@ def calculate_jaccard(file_a, file_b):
                 j_matrix_right[y_index][x_index] = 1
             # else:
                 # j_matrix_right.append(0)
-            counter += 1
+            # counter += 1
     # print("left:")
     # print(j_matrix_left)
     #
@@ -120,9 +121,12 @@ def calculate_jaccard(file_a, file_b):
     # print(set(j_matrix_left.flatten()).union(j_matrix_right.flatten()))
     # print(np.ones((2, 2)))
     # # print(norm.pdf(j_matrix_left))
-    # j_matrix_left =  [1, 1, 0, 0, 0]
-    # j_matrix_right = [0, 1, 0, 0, 0]
+    j_matrix_left =  [1, 1, 1, 0, 0]
+    j_matrix_right = [1, 1, 2, 3, 0]
+    j_matrix_left2 = set(j_matrix_left)
+    j_matrix_right2 = set(j_matrix_right)
 
+    print(j_matrix_left2.union(j_matrix_right2))
 
     return round(jaccard_similarity_score(j_matrix_left, j_matrix_right), 3)
 

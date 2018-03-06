@@ -1,5 +1,5 @@
 var slides = document.querySelectorAll('#slides .slide');
-var months = [57, 100, 144, 189, 233, 277, 322, 367, 410, 455, 499, 543];
+var months = [55, 98, 142, 187, 231, 275, 320, 365, 408, 453, 497, 541];
 
 var currentSlide = 0;
 var isPaused = true;
