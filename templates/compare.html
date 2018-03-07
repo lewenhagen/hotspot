@@ -16,8 +16,12 @@
             <div class="col-md-5 col-md-offset-1">
                 <h4>Comparison data</h4>
                 <p>Overall identical percentage: {{ percent }}%</p>
-                <p>Jaccard shared: {{ jaccard }}</p>
-                <p>Jaccard distinct: {{ unique }}</p>
+                <p>Jaccard shared overall (row based): {{ jaccard.all }}</p>
+                <p>Jaccard distinct overall (row based): {{ unique_all }}</p>
+                <p>Jaccard shared hotspots (row based): {{ jaccard.hot }}</p>
+                <p>Jaccard distinct hotspots (row based): {{ unique_hot }}</p>
+                <p>Jaccard shared coldspots (row based): {{ jaccard.cold }}</p>
+                <p>Jaccard distinct coldspots (row based): {{ unique_cold }}</p>
             </div>
             {% else %}
                 <div class="col-md-1 col-md-offset-1"></div>

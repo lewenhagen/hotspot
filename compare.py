@@ -96,39 +96,47 @@ def calculate_jaccard(file_a, file_b):
     """
     num_rows, row_len = file_a.shape
     # counter = 1
-    j_matrix_left = np.zeros(shape=(num_rows, row_len), dtype=int)
-    j_matrix_right = np.zeros(shape=(num_rows, row_len), dtype=int)
+    j_matrix_left_all = np.zeros(shape=(num_rows, row_len), dtype=int)
+    j_matrix_right_all = np.zeros(shape=(num_rows, row_len), dtype=int)
+    j_matrix_left_hot = np.zeros(shape=(num_rows, row_len), dtype=int)
+    j_matrix_right_hot = np.zeros(shape=(num_rows, row_len), dtype=int)
+    j_matrix_left_cold = np.zeros(shape=(num_rows, row_len), dtype=int)
+    j_matrix_right_cold = np.zeros(shape=(num_rows, row_len), dtype=int)
 
     for y_index, y_val in enumerate(file_a):
         for x_index, x_val in enumerate(y_val):
-            if file_a[y_index][x_index] > 0.0 or file_a[y_index][x_index] < 0.0:
-                j_matrix_left[y_index][x_index] = 1
-            # else:
-                # j_matrix_left.append(0)
-            if file_b[y_index][x_index] > 0.0 or file_b[y_index][x_index] < 0.0:
-                j_matrix_right[y_index][x_index] = 1
-            # else:
-                # j_matrix_right.append(0)
-            # counter += 1
-    # print("left:")
-    # print(j_matrix_left)
-    #
-    # print("right:")
-    # print(j_matrix_right)
-    # j_matrix_left =  [0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    # j_matrix_right = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    # print(set(j_matrix_left.flatten()).intersection(j_matrix_right.flatten()))
-    # print(set(j_matrix_left.flatten()).union(j_matrix_right.flatten()))
-    # print(np.ones((2, 2)))
-    # # print(norm.pdf(j_matrix_left))
-    j_matrix_left =  [1, 1, 1, 0, 0]
-    j_matrix_right = [1, 1, 2, 3, 0]
-    j_matrix_left2 = set(j_matrix_left)
-    j_matrix_right2 = set(j_matrix_right)
+            # LEFT SET
+            if file_a[y_index][x_index] > 0.0 or file_a[y_index][x_index] < 0.0: # all
+                j_matrix_left_all[y_index][x_index] = 1
+                if file_a[y_index][x_index] > 0.0: # hotspot
+                    j_matrix_left_hot[y_index][x_index] = 1
+                if file_a[y_index][x_index] < 0.0: # coldspot
+                    j_matrix_left_cold[y_index][x_index] = 1
 
-    print(j_matrix_left2.union(j_matrix_right2))
+            # RIGHT SET
+            if file_b[y_index][x_index] > 0.0 or file_b[y_index][x_index] < 0.0: # all
+                j_matrix_right_all[y_index][x_index] = 1
+                if file_b[y_index][x_index] > 0.0: # hotspot
+                    j_matrix_right_hot[y_index][x_index] = 1
+                if file_b[y_index][x_index] < 0.0: # coldspot
+                    j_matrix_right_cold[y_index][x_index] = 1
 
-    return round(jaccard_similarity_score(j_matrix_left, j_matrix_right), 3)
+    print("left:")
+    print(j_matrix_left_hot)
+    print("right:")
+    print(j_matrix_right_hot)
+
+    j_left = np.array( [[0, 0, 1, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]]) # 33% per lista/rad 16 är när 33% (1) har samma och däri är det 50% som har samma
+    j_right = np.array([[0, 0, 0, 1, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 1, 0, 0, 0]])
+    print("Här:",  round(jaccard_similarity_score(j_left, j_right)*100, 2))
+
+    # print(j_matrix_left2.union(j_matrix_right2))
+
+    return {
+        "all": round(jaccard_similarity_score(j_matrix_left_all, j_matrix_right_all), 3),
+        "hot": round(jaccard_similarity_score(j_matrix_left_hot, j_matrix_right_hot), 3),
+        "cold": round(jaccard_similarity_score(j_matrix_left_cold.flatten(), j_matrix_right_cold.flatten()), 3)
+    }
 
 def compare(file_a, file_b):
     """
