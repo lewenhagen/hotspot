@@ -9,18 +9,18 @@ Main file for comparison
 import scipy.stats
 # from numpy.linalg import eig
 from sklearn.metrics import jaccard_similarity_score
+from difflib import SequenceMatcher
 import numpy as np
 
 from math import*
 
 def jaccard_similarity(x,y):
 
- intersection_cardinality = len(set.intersection(*[set(x), set(y)]))
- union_cardinality = len(set.union(*[set(x), set(y)]))
- return intersection_cardinality/float(union_cardinality)
+    intersection_cardinality = len(set.intersection(*[set(x), set(y)]))
+    union_cardinality = len(set.union(*[set(x), set(y)]))
+    return intersection_cardinality/float(union_cardinality)
 
 # get percent
-from difflib import SequenceMatcher
 #
 def similar(a, b):
     return SequenceMatcher(None, a, b).ratio()
@@ -32,7 +32,7 @@ def get_percentage(file_a, file_b):
     file_a = file_a.flatten()
     file_b = file_b.flatten()
 
-    return(round(len(set(file_a)&set(file_b)) / float(len(set(file_a) | set(file_b))) * 100, 3))
+    return(round(len(set(file_a)&set(file_b)) / float(len(set(file_a) | set(file_b))) * 100, 1))
 
 def get_increase(old, new):
     """
@@ -126,16 +126,31 @@ def calculate_jaccard(file_a, file_b):
     print("right:")
     print(j_matrix_right_hot)
 
-    j_left = np.array( [[0, 0, 1, 1, 0, 0, 0], [0, 0, 1, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]]) # 33% per lista/rad 16 är när 33% (1) har samma och däri är det 50% som har samma
+    j_left = np.array( [[0, 0, 1, 1, 1, 0, 0], [0, 0, 1, 0, 1, 0, 0], [0, 0, 0, 0, 0, 0, 0]]) # 33% per lista/rad 16 är när 33% (1) har samma och däri är det 50% som har samma
     j_right = np.array([[0, 0, 0, 1, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 1, 0, 0, 0]])
-    print("Här:",  round(jaccard_similarity_score(j_left, j_right)*100, 2))
+    left2 = [0, 0, 1, 1, 0]
+    right2 = [0, 0, 0, 1, 0]
 
+    print("Här:",  round(jaccard_similarity_score(j_left, j_right)*100, 2))
+    print( set(left2).union(set(right2)) )
     # print(j_matrix_left2.union(j_matrix_right2))
 
+    j_all = jaccard_similarity_score(j_matrix_left_all, j_matrix_right_all)
+    j_hot = jaccard_similarity_score(j_matrix_left_hot, j_matrix_right_hot)
+    j_cold = jaccard_similarity_score(j_matrix_left_cold, j_matrix_right_cold)
+
+
     return {
-        "all": round(jaccard_similarity_score(j_matrix_left_all, j_matrix_right_all), 3),
-        "hot": round(jaccard_similarity_score(j_matrix_left_hot, j_matrix_right_hot), 3),
-        "cold": round(jaccard_similarity_score(j_matrix_left_cold.flatten(), j_matrix_right_cold.flatten()), 3)
+        "similarity": {
+            "all": round(j_all*100, 1),
+            "hot": round(j_hot*100, 1),
+            "cold": round(j_cold*100, 1)
+        },
+        "unique": {
+            "all": round((1-j_all)*100, 1),
+            "hot": round((1-j_hot)*100, 1),
+            "cold": round((1-j_cold)*100, 1)
+        }
     }
 
 def compare(file_a, file_b):

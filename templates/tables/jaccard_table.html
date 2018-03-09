@@ -1,0 +1,19 @@
+<table class="table table-hover">
+    <legend>Jaccard Similarity Score</legend>
+    <thead>
+        <tr>
+            <th scope="col">Type</th><th scope="col">Similarity</th><th scope="col">Unique</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="table-dark">
+            <td>All</td><td>{{ jaccard.similarity.all }}%</td><td>{{ jaccard.unique.all }}%</td>
+        </tr>
+        <tr class="table-dark">
+            <td>Hotspots</td><td>{{ jaccard.similarity.hot }}%</td><td>{{ jaccard.unique.hot }}%</td>
+        </tr>
+        <tr class="table-dark">
+            <td>Coldspots</td><td>{{ jaccard.similarity.cold }}%</td><td>{{ jaccard.unique.cold }}%</td>
+        </tr>
+    </tbody>
+</table>
