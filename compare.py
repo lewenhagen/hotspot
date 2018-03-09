@@ -10,6 +10,9 @@ import scipy.stats
 # from numpy.linalg import eig
 from sklearn.metrics import jaccard_similarity_score
 from difflib import SequenceMatcher
+from scipy.spatial.distance import pdist
+from scipy.stats.stats import pearsonr
+from scipy.spatial.distance import jaccard
 import numpy as np
 
 from math import*
@@ -19,6 +22,33 @@ def jaccard_similarity(x,y):
     intersection_cardinality = len(set.intersection(*[set(x), set(y)]))
     union_cardinality = len(set.union(*[set(x), set(y)]))
     return intersection_cardinality/float(union_cardinality)
+
+def jaccard_index(first_set, second_set):
+    """ Computes jaccard index of two sets
+        Arguments:
+          first_set(set):
+          second_set(set):
+        Returns:
+          index(float): Jaccard index between two sets; it is
+            between 0.0 and 1.0
+    """
+    # If both sets are empty, jaccard index is defined to be 1
+    index = 1.0
+    if first_set or second_set:
+        index = (float(len(first_set.intersection(second_set)))
+                 / len(first_set.union(second_set)))
+
+    return index
+
+def square_rooted(x):
+
+   return round(sqrt(sum([a*a for a in x])),3)
+
+def cosine_similarity(x,y):
+
+ numerator = sum(a*b for a,b in zip(x,y))
+ denominator = square_rooted(x)*square_rooted(y)
+ return round(numerator/float(denominator),3)
 
 # get percent
 #
@@ -94,6 +124,7 @@ def calculate_jaccard(file_a, file_b):
     Sets up two matrices to be used for jaccard calculation
     calculates the jaccard index
     """
+    # print(file_a)
     num_rows, row_len = file_a.shape
     # counter = 1
     j_matrix_left_all = np.zeros(shape=(num_rows, row_len), dtype=int)
@@ -106,50 +137,67 @@ def calculate_jaccard(file_a, file_b):
     for y_index, y_val in enumerate(file_a):
         for x_index, x_val in enumerate(y_val):
             # LEFT SET
-            if file_a[y_index][x_index] > 0.0 or file_a[y_index][x_index] < 0.0: # all
+
+            if file_a[y_index][x_index] != 0.0: # all
                 j_matrix_left_all[y_index][x_index] = 1
                 if file_a[y_index][x_index] > 0.0: # hotspot
                     j_matrix_left_hot[y_index][x_index] = 1
+
                 if file_a[y_index][x_index] < 0.0: # coldspot
                     j_matrix_left_cold[y_index][x_index] = 1
+                # else:
+                #     j_matrix_left_cold[y_index][x_index] = 2
 
             # RIGHT SET
-            if file_b[y_index][x_index] > 0.0 or file_b[y_index][x_index] < 0.0: # all
+            if file_b[y_index][x_index] != 0.0: # all
                 j_matrix_right_all[y_index][x_index] = 1
                 if file_b[y_index][x_index] > 0.0: # hotspot
                     j_matrix_right_hot[y_index][x_index] = 1
+
                 if file_b[y_index][x_index] < 0.0: # coldspot
                     j_matrix_right_cold[y_index][x_index] = 1
+                # else:
+                #     j_matrix_right_cold[y_index][x_index] = 3
 
-    print("left:")
-    print(j_matrix_left_hot)
-    print("right:")
-    print(j_matrix_right_hot)
+    # print("left:")
+    # print(j_matrix_left_hot)
+    # print("right:")
+    # print(j_matrix_right_hot)
 
     j_left = np.array( [[0, 0, 1, 1, 1, 0, 0], [0, 0, 1, 0, 1, 0, 0], [0, 0, 0, 0, 0, 0, 0]]) # 33% per lista/rad 16 är när 33% (1) har samma och däri är det 50% som har samma
     j_right = np.array([[0, 0, 0, 1, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 1, 0, 0, 0]])
-    left2 = [0, 0, 1, 1, 0]
-    right2 = [0, 0, 0, 1, 0]
+    left2 =  [1, 0, 0, 0, 0, 1, 0, 0, 0, 0]
+    right2 = [0, 0, 0, 0, 0, 1, 0, 0, 0, 0]
+    print("Jaccard1:", (1 - jaccard(left2, right2)))
+    print("Cosine:", cosine_similarity(left2, right2))
+    print("Jaccard:", jaccard_similarity(left2, right2 ))
+    print("Pearson:", pearsonr(j_matrix_left_cold.flatten(), j_matrix_right_cold.flatten()))
+    print("jaccard2:", jaccard(j_matrix_left_cold.flatten(), j_matrix_right_cold.flatten()))
 
-    print("Här:",  round(jaccard_similarity_score(j_left, j_right)*100, 2))
-    print( set(left2).union(set(right2)) )
-    # print(j_matrix_left2.union(j_matrix_right2))
 
-    j_all = jaccard_similarity_score(j_matrix_left_all, j_matrix_right_all)
-    j_hot = jaccard_similarity_score(j_matrix_left_hot, j_matrix_right_hot)
-    j_cold = jaccard_similarity_score(j_matrix_left_cold, j_matrix_right_cold)
+    print(set(j_matrix_left_cold.flatten()).union(set(j_matrix_right_cold.flatten())))
+
+    j_all = jaccard(j_matrix_left_all.flatten(), j_matrix_right_all.flatten())
+    j_hot = jaccard(j_matrix_left_hot.flatten(), j_matrix_right_hot.flatten())
+    j_cold = jaccard(j_matrix_left_cold.flatten(), j_matrix_right_cold.flatten())
 
 
     return {
         "similarity": {
-            "all": round(j_all*100, 1),
-            "hot": round(j_hot*100, 1),
-            "cold": round(j_cold*100, 1)
-        },
-        "unique": {
             "all": round((1-j_all)*100, 1),
             "hot": round((1-j_hot)*100, 1),
             "cold": round((1-j_cold)*100, 1)
+            # "all": round(j_all*100, 1),
+            # "hot": round(j_hot*100, 1),
+            # "cold": round(j_cold*100, 1)
+        },
+        "unique": {
+            "all": round((j_all)*100, 1),
+            "hot": round((j_hot)*100, 1),
+            "cold": round(j_cold*100, 1)
+            # "all": round((1-j_all)*100, 1),
+            # "hot": round((1-j_hot)*100, 1),
+            # "cold": round((1-j_cold)*100, 1)
         }
     }
 
@@ -157,11 +205,23 @@ def compare(file_a, file_b):
     """
     Compare two hotspots
     """
-    # print(similar(file_a.flatten(), file_b.flatten()))
+    # max_value_a = round(file_a.max(), 1)
+    # max_value_b = round(file_b.max(), 1)
+    # use_max = max_value_a if max_value_a > max_value_b else max_value_b
+    #
+    # min_value_a = round(file_a.min(), 1)
+    # min_value_b = round(file_b.min(), 1)
+    # use_min = min_value_a if min_value_a > min_value_b else min_value_b
+    #
+    # print("MAX: ", use_max)
+    # print("MIN: ", use_min)
+
     result = {
         "data": manual_traverse_overlap(file_a, file_b),
         "all_percentage": get_percentage(file_a, file_b),
         "jaccard": calculate_jaccard(file_a, file_b)
+        # "z_max": use_max,
+        # "z_min": use_min
     }
 
     # print("Percentage same values: {}".format(get_percentage(file_a, file_b)))

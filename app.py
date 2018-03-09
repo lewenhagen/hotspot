@@ -147,6 +147,8 @@ def compare():
     compared_hotspot = {
         "all_percentage": 0,
         "jaccard": {},
+        # "z_min": 0,
+        # "z_max": 0,
         # "j_unique_all": 0,
         # "j_unique_hot": 0,
         # "j_unique_cold": 0,
