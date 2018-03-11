@@ -164,18 +164,18 @@ def calculate_jaccard(file_a, file_b):
     # print("right:")
     # print(j_matrix_right_hot)
 
-    j_left = np.array( [[0, 0, 1, 1, 1, 0, 0], [0, 0, 1, 0, 1, 0, 0], [0, 0, 0, 0, 0, 0, 0]]) # 33% per lista/rad 16 är när 33% (1) har samma och däri är det 50% som har samma
-    j_right = np.array([[0, 0, 0, 1, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 1, 0, 0, 0]])
-    left2 =  [1, 0, 0, 0, 0, 1, 0, 0, 0, 0]
-    right2 = [0, 0, 0, 0, 0, 1, 0, 0, 0, 0]
-    print("Jaccard1:", (1 - jaccard(left2, right2)))
-    print("Cosine:", cosine_similarity(left2, right2))
-    print("Jaccard:", jaccard_similarity(left2, right2 ))
-    print("Pearson:", pearsonr(j_matrix_left_cold.flatten(), j_matrix_right_cold.flatten()))
-    print("jaccard2:", jaccard(j_matrix_left_cold.flatten(), j_matrix_right_cold.flatten()))
-
-
-    print(set(j_matrix_left_cold.flatten()).union(set(j_matrix_right_cold.flatten())))
+    # j_left = np.array( [[0, 0, 1, 1, 1, 0, 0], [0, 0, 1, 0, 1, 0, 0], [0, 0, 0, 0, 0, 0, 0]]) # 33% per lista/rad 16 är när 33% (1) har samma och däri är det 50% som har samma
+    # j_right = np.array([[0, 0, 0, 1, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 1, 0, 0, 0]])
+    # left2 =  [1, 0, 0, 0, 0, 1, 0, 0, 0, 0]
+    # right2 = [0, 0, 0, 0, 0, 1, 0, 0, 0, 0]
+    # print("Jaccard1:", (1 - jaccard(left2, right2)))
+    # print("Cosine:", cosine_similarity(left2, right2))
+    # print("Jaccard:", jaccard_similarity(left2, right2 ))
+    # print("Pearson:", pearsonr(j_matrix_left_cold.flatten(), j_matrix_right_cold.flatten()))
+    # print("jaccard2:", jaccard(j_matrix_left_cold.flatten(), j_matrix_right_cold.flatten()))
+    #
+    #
+    # print(set(j_matrix_left_cold.flatten()).union(set(j_matrix_right_cold.flatten())))
 
     j_all = jaccard(j_matrix_left_all.flatten(), j_matrix_right_all.flatten())
     j_hot = jaccard(j_matrix_left_hot.flatten(), j_matrix_right_hot.flatten())
@@ -187,17 +187,11 @@ def calculate_jaccard(file_a, file_b):
             "all": round((1-j_all)*100, 1),
             "hot": round((1-j_hot)*100, 1),
             "cold": round((1-j_cold)*100, 1)
-            # "all": round(j_all*100, 1),
-            # "hot": round(j_hot*100, 1),
-            # "cold": round(j_cold*100, 1)
         },
         "unique": {
             "all": round((j_all)*100, 1),
             "hot": round((j_hot)*100, 1),
             "cold": round(j_cold*100, 1)
-            # "all": round((1-j_all)*100, 1),
-            # "hot": round((1-j_hot)*100, 1),
-            # "cold": round((1-j_cold)*100, 1)
         }
     }
 
@@ -224,25 +218,4 @@ def compare(file_a, file_b):
         # "z_min": use_min
     }
 
-    # print("Percentage same values: {}".format(get_percentage(file_a, file_b)))
-
-    # print(np.allclose(file_a, file_b))
-    # get -1, 0 and 1
-    # y = np.sign(file_a - file_b)
-    # print(y)
-    # print(np.count_nonzero(file_a == file_b))
     return result
-    # a = np.matrix(file_a)
-    # b = np.matrix(file_b)
-    # x = norm(eig(file_a) - eig(file_b))
-    # y = norm.pdf(file_a - file_b)
-    # file_a.drop(file_a.head(1).index, inplace=True)
-
-
-
-    # get nr of elements are the same
-    # print((file_a == file_b).sum())
-    # ELLER
-
-    # does not work for matrices (yet)
-    # print(similar(file_a, file_b))

@@ -162,17 +162,20 @@ def compare():
 
     if request.method == "POST":
         if request.form["chooseCompareOne"] != request.form["chooseCompareTwo"]:
-            comparing = True
+            if "Choose a hotspot..." not in (request.form["chooseCompareOne"], request.form["chooseCompareTwo"]):
+                comparing = True
 
-            compared_hotspot = functions.init_compare(request.form["chooseCompareOne"], request.form["chooseCompareTwo"])
-            # compared_hotspot["j_unique_all"] = round(float(1 - compared_hotspot["jaccard"]["all"])*100, 3)
-            # compared_hotspot["j_unique_hot"] = round(float(1 - compared_hotspot["jaccard"]["hot"])*100, 3)
-            # compared_hotspot["j_unique_cold"] = round(float(1 - compared_hotspot["jaccard"]["cold"])*100, 3)
-            functions.create_compared_heatmap(compared_hotspot["data"])
-            compared_pngs.append(request.form["chooseCompareOne"])
-            compared_pngs.append(request.form["chooseCompareTwo"])
+                compared_hotspot = functions.init_compare(request.form["chooseCompareOne"], request.form["chooseCompareTwo"])
+                # compared_hotspot["j_unique_all"] = round(float(1 - compared_hotspot["jaccard"]["all"])*100, 3)
+                # compared_hotspot["j_unique_hot"] = round(float(1 - compared_hotspot["jaccard"]["hot"])*100, 3)
+                # compared_hotspot["j_unique_cold"] = round(float(1 - compared_hotspot["jaccard"]["cold"])*100, 3)
+                functions.create_compared_heatmap(compared_hotspot["data"])
+                compared_pngs.append(request.form["chooseCompareOne"])
+                compared_pngs.append(request.form["chooseCompareTwo"])
+            else:
+                error = "You have to choose two files."
         else:
-            error = "Can not compare the same hotspots."
+            error = "Can not compare the same files."
 
 
 

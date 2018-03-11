@@ -301,7 +301,7 @@ def init_compare(hotspot_one, hotspot_two):
     csv_one = pandas.read_csv(path_for_one, usecols=["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], encoding="utf-8").values
     csv_two = pandas.read_csv(path_for_two, usecols=["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], encoding="utf-8").values
     print(type(csv_one))
-    print(type(csv_two))
+    print(csv_two)
 
     return compare(csv_one, csv_two)
 
