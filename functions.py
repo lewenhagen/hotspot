@@ -16,7 +16,7 @@ import config
 from aoristic import aoristic
 from aoristic import parse
 from gi.getis import Gi
-from compare import compare
+from compare import Compare
 import calendar
 import csv
 
@@ -300,10 +300,21 @@ def init_compare(hotspot_one, hotspot_two):
 
     csv_one = pandas.read_csv(path_for_one, usecols=["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], encoding="utf-8").values
     csv_two = pandas.read_csv(path_for_two, usecols=["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], encoding="utf-8").values
-    print(type(csv_one))
-    print(csv_two)
 
-    return compare(csv_one, csv_two)
+    compare = Compare(csv_one, csv_two)
+    compare.calculate_overlap()
+    compare.calculate_percentage()
+    compare.calculate_jaccard()
+    compare.calculate_fuzziness()
+
+    return {
+        "data": compare.get_overlap(),
+        "all_percentage": compare.get_percentage(),
+        "jaccard": compare.get_jaccard(),
+        "fuzziness": 0
+        # "z_max": use_max,
+        # "z_min": use_min
+    }
 
 
 
