@@ -7,24 +7,26 @@ import csv
 sys.path.append('..')
 from aoristic import aoristic
 from aoristic import parse as parser
-class ProcessEvents:
 
-    def __init__(self, units):
+class ProcessEvents:
+    def __init__(self):
+        units = json.load(open("../units.json", "r"))
         self.y = units["hours"]
         self.x = units["days"]
         self.combined_list = list()
 
-    def process_data(self):
-        for y in range(1, 5):
-            for m in range(1, 13):
+    def process_data(self, year_s, year_e, month_s, month_e):
+        for y in range(year_s, year_e):
+            for m in range(month_s, month_e):
                 search = "201{}-{}".format(y,self.zero_pad(m))
                 # number = "201{}{}".format(y,self.zero_pad(m))
-                filtered_aoristic = self.filter_to_list(search)
-                one_month_list = self.aoristic_to_tuples(search, filtered_aoristic)
+                filtered_aoristic = self.filter_to_matrix(search)
+                # one_month_list = self.aoristic_to_tuples(search, filtered_aoristic)
                 # one_month_list = self.aoristic_to_tuples(number, filtered_aoristic)
 
-                self.combined_list = list(itertools.chain(self.combined_list, one_month_list))
+                self.combined_list.append(numpy.matrix(filtered_aoristic))
         self.save_to_csv()
+        return self.combined_list
 
     def save_to_csv(self):
         with open('data.csv','w',  newline='') as out:
@@ -45,18 +47,18 @@ class ProcessEvents:
         # date += "{day}.{hour}".format(day=self.zero_pad(day), hour=self.zero_pad(hour))
         return date
 
-    def filter_to_list(self, search):
+    def filter_to_matrix(self, search):
         raw_data = parser.csv_to_dict(search, "datestart", "total_v2.csv")
         aoristic_data = [[0 for x in range(self.x["size"])] for y in range(self.y["size"])] # x y, init matrix
         aoristic.aoristic_method(raw_data, aoristic_data, self.x, self.y)
-        arr = numpy.matrix(aoristic_data).flat
-        return arr
+        # arr = numpy.matrix(aoristic_data).flat
+        return aoristic_data
 
     @staticmethod
     def zero_pad(number):
         return  number if number > 9 else "0" + str(number)
 
 if __name__ == "__main__":
-    units = json.load(open("../units.json", "r"))
-    p = ProcessEvents(units)
-    p.process_data()
+    p = ProcessEvents()
+    p.process_data(4, 5, 1, 3)
+    print(p.combined_list)
