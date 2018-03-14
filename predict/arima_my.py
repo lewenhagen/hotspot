@@ -39,14 +39,14 @@ def test_stationarity(timeseries):
         dfoutput['Critical Value (%s)'%key] = value
     print(dfoutput)
 
-def parameter_selection_for_arima():
+def parameter_selection_for_arima(y):
     # Define the p, d and q parameters to take any value between 0 and 2
-    p = d = q = range(0, 5)
+    p = d = q = range(0, 3)
     # Generate all different combinations of p, q and q triplets
     pdq = list(itertools.product(p, d, q))
 
     # Generate all different combinations of seasonal p, q and q triplets
-    seasonal_pdq = [(x[0], x[1], x[2], 2016) for x in list(itertools.product(p, d, q))]
+    seasonal_pdq = [(x[0], x[1], x[2], (2016)) for x in list(itertools.product(p, d, q))]
 
     # print('Examples of parameter combinations for Seasonal ARIMA...')
     # print('SARIMAX: {} x {}'.format(pdq[1], seasonal_pdq[1]))
@@ -98,20 +98,21 @@ def parameter_selection_for_arima():
 def fit_time_series(y):
     warnings.filterwarnings("ignore") # specify to ignore warning messages
     mod = sm.tsa.statespace.SARIMAX(y,
-                                    order=(1, 0, 1),
-                                    seasonal_order=(0, 0, 0, 2016),
+                                    # order=(1, 0, 1),
+                                    order=(2, 1, 3),
+                                    # seasonal_order=(0, 0, 0, 2016),
                                     enforce_stationarity=False,
                                     enforce_invertibility=False)
 
     results = mod.fit()
-
+    print(results.aic)
     print(results.summary().tables[1])
     # results.plot_diagnostics(figsize=(15, 12))
     # plt.show()
     return results
     #
 def validate_forecast_non_dynamic(results, y):
-    pred = results.get_prediction(start=pd.to_datetime('2014-12-01'), dynamic=False)
+    pred = results.get_prediction(start=pd.to_datetime('2014-12-01 00:00'), end=pd.to_datetime('2014-12-07 23:00'), dynamic=False)
     #print(pred.predicted_mean) # lista med värden
     #print(pred.summary_frame())
     #print(dir(pred.prediction_results.results))
@@ -138,7 +139,7 @@ def validate_forecast_non_dynamic(results, y):
     # Compute the mean square error
     mse = ((y_forecasted - y_truth) ** 2).mean()
     print('The Mean Squared Error of our forecasts is {}'.format(round(mse, 2))) # Nära 0 är bra. 0 = perfect matchning mellan verklighet och forutspådd.
-    
+
     return pred.predicted_mean
 
 def validate_forecast_dynamic(results, y):
@@ -147,19 +148,19 @@ def validate_forecast_dynamic(results, y):
     # print(y.values)
     # plt.plot(y)
     # plt.show()
-    ax = y["2011":].plot(label='observed')
+    ax = y["2014":].plot(label='observed')
     pred_dynamic.predicted_mean.plot(label='Dynamic Forecast', ax=ax)
-    
+
     ax.fill_between(pred_dynamic_ci.index,
                     pred_dynamic_ci.iloc[:, 0],
                     pred_dynamic_ci.iloc[:, 1], color='k', alpha=.25)
-    
+
     ax.fill_betweenx(ax.get_ylim(), pd.to_datetime('2014-12-01 00:00:00'), y.index[-1],
                      alpha=.1, zorder=-1)
-    
+
     ax.set_xlabel('Date')
     ax.set_ylabel('CO2 Levels')
-    
+
     plt.legend()
     plt.show()
 
@@ -170,6 +171,7 @@ def validate_forecast_dynamic(results, y):
     # Compute the mean square error
     mse = ((y_forecasted - y_truth) ** 2).mean()
     print('The Mean Squared Error of our forecasts is {}'.format(round(mse, 2)))
+    return pred_dynamic.predicted_mean
 
 def forecast_steps(results, y):
     # Get forecast 500 steps ahead in future
@@ -180,10 +182,10 @@ def forecast_steps(results, y):
     print(y.index.freq)
     print(type(results))
     print(dir(results))
-  
+
     # pred_uc = results.forecast(steps=168) Om vi har frequenzy, utan lagt till datum
-    y['forecast'] = results.predict(start = pd.to_datetime('2015-01-01'), dynamic= False)  
-    y[['crimes', 'forecast']].ix[-24:].plot(figsize=(12, 8)) 
+    y['forecast'] = results.predict(start = pd.to_datetime('2015-01-01'), dynamic= False)
+    y[['crimes', 'forecast']].ix[-24:].plot(figsize=(12, 8))
     # Get confidence intervals of forecasts
     pred_ci = pred_uc.conf_int()
 
@@ -200,18 +202,22 @@ def forecast_steps(results, y):
 
 
 def add_new_time_period(y):
-    print(y)
-    start = datetime.datetime.strptime("2015-01-01 00:00:00", "%Y-%m-%d %H:%M:%S")
-    date_list = [start + relativedelta.relativedelta(hours=x) for x in range(0,168)]
-    future = pd.DataFrame(index=date_list, columns= ["crimes"])
-    print(future)
-    future = future["crimes"]
-    future = future.astype("float64")
+    # print(y)
+    # start = datetime.datetime.strptime("2015-01-01 00:00:00", "%Y-%m-%d %H:%M:%S")
+    # date_list = [start + relativedelta.relativedelta(hours=x) for x in range(0,168)]
+    # future = pd.DataFrame(index=date_list, columns= ["crimes"])
+    # print(future)
+    # future = future["crimes"]
+    # future = future.astype("float64")
     #y = pd.concat([y, future])
-    y = y.append(future)
+    start = datetime.datetime.strptime("2015-01-01 00:00:00", "%Y-%m-%d %H:%M:%S")
+    date_list = pd.date_range('2015-01-01 00:00:00', freq='1H', periods=168)
+    future = pd.DataFrame(index=date_list)
+    data = pd.concat([y, future])
+    # y = y.append(future)
     #y = y.fillna(0)
-    print(y.dt.date)
-    return y
+    print(data)
+    return data
 
 def resize_result(res, ts_log, ts):
     #predictions_ARIMA_diff = pd.Series(y.fittedvalues, copy=True)
@@ -226,21 +232,22 @@ def resize_result(res, ts_log, ts):
     #print(predictions_ARIMA)
     plt.plot(predictions_ARIMA)
     plt.title('RMSE: %.4f'% np.sqrt(sum((predictions_ARIMA-ts)**2)/len(ts)))
-    
-    
+
+
     #print(np.exp(res))
-    
+
     plt.show()
     return predictions_ARIMA
 
-    
+
 # dateparse = lambda dates: pd.datetime.strptime(dates, "%Y-%m-%d ") # lambda function to parse the dates from file
 # data = pd.read_csv('data.csv', parse_dates=True, index_col="day", delimiter=",") # read data from file and parse the strins with dates to datetime objects
-data = pd.read_csv('data.csv', parse_dates=[0], keep_date_col=True, index_col=0, delimiter=",", header=None, names=["day", "crimes"]) # read data from file and parse the strins with dates to datetime objects
+data = pd.read_csv('datas.csv', parse_dates=[0], keep_date_col=True, index_col=0, delimiter=",", header=None, names=["day", "crimes"]) # read data from file and parse the strins with dates to datetime objects
 # data.sort_values(by="day")
 data = data.sort_index()
 o = data["crimes"] # make to a timeseries
 y = np.log(o) # make more stationary. got  better results in stationary and fit
+# y = o
 #decomposition = seasonal_decompose(y)
 #y = decomposition.resid # behöver en frequenzy för denna
 # plt.plot(y) # plot timeseries
@@ -253,23 +260,23 @@ y = np.log(o) # make more stationary. got  better results in stationary and fit
 # The term bfill means that we use the value before filling in missing values
 # y = y.fillna(np.nan)
 
+# y = add_new_time_period(y)
 #print(y)
 # y.plot(figsize=(15, 6))
 # plt.show()
-#test_stationarity(y)
-# parameter_selection_for_arima()
+# test_stationarity(y)
+## parameter_selection_for_arima(y)
 res = fit_time_series(y)
 # plt.plot(y) # plot timeseries
 # plt.show()
-
-pred = validate_forecast_non_dynamic(res, y) # working
-# validate_forecast_dynamic(res, y) # kass
-#forecast_steps(res, y)
-values = resize_result(pred, y, o)
-s = Sapphire([], values)
-v = np.array(values)
+# pred = validate_forecast_non_dynamic(res, y) # working
+pred = validate_forecast_dynamic(res, y) # kass
+# #forecast_steps(res, y)
+# values = resize_result(pred, y, o)
+s = Sapphire([], pred)
+v = np.array(pred)
 v = v.reshape(7,24)
 v = np.transpose(v)
-#print(v)
+# #print(v)
 s.res_sum_mat = v
 s.calc_gi()

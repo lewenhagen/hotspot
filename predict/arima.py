@@ -13,7 +13,7 @@ warnings.filterwarnings("ignore") # specify to ignore warning messages
 
 def parameter_selection_for_arima():
     # Define the p, d and q parameters to take any value between 0 and 2
-    p = d = q = range(0, 2)
+    p = d = q = range(0, 5)
     # Generate all different combinations of p, q and q triplets
     pdq = list(itertools.product(p, d, q))
 
@@ -115,8 +115,16 @@ def validate_forecast_dynamic(results, y):
 
 def forecast_steps(results, y):
     # Get forecast 500 steps ahead in future
-    pred_uc = results.get_forecast(steps=500)
+    # pred_uc = results.get_forecast(steps=500)
     # Get confidence intervals of forecasts
+    
+    start = datetime.datetime.strptime("2015-01-01 00:00:00", "%Y-%m-%d")
+    date_list = pd.date_range('2015-01-01 00:00:00', freq='1H', periods=168)
+    future = pd.DataFrame(index=date_list, columns= df.columns)
+    data = pd.concat([results, future])
+    
+    
+    pred = results.get_prediction(start=pd.to_datetime('2015-01-01'), dynamic=False)
     pred_ci = pred_uc.conf_int()
 
     ax = y.plot(label='observed', figsize=(20, 15))
@@ -145,5 +153,5 @@ y = y.fillna(y.bfill())
 #parameter_selection_for_arima()
 res = fit_time_series(y)
 # validate_forecast_non_dynamic(res, y)
-validate_forecast_dynamic(res, y)
-# forecast_steps(res, y)
+#validate_forecast_dynamic(res, y)
+forecast_steps(res, y)
