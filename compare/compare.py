@@ -16,6 +16,9 @@ from scipy.spatial.distance import pdist
 from scipy.stats.stats import pearsonr
 from scipy.spatial.distance import jaccard
 
+from pai import pai
+
+
 class Compare():
     """
     Class for comparison
@@ -225,10 +228,6 @@ class Compare():
 
 
 
-
-
-
-
     def calculate_fuzziness(self):
         """
         Calculates the fuzziness in the overlap
@@ -254,6 +253,80 @@ class Compare():
         print("here:", self.fuzziness_matrix)
 
 
+# No similarity
+input_a = np.array([[ 0, 0, 0, 0, 0, 0, 0 ],
+                    [ 0, -1, -1, 0, 0, 0, 0 ],
+                    [ -1, -1, 0, 0, 0, 0, 0 ],
+                    [ 0, 0, 0, 0, 0, 0, 0 ],
+                    [ 0, 0, 1, 0, 0, 0, 0 ],
+                    [ 0, 1, 1, 0, 0, 0, 0 ],
+                    [ 0, 0, 0, 0, 0, 0, 0 ]])
+
+input_b = np.array([[ 0, 0, 0, 0, 0, 0, 0 ],
+                    [ 0, 0, 0, 0, 0, 0, 0 ],
+                    [ 0, 0, 0, 0, 0, 0, 0 ],
+                    [ 0, 0, 0, 1, 0, 0, 0 ],
+                    [ 0, 0, 0, 1, 1, 0, 0 ],
+                    [ 0, 0, 0, 1, 1, 0, 0 ],
+                    [ 0, 0, 0, 0, 0, 0, 0 ]])
+
+#
+# print(a.flatten())
+# print(b.flatten())
+print("> No similarity")
+print("Jaccard-Needham Similarity:", ((1 - ( jaccard(input_a.flatten(), input_b.flatten())) ) * 100) )
+print("Jaccard-Needham Dissimilarity:", ( jaccard(input_a.flatten(), input_b.flatten()) ) * 100 )
+
+print("Jaccard Index Similarity:", ( jaccard_similarity_score(input_a.flatten(), input_b.flatten()) ) * 100 )
+print("Jaccard Index Dissimilarity:", ((1 - ( jaccard_similarity_score(input_a.flatten(), input_b.flatten())) ) * 100) )
+
+# Identical
+input_a = np.array([[ 0, 0, 0, 0, 0, 0, 0 ],
+              [ 0, -1, -1, 0, 0, 0, 0 ],
+              [ -1, -1, 0, 0, 0, 0, 0 ],
+              [ 0, 0, 0, 0, 0, 0, 0 ],
+              [ 0, 0, 1, 0, 0, 0, 0 ],
+              [ 0, 1, 1, 0, 0, 0, 0 ],
+              [ 0, 0, 0, 0, 0, 0, 0 ]])
+
+input_b = np.array([[ 0, 0, 0, 0, 0, 0, 0 ],
+              [ 0, -1, -1, 0, 0, 0, 0 ],
+              [ -1, -1, 0, 0, 0, 0, 0 ],
+              [ 0, 0, 0, 0, 0, 0, 0 ],
+              [ 0, 0, 1, 0, 0, 0, 0 ],
+              [ 0, 1, 1, 0, 0, 0, 0 ],
+              [ 0, 0, 0, 0, 0, 0, 0 ]])
+
+print("> Identical")
+print("Jaccard-Needham Similarity:", ((1 - ( jaccard(input_a.flatten(), input_b.flatten())) ) * 100) )
+print("Jaccard-Needham Dissimilarity:", ( jaccard(input_a.flatten(), input_b.flatten()) ) * 100 )
+
+print("Jaccard Index Similarity:", ( jaccard_similarity_score(input_a.flatten(), input_b.flatten()) ) * 100 )
+print("Jaccard Index Dissimilarity:", ((1 - ( jaccard_similarity_score(input_a.flatten(), input_b.flatten())) ) * 100) )
+
+# Partial
+input_a = np.array([[ 0, 0, 0, 0, 0, 0, 0 ],
+                    [ 0, -1, -1, 0, 0, 0, 0 ],
+                    [ -1, 0, 0, 0, 0, 0, 0 ],
+                    [ 0, 0, 0, 0, 0, 0, 0 ],
+                    [ 0, 0, 1, 0, 1, 0, 0 ],
+                    [ 0, 1, 1, 0, 0, 0, 0 ],
+                    [ 0, 0, 0, 0, 0, 0, 0 ]])
+
+input_b = np.array([[ 0, 0, 0, 0, 0, 0, 0 ],
+                    [ 0, -1, -1, -1, 0, 0, 0 ],
+                    [ -1, -1, 0, 0, 0, 0, 0 ],
+                    [ 0, 0, 0, 0, 0, 0, 0 ],
+                    [ 0, 0, 1, 1, 1, 0, 0 ],
+                    [ 0, 1, 1, 0, 0, 0, 0 ],
+                    [ 0, 0, 0, 0, 0, 0, 0 ]])
+
+print("> Partial")
+print("Jaccard-Needham Similarity:", ((1 - ( jaccard(input_a.flatten(), input_b.flatten())) ) * 100) )
+print("Jaccard-Needham Dissimilarity:", ( jaccard(input_a.flatten(), input_b.flatten()) ) * 100 )
+
+print("Jaccard Index Similarity:", ( jaccard_similarity_score(input_a.flatten(), input_b.flatten()) ) * 100 )
+print("Jaccard Index Dissimilarity:", ((1 - ( jaccard_similarity_score(input_a.flatten(), input_b.flatten())) ) * 100) )
 
 
 

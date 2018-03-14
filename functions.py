@@ -17,6 +17,7 @@ from aoristic import aoristic
 from aoristic import parse
 from gi.getis import Gi
 from compare.compare import Compare
+from pai import pai
 import calendar
 import csv
 
@@ -89,10 +90,10 @@ def get_data_frame_getis(data, t_map):
 
     result["getis"] = gi.get_result()
 
+    print(result["getis"])
     df_getis = pandas.DataFrame(data=result["getis"],
                             index=data.yticks["ticks"],
                             columns=data.xticks["ticks"])
-
     return (df_getis, result["conf_levels"])
 
 
@@ -311,7 +312,7 @@ def init_compare(hotspot_one, hotspot_two):
         "data": compare.get_overlap(),
         "all_percentage": compare.get_percentage(),
         "jaccard": compare.get_jaccard(),
-        "fuzziness": 0
+        "pai": round(pai.pai_index(csv_one, csv_two), 3)
         # "z_max": use_max,
         # "z_min": use_min
     }
