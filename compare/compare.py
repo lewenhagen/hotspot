@@ -16,6 +16,8 @@ from scipy.spatial.distance import pdist
 from scipy.stats.stats import pearsonr
 from scipy.spatial.distance import jaccard
 
+from metrics import jaccard as ji
+
 from pai import pai
 
 
@@ -301,8 +303,8 @@ print("> Identical")
 print("Jaccard-Needham Similarity:", ((1 - ( jaccard(input_a.flatten(), input_b.flatten())) ) * 100) )
 print("Jaccard-Needham Dissimilarity:", ( jaccard(input_a.flatten(), input_b.flatten()) ) * 100 )
 
-print("Jaccard Index Similarity:", ( jaccard_similarity_score(input_a.flatten(), input_b.flatten()) ) * 100 )
-print("Jaccard Index Dissimilarity:", ((1 - ( jaccard_similarity_score(input_a.flatten(), input_b.flatten())) ) * 100) )
+print("Jaccard Index Similarity:", ( ji.jaccard(input_a.flatten(), input_b.flatten()) ) * 100 )
+print("Jaccard Index Dissimilarity:", ((1 - ( ji.jaccard(input_a.flatten(), input_b.flatten())) ) * 100) )
 
 # Partial
 input_a = np.array([[ 0, 0, 0, 0, 0, 0, 0 ],
@@ -325,11 +327,13 @@ print("> Partial")
 print("Jaccard-Needham Similarity:", ((1 - ( jaccard(input_a.flatten(), input_b.flatten())) ) * 100) )
 print("Jaccard-Needham Dissimilarity:", ( jaccard(input_a.flatten(), input_b.flatten()) ) * 100 )
 
-print("Jaccard Index Similarity:", ( jaccard_similarity_score(input_a.flatten(), input_b.flatten()) ) * 100 )
-print("Jaccard Index Dissimilarity:", ((1 - ( jaccard_similarity_score(input_a.flatten(), input_b.flatten())) ) * 100) )
+print("Jaccard Index Similarity:", ( ji.jaccard(input_a.flatten(), input_b.flatten()) ) * 100 )
+print("Jaccard Index Dissimilarity:", ((1 - ( ji.jaccard(input_a.flatten(), input_b.flatten())) ) * 100) )
 
-
-
+# a = np.array([ 1, -1, 1, 0, 1 ])
+# b = np.array([ 0, -1, 0, 1, 1 ])
+#
+# print(ji.jaccard(a, b))
 
 # def square_rooted(x):
 #    return round(sqrt(sum([a*a for a in x])),3)
