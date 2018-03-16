@@ -96,7 +96,7 @@ class Timeline():
         ax.plot(cold, marker='o', linestyle='-', color='b', label='Coldspot')
         ax.plot(mid, color="black")
         ax.tick_params(labelsize=9, direction="out")
-        ax.set_ylim([-1, 1])
+        # ax.set_ylim([-1, 1])
 
         xticks, xticklabels = plt.xticks()
 

@@ -4,6 +4,7 @@ Main file for Comparison class
 """
 # remove later
 # import pandas as pd
+import timeit
 
 # from scipy.stats import norm
 import scipy.stats
@@ -135,30 +136,61 @@ class Compare():
         Sets up two matrices to be used for jaccard calculation
         calculates the jaccard index
         """
+        # left = self.left_map
+        # right = self.right_map
 
-        for y_index, y_val in enumerate(self.left_map):
-            for x_index, x_val in enumerate(y_val):
-                # LEFT SET
-                if self.left_map[y_index][x_index] != 0.0: # all
-                    self.j_left_all[y_index][x_index] = 1
-                    if self.left_map[y_index][x_index] > 0.0: # hotspot
-                        self.j_left_hot[y_index][x_index] = 1
+        left_all = np.copy(self.left_map)
+        right_all = np.copy(self.right_map)
 
-                    if self.left_map[y_index][x_index] < 0.0: # coldspot
-                        self.j_left_cold[y_index][x_index] = 1
+        left_hot = np.copy(self.left_map)
+        right_hot = np.copy(self.right_map)
 
-                # RIGHT SET
-                if self.right_map[y_index][x_index] != 0.0: # all
-                    self.j_right_all[y_index][x_index] = 1
-                    if self.right_map[y_index][x_index] > 0.0: # hotspot
-                        self.j_right_hot[y_index][x_index] = 1
+        left_cold = np.copy(self.left_map)
+        right_cold = np.copy(self.right_map)
 
-                    if self.right_map[y_index][x_index] < 0.0: # coldspot
-                        self.j_right_cold[y_index][x_index] = 1
+        left_all[left_all != 0] = 1
+        right_all[right_all != 0] = 1
 
-        j_all = jaccard(self.j_left_all.flatten(), self.j_right_all.flatten())
-        j_hot = jaccard(self.j_left_hot.flatten(), self.j_right_hot.flatten())
-        j_cold = jaccard(self.j_left_cold.flatten(), self.j_right_cold.flatten())
+        left_hot[left_hot > 0] = 1
+        left_hot[left_hot < 0] = 0 #  clear coldspots
+
+        right_hot[right_hot > 0] = 1
+        right_hot[right_hot < 0] = 0 #  clear coldspots
+
+        left_cold[left_cold > 0] = 0 #  clear hotspots
+        left_cold[left_cold < 0] = 1
+        print("here", left_cold)
+
+        right_cold[right_cold > 0] = 0 #  clear hotspots
+        right_cold[right_cold < 0] = 1
+
+        # for y_index, y_val in enumerate(self.left_map):
+        #     for x_index, x_val in enumerate(y_val):
+        #         # LEFT SET
+        #         if self.left_map[y_index][x_index] != 0.0: # all
+        #             self.j_left_all[y_index][x_index] = 1
+        #             if self.left_map[y_index][x_index] > 0.0: # hotspot
+        #                 self.j_left_hot[y_index][x_index] = 1
+        #
+        #             if self.left_map[y_index][x_index] < 0.0: # coldspot
+        #                 self.j_left_cold[y_index][x_index] = 1
+        #
+        #         # RIGHT SET
+        #         if self.right_map[y_index][x_index] != 0.0: # all
+        #             self.j_right_all[y_index][x_index] = 1
+        #             if self.right_map[y_index][x_index] > 0.0: # hotspot
+        #                 self.j_right_hot[y_index][x_index] = 1
+        #
+        #             if self.right_map[y_index][x_index] < 0.0: # coldspot
+        #                 self.j_right_cold[y_index][x_index] = 1
+        #
+        # j_all = jaccard(self.j_left_all.flatten(), self.j_right_all.flatten())
+        # j_hot = jaccard(self.j_left_hot.flatten(), self.j_right_hot.flatten())
+        # j_cold = jaccard(self.j_left_cold.flatten(), self.j_right_cold.flatten())
+        
+        j_all = ji.jaccard(left_all.flatten(), right_all.flatten())
+        j_hot = ji.jaccard(left_hot.flatten(), right_hot.flatten())
+        j_cold = ji.jaccard(left_cold.flatten(), right_cold.flatten())
 
 
         self.jaccard = {

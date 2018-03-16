@@ -16,21 +16,21 @@ def pai_index(study_area, prediction_area):
     N = np.sum(study_area)
     n = np.sum(prediction_area)
     A = study_area.size
-    a = prediction_area.size
+    a = np.count_nonzero(prediction_area)
 
     return ((n / N) * 100) / ((a / A) * 100)
 
 if __name__ == "__main__":
 
     a = np.array([[ 0, 0, 0, 0, 0, 0, 0 ],
-                [ 0, 34, 23, 0, 0, 0, 0 ],
+                [ 3, 34, 23, 0, 0, 0, 0 ],
                 [ -1, 0, 0, 0, 0, 0, 0 ],
                 [ 0, 0, 0, 0, 0, 0, 0 ],
                 [ 0, 0, 1, 0, 1, 0, 0 ],
                 [ 0, 1, 1, 0, 0, 0, 0 ],
                 [ 0, 0, 0, 0, 0, 0, 0 ]])
     b = np.array([[ 0, 0, 0, 0, 0, 0, 0 ],
-                [ 0, 33, 23, 0, 0, 0, 0 ],
+                [ 3, 34, 23, 0, 0, 0, 0 ],
                 [ -1, 0, 0, 0, 0, 0, 0 ],
                 [ 0, 0, 0, 0, 0, 0, 0 ],
                 [ 0, 0, 1, 0, 1, 0, 0 ],
@@ -39,4 +39,4 @@ if __name__ == "__main__":
 
 
 
-    pai_index(a, b)
+    print(pai_index(a, b))
