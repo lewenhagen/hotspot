@@ -16,8 +16,11 @@ from difflib import SequenceMatcher
 from scipy.spatial.distance import pdist
 from scipy.stats.stats import pearsonr
 from scipy.spatial.distance import jaccard
+from scipy.spatial.distance import hamming
+from scipy.spatial.distance import kulsinski
 
-from metrics import jaccard as ji
+
+from measures import jaccard as ji
 
 from pai import pai
 
@@ -311,8 +314,8 @@ print("> No similarity")
 print("Jaccard-Needham Similarity:", ((1 - ( jaccard(input_a.flatten(), input_b.flatten())) ) * 100) )
 print("Jaccard-Needham Dissimilarity:", ( jaccard(input_a.flatten(), input_b.flatten()) ) * 100 )
 
-print("Jaccard Index Similarity:", ( jaccard_similarity_score(input_a.flatten(), input_b.flatten()) ) * 100 )
-print("Jaccard Index Dissimilarity:", ((1 - ( jaccard_similarity_score(input_a.flatten(), input_b.flatten())) ) * 100) )
+print("Jaccard Index Similarity:", ( ji.jaccard(input_a.flatten(), input_b.flatten()) ) * 100 )
+print("Jaccard Index Dissimilarity:", ((1 - ( ji.jaccard(input_a.flatten(), input_b.flatten())) ) * 100) )
 
 # Identical
 input_a = np.array([[ 0, 0, 0, 0, 0, 0, 0 ],
@@ -340,27 +343,33 @@ print("Jaccard Index Dissimilarity:", ((1 - ( ji.jaccard(input_a.flatten(), inpu
 
 # Partial
 input_a = np.array([[ 0, 0, 0, 0, 0, 0, 0 ],
-                    [ 0, -1, -1, 0, 0, 0, 0 ],
-                    [ -1, 0, 0, 0, 0, 0, 0 ],
+                    [ 1, 0, 0, 0, 0, 0, 0 ],
                     [ 0, 0, 0, 0, 0, 0, 0 ],
-                    [ 0, 0, 1, 0, 1, 0, 0 ],
-                    [ 0, 1, 1, 0, 0, 0, 0 ],
+                    [ 0, 0, 0, 0, 0, 0, 0 ],
+                    [ 0, 0, 0, 0, 0, 0, 0 ],
+                    [ 0, 0, 0, 0, 0, 0, 0 ],
                     [ 0, 0, 0, 0, 0, 0, 0 ]])
 
 input_b = np.array([[ 0, 0, 0, 0, 0, 0, 0 ],
-                    [ 0, -1, -1, -1, 0, 0, 0 ],
-                    [ -1, -1, 0, 0, 0, 0, 0 ],
+                    [ 1, 0, 1, 0, 0, 0, 0 ],
                     [ 0, 0, 0, 0, 0, 0, 0 ],
-                    [ 0, 0, 1, 1, 1, 0, 0 ],
-                    [ 0, 1, 1, 0, 0, 0, 0 ],
+                    [ 0, 0, 0, 0, 0, 0, 0 ],
+                    [ 0, 0, 0, 0, 0, 0, 0 ],
+                    [ 0, 0, 0, 0, 0, 0, 0 ],
                     [ 0, 0, 0, 0, 0, 0, 0 ]])
 
 print("> Partial")
 print("Jaccard-Needham Similarity:", ((1 - ( jaccard(input_a.flatten(), input_b.flatten())) ) * 100) )
 print("Jaccard-Needham Dissimilarity:", ( jaccard(input_a.flatten(), input_b.flatten()) ) * 100 )
 
-print("Jaccard Index Similarity:", ( ji.jaccard(input_a.flatten(), input_b.flatten()) ) * 100 )
-print("Jaccard Index Dissimilarity:", ((1 - ( ji.jaccard(input_a.flatten(), input_b.flatten())) ) * 100) )
+print("Jaccard Index Similarity:", ( jaccard_similarity_score(input_a.flatten(), input_b.flatten()) ) * 100 )
+print("Jaccard Index Dissimilarity:", ((1 - ( jaccard_similarity_score(input_a.flatten(), input_b.flatten())) ) * 100) )
+
+print("Hamming Index Similarity:", ((1 - ( hamming(input_a.flatten(), input_b.flatten())) ) * 100) )
+print("Hamming Index Dissimilarity:", ( hamming(input_a.flatten(), input_b.flatten()) ) * 100 )
+
+print("Kulsinski Index Similarity:", ((1 - ( kulsinski(input_a.flatten(), input_b.flatten())) ) * 100) )
+print("Kulsinski Index Dissimilarity:", ( kulsinski(input_a.flatten(), input_b.flatten()) ) * 100 )
 
 # a = np.array([ 1, -1, 1, 0, 1 ])
 # b = np.array([ 0, -1, 0, 1, 1 ])
