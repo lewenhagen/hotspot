@@ -88,9 +88,10 @@ def get_data_frame_getis(data, t_map):
     if data.pvalue != "all":
         gi.clear_zscore(float(data.pvalue))
 
+
     result["getis"] = gi.get_result()
 
-    print(result["getis"])
+    # print(result["getis"])
     df_getis = pandas.DataFrame(data=result["getis"],
                             index=data.yticks["ticks"],
                             columns=data.xticks["ticks"])
@@ -145,7 +146,7 @@ def create_hotspot(hotspot, use_hotspot, levels=None, cbar=True):
     """
     Creates a hotspot
     """
-
+    print("HERE:", get_original_data_from_csv(hotspot.title))
     fig, ax = plt.subplots(figsize=(7,7))
 
     # Creates a heatmap. ax = axes object, cmap = colorscheme, annot = display data in map, fmt = format on annot
@@ -317,6 +318,13 @@ def init_compare(hotspot_one, hotspot_two):
         # "z_min": use_min
     }
 
+
+
+def get_original_data_from_csv(filename):
+    """
+    Returns a matrix with replaced z-score to amoutn of occurences
+    """
+    org_file = pandas.read_csv("static/maps/" + filename + "/" + filename + "_aoristic.csv", usecols=["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], encoding="utf-8").values
 
 
 def split_csv(big_file):

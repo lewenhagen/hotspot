@@ -178,3 +178,20 @@ class Gi():
         Returns the result
         """
         return self.gi_matrix
+
+
+
+    def replace_zscore_with_amount(self):
+        """
+        Adds the amount of crimes on top of zscore
+        """
+        temp_map = np.copy(self.gi_matrix)
+
+        for index, value in np.ndenumerate(self.gi_matrix):
+            y = index[0]
+            x = index[1]
+
+            if value != 0.00:
+                temp_map[index] = self.original_data[y][x]
+
+        return temp_map

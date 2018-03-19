@@ -4,7 +4,7 @@ Main file for Comparison class
 """
 # remove later
 # import pandas as pd
-import timeit
+
 
 # from scipy.stats import norm
 import scipy.stats
@@ -187,7 +187,7 @@ class Compare():
         # j_all = jaccard(self.j_left_all.flatten(), self.j_right_all.flatten())
         # j_hot = jaccard(self.j_left_hot.flatten(), self.j_right_hot.flatten())
         # j_cold = jaccard(self.j_left_cold.flatten(), self.j_right_cold.flatten())
-        
+
         j_all = ji.jaccard(left_all.flatten(), right_all.flatten())
         j_hot = ji.jaccard(left_hot.flatten(), right_hot.flatten())
         j_cold = ji.jaccard(left_cold.flatten(), right_cold.flatten())
