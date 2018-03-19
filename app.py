@@ -147,7 +147,6 @@ def compare():
     compared_hotspot = {
         "all_percentage": 0,
         "jaccard": {},
-        "pai": 0,
         # "z_min": 0,
         # "z_max": 0,
         # "j_unique_all": 0,
@@ -180,7 +179,7 @@ def compare():
 
 
 
-    return render_template("compare.html", created=sorted(all_folders), error=error, comparing=comparing, compared_pngs=compared_pngs, percent=compared_hotspot["all_percentage"], jaccard=compared_hotspot["jaccard"], pai=compared_hotspot["pai"], time="?"+str(time.time()))
+    return render_template("compare.html", created=sorted(all_folders), error=error, comparing=comparing, compared_pngs=compared_pngs, percent=compared_hotspot["all_percentage"], jaccard=compared_hotspot["jaccard"], time="?"+str(time.time()))
 
 
 

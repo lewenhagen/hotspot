@@ -22,7 +22,7 @@ from scipy.spatial.distance import kulsinski
 
 from measures import jaccard as ji
 
-from pai import pai
+# from pai import pai
 
 
 class Compare():
@@ -162,7 +162,7 @@ class Compare():
 
         left_cold[left_cold > 0] = 0 #  clear hotspots
         left_cold[left_cold < 0] = 1
-        print("here", left_cold)
+        # print("here", left_cold)
 
         right_cold[right_cold > 0] = 0 #  clear hotspots
         right_cold[right_cold < 0] = 1
@@ -218,158 +218,158 @@ class Compare():
 
 
 
-    def get_prev_hour_hot(self, y, x):
-        """
-        Based on hours
-        Returns a tuple with the previous coordinates if there ae a hotspot -
-        - in left or right heatmap
-        """
-        fuzzy = False
-        y_pos = y
-        x_pos = x
-        new_x = x
-        new_y = (y-1) % self.num_rows
-        if new_y == 24:
-            new_x = (x-1) % self.row_len
-
-        if self.left_map[new_y][new_x] > 0.0 or self.right_map[new_y][new_x] > 0.0:
-            fuzzy = True
-            y_pos = new_y
-            x_pos = new_x
-
-        return (fuzzy, y_pos, x_pos)
-
-
-
-    def get_next_hour_hot(self, y, x):
-        """
-        Based on hours
-        Returns a tuple with the next coordinates if there ae a hotspot -
-        - in left or right heatmap
-        """
-        fuzzy = False
-        y_pos = y
-        x_pos = x
-        new_x = x
-
-        new_y = (y+1) % self.num_rows
-        if new_y == 0:
-            new_x = (x+1) % self.row_len
-
-        if self.left_map[new_y][new_x] > 0.0 or self.right_map[new_y][new_x] > 0.0:
-            fuzzy = True
-            y_pos = new_y
-            x_pos = new_x
-
-        return (fuzzy, y_pos, x_pos)
+    # def get_prev_hour_hot(self, y, x):
+    #     """
+    #     Based on hours
+    #     Returns a tuple with the previous coordinates if there ae a hotspot -
+    #     - in left or right heatmap
+    #     """
+    #     fuzzy = False
+    #     y_pos = y
+    #     x_pos = x
+    #     new_x = x
+    #     new_y = (y-1) % self.num_rows
+    #     if new_y == 24:
+    #         new_x = (x-1) % self.row_len
+    #
+    #     if self.left_map[new_y][new_x] > 0.0 or self.right_map[new_y][new_x] > 0.0:
+    #         fuzzy = True
+    #         y_pos = new_y
+    #         x_pos = new_x
+    #
+    #     return (fuzzy, y_pos, x_pos)
 
 
 
-    def calculate_fuzziness(self):
-        """
-        Calculates the fuzziness in the overlap
-        Takes nearby hours into account
-        """
-        for y_index, y_val in enumerate(self.left_map):
-            for x_index, x_val in enumerate(y_val):
-                if self.left_map[y_index][x_index] > 0.0 and self.right_map[y_index][x_index] > 0.0: # hotspot overlap
-                    self.fuzziness_matrix[y_index][x_index] = 1
-                    fuzzy, y, x = self.get_next_hour_hot(y_index, x_index)
-                    if fuzzy:
-                        self.fuzziness_matrix[y][x] = 1
+    # def get_next_hour_hot(self, y, x):
+    #     """
+    #     Based on hours
+    #     Returns a tuple with the next coordinates if there ae a hotspot -
+    #     - in left or right heatmap
+    #     """
+    #     fuzzy = False
+    #     y_pos = y
+    #     x_pos = x
+    #     new_x = x
+    #
+    #     new_y = (y+1) % self.num_rows
+    #     if new_y == 0:
+    #         new_x = (x+1) % self.row_len
+    #
+    #     if self.left_map[new_y][new_x] > 0.0 or self.right_map[new_y][new_x] > 0.0:
+    #         fuzzy = True
+    #         y_pos = new_y
+    #         x_pos = new_x
+    #
+    #     return (fuzzy, y_pos, x_pos)
 
-                    fuzzy, y, x = self.get_prev_hour_hot(y_index, x_index)
-                    if fuzzy:
-                        self.fuzziness_matrix[y][x] = 1
 
-                if self.left_map[y_index][x_index] < 0.0 and self.right_map[y_index][x_index] < 0.0: # coldspot overlap
-                    self.fuzziness_matrix[y_index][x_index] = -1
-                    # fuzzy, y, x = self.get_next_hour_cold(y_index, x_index)
-                    # if fuzzy:
-                    #     self.fuzziness_matrix[y][x] = -1
-        print("here:", self.fuzziness_matrix)
+
+    # def calculate_fuzziness(self):
+    #     """
+    #     Calculates the fuzziness in the overlap
+    #     Takes nearby hours into account
+    #     """
+    #     for y_index, y_val in enumerate(self.left_map):
+    #         for x_index, x_val in enumerate(y_val):
+    #             if self.left_map[y_index][x_index] > 0.0 and self.right_map[y_index][x_index] > 0.0: # hotspot overlap
+    #                 self.fuzziness_matrix[y_index][x_index] = 1
+    #                 fuzzy, y, x = self.get_next_hour_hot(y_index, x_index)
+    #                 if fuzzy:
+    #                     self.fuzziness_matrix[y][x] = 1
+    #
+    #                 fuzzy, y, x = self.get_prev_hour_hot(y_index, x_index)
+    #                 if fuzzy:
+    #                     self.fuzziness_matrix[y][x] = 1
+    #
+    #             if self.left_map[y_index][x_index] < 0.0 and self.right_map[y_index][x_index] < 0.0: # coldspot overlap
+    #                 self.fuzziness_matrix[y_index][x_index] = -1
+    #                 # fuzzy, y, x = self.get_next_hour_cold(y_index, x_index)
+    #                 # if fuzzy:
+    #                 #     self.fuzziness_matrix[y][x] = -1
+    #     print("here:", self.fuzziness_matrix)
 
 
 # No similarity
-input_a = np.array([[ 0, 0, 0, 0, 0, 0, 0 ],
-                    [ 0, -1, -1, 0, 0, 0, 0 ],
-                    [ -1, -1, 0, 0, 0, 0, 0 ],
-                    [ 0, 0, 0, 0, 0, 0, 0 ],
-                    [ 0, 0, 1, 0, 0, 0, 0 ],
-                    [ 0, 1, 1, 0, 0, 0, 0 ],
-                    [ 0, 0, 0, 0, 0, 0, 0 ]])
-
-input_b = np.array([[ 0, 0, 0, 0, 0, 0, 0 ],
-                    [ 0, 0, 0, 0, 0, 0, 0 ],
-                    [ 0, 0, 0, 0, 0, 0, 0 ],
-                    [ 0, 0, 0, 1, 0, 0, 0 ],
-                    [ 0, 0, 0, 1, 1, 0, 0 ],
-                    [ 0, 0, 0, 1, 1, 0, 0 ],
-                    [ 0, 0, 0, 0, 0, 0, 0 ]])
-
+# input_a = np.array([[ 0, 0, 0, 0, 0, 0, 0 ],
+#                     [ 0, -1, -1, 0, 0, 0, 0 ],
+#                     [ -1, -1, 0, 0, 0, 0, 0 ],
+#                     [ 0, 0, 0, 0, 0, 0, 0 ],
+#                     [ 0, 0, 1, 0, 0, 0, 0 ],
+#                     [ 0, 1, 1, 0, 0, 0, 0 ],
+#                     [ 0, 0, 0, 0, 0, 0, 0 ]])
 #
-# print(a.flatten())
-# print(b.flatten())
-print("> No similarity")
-print("Jaccard-Needham Similarity:", ((1 - ( jaccard(input_a.flatten(), input_b.flatten())) ) * 100) )
-print("Jaccard-Needham Dissimilarity:", ( jaccard(input_a.flatten(), input_b.flatten()) ) * 100 )
-
-print("Jaccard Index Similarity:", ( ji.jaccard(input_a.flatten(), input_b.flatten()) ) * 100 )
-print("Jaccard Index Dissimilarity:", ((1 - ( ji.jaccard(input_a.flatten(), input_b.flatten())) ) * 100) )
-
-# Identical
-input_a = np.array([[ 0, 0, 0, 0, 0, 0, 0 ],
-              [ 0, -1, -1, 0, 0, 0, 0 ],
-              [ -1, -1, 0, 0, 0, 0, 0 ],
-              [ 0, 0, 0, 0, 0, 0, 0 ],
-              [ 0, 0, 1, 0, 0, 0, 0 ],
-              [ 0, 1, 1, 0, 0, 0, 0 ],
-              [ 0, 0, 0, 0, 0, 0, 0 ]])
-
-input_b = np.array([[ 0, 0, 0, 0, 0, 0, 0 ],
-              [ 0, -1, -1, 0, 0, 0, 0 ],
-              [ -1, -1, 0, 0, 0, 0, 0 ],
-              [ 0, 0, 0, 0, 0, 0, 0 ],
-              [ 0, 0, 1, 0, 0, 0, 0 ],
-              [ 0, 1, 1, 0, 0, 0, 0 ],
-              [ 0, 0, 0, 0, 0, 0, 0 ]])
-
-print("> Identical")
-print("Jaccard-Needham Similarity:", ((1 - ( jaccard(input_a.flatten(), input_b.flatten())) ) * 100) )
-print("Jaccard-Needham Dissimilarity:", ( jaccard(input_a.flatten(), input_b.flatten()) ) * 100 )
-
-print("Jaccard Index Similarity:", ( ji.jaccard(input_a.flatten(), input_b.flatten()) ) * 100 )
-print("Jaccard Index Dissimilarity:", ((1 - ( ji.jaccard(input_a.flatten(), input_b.flatten())) ) * 100) )
-
-# Partial
-input_a = np.array([[ 0, 0, 0, 0, 0, 0, 0 ],
-                    [ 1, 0, 0, 0, 0, 0, 0 ],
-                    [ 0, 0, 0, 0, 0, 0, 0 ],
-                    [ 0, 0, 0, 0, 0, 0, 0 ],
-                    [ 0, 0, 0, 0, 0, 0, 0 ],
-                    [ 0, 0, 0, 0, 0, 0, 0 ],
-                    [ 0, 0, 0, 0, 0, 0, 0 ]])
-
-input_b = np.array([[ 0, 0, 0, 0, 0, 0, 0 ],
-                    [ 1, 0, 1, 0, 0, 0, 0 ],
-                    [ 0, 0, 0, 0, 0, 0, 0 ],
-                    [ 0, 0, 0, 0, 0, 0, 0 ],
-                    [ 0, 0, 0, 0, 0, 0, 0 ],
-                    [ 0, 0, 0, 0, 0, 0, 0 ],
-                    [ 0, 0, 0, 0, 0, 0, 0 ]])
-
-print("> Partial")
-print("Jaccard-Needham Similarity:", ((1 - ( jaccard(input_a.flatten(), input_b.flatten())) ) * 100) )
-print("Jaccard-Needham Dissimilarity:", ( jaccard(input_a.flatten(), input_b.flatten()) ) * 100 )
-
-print("Jaccard Index Similarity:", ( jaccard_similarity_score(input_a.flatten(), input_b.flatten()) ) * 100 )
-print("Jaccard Index Dissimilarity:", ((1 - ( jaccard_similarity_score(input_a.flatten(), input_b.flatten())) ) * 100) )
-
-print("Hamming Index Similarity:", ((1 - ( hamming(input_a.flatten(), input_b.flatten())) ) * 100) )
-print("Hamming Index Dissimilarity:", ( hamming(input_a.flatten(), input_b.flatten()) ) * 100 )
-
-print("Kulsinski Index Similarity:", ((1 - ( kulsinski(input_a.flatten(), input_b.flatten())) ) * 100) )
-print("Kulsinski Index Dissimilarity:", ( kulsinski(input_a.flatten(), input_b.flatten()) ) * 100 )
+# input_b = np.array([[ 0, 0, 0, 0, 0, 0, 0 ],
+#                     [ 0, 0, 0, 0, 0, 0, 0 ],
+#                     [ 0, 0, 0, 0, 0, 0, 0 ],
+#                     [ 0, 0, 0, 1, 0, 0, 0 ],
+#                     [ 0, 0, 0, 1, 1, 0, 0 ],
+#                     [ 0, 0, 0, 1, 1, 0, 0 ],
+#                     [ 0, 0, 0, 0, 0, 0, 0 ]])
+#
+# #
+# # print(a.flatten())
+# # print(b.flatten())
+# print("> No similarity")
+# print("Jaccard-Needham Similarity:", ((1 - ( jaccard(input_a.flatten(), input_b.flatten())) ) * 100) )
+# print("Jaccard-Needham Dissimilarity:", ( jaccard(input_a.flatten(), input_b.flatten()) ) * 100 )
+#
+# print("Jaccard Index Similarity:", ( ji.jaccard(input_a.flatten(), input_b.flatten()) ) * 100 )
+# print("Jaccard Index Dissimilarity:", ((1 - ( ji.jaccard(input_a.flatten(), input_b.flatten())) ) * 100) )
+#
+# # Identical
+# input_a = np.array([[ 0, 0, 0, 0, 0, 0, 0 ],
+#               [ 0, -1, -1, 0, 0, 0, 0 ],
+#               [ -1, -1, 0, 0, 0, 0, 0 ],
+#               [ 0, 0, 0, 0, 0, 0, 0 ],
+#               [ 0, 0, 1, 0, 0, 0, 0 ],
+#               [ 0, 1, 1, 0, 0, 0, 0 ],
+#               [ 0, 0, 0, 0, 0, 0, 0 ]])
+#
+# input_b = np.array([[ 0, 0, 0, 0, 0, 0, 0 ],
+#               [ 0, -1, -1, 0, 0, 0, 0 ],
+#               [ -1, -1, 0, 0, 0, 0, 0 ],
+#               [ 0, 0, 0, 0, 0, 0, 0 ],
+#               [ 0, 0, 1, 0, 0, 0, 0 ],
+#               [ 0, 1, 1, 0, 0, 0, 0 ],
+#               [ 0, 0, 0, 0, 0, 0, 0 ]])
+#
+# print("> Identical")
+# print("Jaccard-Needham Similarity:", ((1 - ( jaccard(input_a.flatten(), input_b.flatten())) ) * 100) )
+# print("Jaccard-Needham Dissimilarity:", ( jaccard(input_a.flatten(), input_b.flatten()) ) * 100 )
+#
+# print("Jaccard Index Similarity:", ( ji.jaccard(input_a.flatten(), input_b.flatten()) ) * 100 )
+# print("Jaccard Index Dissimilarity:", ((1 - ( ji.jaccard(input_a.flatten(), input_b.flatten())) ) * 100) )
+#
+# # Partial
+# input_a = np.array([[ 0, 0, 0, 0, 0, 0, 0 ],
+#                     [ 1, 0, 0, 0, 0, 0, 0 ],
+#                     [ 0, 0, 0, 0, 0, 0, 0 ],
+#                     [ 0, 0, 0, 0, 0, 0, 0 ],
+#                     [ 0, 0, 0, 0, 0, 0, 0 ],
+#                     [ 0, 0, 0, 0, 0, 0, 0 ],
+#                     [ 0, 0, 0, 0, 0, 0, 0 ]])
+#
+# input_b = np.array([[ 0, 0, 0, 0, 0, 0, 0 ],
+#                     [ 1, 0, 1, 0, 0, 0, 0 ],
+#                     [ 0, 0, 0, 0, 0, 0, 0 ],
+#                     [ 0, 0, 0, 0, 0, 0, 0 ],
+#                     [ 0, 0, 0, 0, 0, 0, 0 ],
+#                     [ 0, 0, 0, 0, 0, 0, 0 ],
+#                     [ 0, 0, 0, 0, 0, 0, 0 ]])
+#
+# print("> Partial")
+# print("Jaccard-Needham Similarity:", ((1 - ( jaccard(input_a.flatten(), input_b.flatten())) ) * 100) )
+# print("Jaccard-Needham Dissimilarity:", ( jaccard(input_a.flatten(), input_b.flatten()) ) * 100 )
+#
+# print("Jaccard Index Similarity:", ( jaccard_similarity_score(input_a.flatten(), input_b.flatten()) ) * 100 )
+# print("Jaccard Index Dissimilarity:", ((1 - ( jaccard_similarity_score(input_a.flatten(), input_b.flatten())) ) * 100) )
+#
+# print("Hamming Index Similarity:", ((1 - ( hamming(input_a.flatten(), input_b.flatten())) ) * 100) )
+# print("Hamming Index Dissimilarity:", ( hamming(input_a.flatten(), input_b.flatten()) ) * 100 )
+#
+# print("Kulsinski Index Similarity:", ((1 - ( kulsinski(input_a.flatten(), input_b.flatten())) ) * 100) )
+# print("Kulsinski Index Dissimilarity:", ( kulsinski(input_a.flatten(), input_b.flatten()) ) * 100 )
 
 # a = np.array([ 1, -1, 1, 0, 1 ])
 # b = np.array([ 0, -1, 0, 1, 1 ])

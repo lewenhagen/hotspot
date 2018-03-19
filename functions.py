@@ -90,7 +90,7 @@ def get_data_frame_getis(data, t_map):
 
 
     result["getis"] = gi.get_result()
-
+    # original_values = get_original_data_from_csv(data.title, result["getis"])
     # print(result["getis"])
     df_getis = pandas.DataFrame(data=result["getis"],
                             index=data.yticks["ticks"],
@@ -146,13 +146,16 @@ def create_hotspot(hotspot, use_hotspot, levels=None, cbar=True):
     """
     Creates a hotspot
     """
-    print("HERE:", get_original_data_from_csv(hotspot.title))
+
     fig, ax = plt.subplots(figsize=(7,7))
 
     # Creates a heatmap. ax = axes object, cmap = colorscheme, annot = display data in map, fmt = format on annot
     if use_hotspot == "getis":
-        sns.heatmap(hotspot.getis, ax=ax, cmap="bwr", annot=True, fmt=".1f", cbar=cbar)
+        org_data = get_original_data_from_csv(hotspot.title, hotspot.getis)
+        sns.heatmap(hotspot.getis, ax=ax, cmap="bwr", annot=org_data, fmt=".1f", cbar=cbar)
         ax.set_title(hotspot.title + "-Gi* p-value: " + levels)
+
+
 
     elif use_hotspot == "data":
         sns.heatmap(hotspot.data, ax=ax, cmap="bwr", annot=True, fmt=".1f", cbar=cbar)
@@ -293,6 +296,8 @@ def save_table(folder, lisa):
     with open("templates/created/" + folder + "/getis_table.html", "w+") as f:
         f.write(table)
 
+
+
 def init_compare(hotspot_one, hotspot_two):
     """
     Initialize comparison of hotspots
@@ -307,25 +312,33 @@ def init_compare(hotspot_one, hotspot_two):
     compare.calculate_overlap()
     compare.calculate_percentage()
     compare.calculate_jaccard()
-    compare.calculate_fuzziness()
 
     return {
         "data": compare.get_overlap(),
         "all_percentage": compare.get_percentage(),
         "jaccard": compare.get_jaccard(),
-        "pai": round(pai.pai_index(csv_one, csv_two), 3)
+        # "pai": round(pai.pai_index(csv_one, csv_two), 3)
         # "z_max": use_max,
         # "z_min": use_min
     }
 
 
 
-def get_original_data_from_csv(filename):
+def get_original_data_from_csv(filename, getis_file):
     """
     Returns a matrix with replaced z-score to amoutn of occurences
     """
     org_file = pandas.read_csv("static/maps/" + filename + "/" + filename + "_aoristic.csv", usecols=["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], encoding="utf-8").values
+    # print(org_file)
+    # print(getis_file.as_matrix())
+    new_getis = getis_file.copy()
+    new_getis = new_getis.as_matrix()
+    for y_index, y_val in enumerate(new_getis):
+        for x_index, x_val in enumerate(y_val):
+            if new_getis[y_index][x_index] != 0.0:
+                new_getis[y_index][x_index] = org_file[y_index][x_index]
 
+    return new_getis
 
 def split_csv(big_file):
     """
