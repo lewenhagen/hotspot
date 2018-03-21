@@ -151,8 +151,8 @@ def create_hotspot(hotspot, use_hotspot, levels=None, cbar=True):
 
     # Creates a heatmap. ax = axes object, cmap = colorscheme, annot = display data in map, fmt = format on annot
     if use_hotspot == "getis":
-        org_data = get_original_data_from_csv(hotspot.title, hotspot.getis)
-        sns.heatmap(hotspot.getis, ax=ax, cmap="bwr", annot=org_data, fmt=".1f", cbar=cbar)
+        # org_data = get_original_data_from_csv(hotspot.title, hotspot.getis)
+        sns.heatmap(hotspot.getis, ax=ax, cmap="bwr", annot=True, fmt=".1f", cbar=cbar)
         ax.set_title(hotspot.title + "-Gi* p-value: " + levels)
 
 
@@ -187,7 +187,7 @@ def create_hotspot(hotspot, use_hotspot, levels=None, cbar=True):
 
 
 
-def create_compared_heatmap(data):
+def create_compared_heatmap(data, title):
     """
     Create heatmap with overlap from comparison
     """
@@ -203,7 +203,7 @@ def create_compared_heatmap(data):
     fig, ax = plt.subplots(figsize=(7,7))
     heatmap = sns.heatmap(data, ax=ax, annot=True, cmap="bwr", fmt=".1f", cbar=False)
 
-    ax.set_title("Overlap with percentual increase/decrease")
+    ax.set_title(title)
     ax.tick_params(axis='both', direction="out")
 
     # Config for the axis ticks
@@ -224,13 +224,7 @@ def create_compared_heatmap(data):
     # Makes sure the image (labels) is not cut off
     plt.tight_layout()
 
-
-    if not os.path.exists("static/compare/"):
-        os.makedirs("static/compare")
-        print(">>> Created folder: static/compare")
-
-    heatmap.figure.savefig("static/compare/compare.png")
-    print(">>> Saved compared png!")
+    return plt
 
 
 
@@ -324,21 +318,21 @@ def init_compare(hotspot_one, hotspot_two):
 
 
 
-def get_original_data_from_csv(filename, getis_file):
+def get_original_data_from_csv(filename):
     """
-    Returns a matrix with replaced z-score to amoutn of occurences
+    Returns a matrix with replaced z-score to amount of occurences
     """
     org_file = pandas.read_csv("static/maps/" + filename + "/" + filename + "_aoristic.csv", usecols=["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], encoding="utf-8").values
-    # print(org_file)
-    # print(getis_file.as_matrix())
-    new_getis = getis_file.copy()
-    new_getis = new_getis.as_matrix()
-    for y_index, y_val in enumerate(new_getis):
-        for x_index, x_val in enumerate(y_val):
-            if new_getis[y_index][x_index] != 0.0:
-                new_getis[y_index][x_index] = org_file[y_index][x_index]
+    org_getis = pandas.read_csv("static/maps/" + filename + "/" + filename + "_gi.csv", usecols=["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], encoding="utf-8").values
 
-    return new_getis
+    for y_index, y_val in enumerate(org_getis):
+        for x_index, x_val in enumerate(y_val):
+            if org_getis[y_index][x_index] != 0.0:
+                org_getis[y_index][x_index] = org_file[y_index][x_index]
+            else:
+                org_getis[y_index][x_index] = None
+
+    return org_getis
 
 def split_csv(big_file):
     """

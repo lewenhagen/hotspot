@@ -19,12 +19,21 @@
 
                 <h4>Misc data</h4>
                 <p>Overall identical percentage: {{ percent }}%</p>
-                <p>PAI: {{ pai }}
             </div>
             {% else %}
                 <div class="col-md-1 col-md-offset-1"></div>
                 {% include 'forms/compareForm.html' %}
             {% endif %}
+        </div>
+        <div class="row">
+            <div class="col-md-5">
+                <img class="hotspot" src="{{ url_for('static', filename='compare/compare-left.png') }}{{ time | e }}">
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-5">
+                <img class="hotspot" src="{{ url_for('static', filename='compare/compare-right.png') }}{{ time | e }}">
+            </div>
+            <div class="col-md-1"></div>
         </div>
     </div>
     {% if error %}

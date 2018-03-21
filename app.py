@@ -156,7 +156,9 @@ def compare():
     }
     try:
         os.remove("static/compare/compare.png")
-        print("Removed compare.png!")
+        os.remove("static/compare/compare-left.png")
+        os.remove("static/compare/compare-right.png")
+        print("Removed compared png-files!")
     except Exception as e:
         print("No such file: ", e)
 
@@ -164,12 +166,23 @@ def compare():
         if request.form["chooseCompareOne"] != request.form["chooseCompareTwo"]:
             if "Choose a hotspot..." not in (request.form["chooseCompareOne"], request.form["chooseCompareTwo"]):
                 comparing = True
-
                 compared_hotspot = functions.init_compare(request.form["chooseCompareOne"], request.form["chooseCompareTwo"])
                 # compared_hotspot["j_unique_all"] = round(float(1 - compared_hotspot["jaccard"]["all"])*100, 3)
                 # compared_hotspot["j_unique_hot"] = round(float(1 - compared_hotspot["jaccard"]["hot"])*100, 3)
                 # compared_hotspot["j_unique_cold"] = round(float(1 - compared_hotspot["jaccard"]["cold"])*100, 3)
-                functions.create_compared_heatmap(compared_hotspot["data"])
+                heatmap = functions.create_compared_heatmap(compared_hotspot["data"], "Overlap with percentual increase/decrease")
+                functions.save_figure(heatmap, "static/", "compare", ".png")
+                
+                left_nr_occurences = functions.get_original_data_from_csv(request.form["chooseCompareOne"])
+                right_nr_occurences = functions.get_original_data_from_csv(request.form["chooseCompareTwo"])
+
+                left = functions.create_compared_heatmap(left_nr_occurences, "Amount of occurences in " + request.form["chooseCompareOne"])
+                functions.save_figure(left, "static/", "compare", "-left.png")
+
+                right = functions.create_compared_heatmap(right_nr_occurences, "Amount of occurences in " + request.form["chooseCompareTwo"])
+                functions.save_figure(right, "static/", "compare", "-right.png")
+
+
                 compared_pngs.append(request.form["chooseCompareOne"])
                 compared_pngs.append(request.form["chooseCompareTwo"])
             else:
@@ -179,7 +192,7 @@ def compare():
 
 
 
-    return render_template("compare.html", created=sorted(all_folders), error=error, comparing=comparing, compared_pngs=compared_pngs, percent=compared_hotspot["all_percentage"], jaccard=compared_hotspot["jaccard"], time="?"+str(time.time()))
+    return render_template("compare.html", created=sorted(all_folders), error=error, comparing=comparing, compared_pngs=compared_pngs, percent=compared_hotspot["all_percentage"], jaccard=compared_hotspot["jaccard"], left="-left.png", right="-right.png", time="?"+str(time.time()))
 
 
 
