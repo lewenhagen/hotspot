@@ -4,6 +4,7 @@ maps/
 *.pyc
 static/*.png
 static/compare/*.png
+
 static/visualize/
 static/maps/
 debug.log

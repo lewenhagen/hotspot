@@ -19,8 +19,9 @@ from scipy.spatial.distance import jaccard
 from scipy.spatial.distance import hamming
 from scipy.spatial.distance import kulsinski
 
+from measures import similarity_coefficients as sc
 
-from measures import jaccard as ji
+# from measures import jaccard as ji
 
 # from pai import pai
 
@@ -191,21 +192,21 @@ class Compare():
         # j_hot = jaccard(self.j_left_hot.flatten(), self.j_right_hot.flatten())
         # j_cold = jaccard(self.j_left_cold.flatten(), self.j_right_cold.flatten())
 
-        j_all = ji.jaccard(left_all.flatten(), right_all.flatten())
-        j_hot = ji.jaccard(left_hot.flatten(), right_hot.flatten())
-        j_cold = ji.jaccard(left_cold.flatten(), right_cold.flatten())
+        j_all = sc.jaccard(left_all.flatten(), right_all.flatten())
+        j_hot = sc.jaccard(left_hot.flatten(), right_hot.flatten())
+        j_cold = sc.jaccard(left_cold.flatten(), right_cold.flatten())
 
 
         self.jaccard = {
             "similarity": {
+                "all": round((j_all)*100, 1),
+                "hot": round((j_hot)*100, 1),
+                "cold": round((j_cold)*100, 1)
+            },
+            "unique": {
                 "all": round((1-j_all)*100, 1),
                 "hot": round((1-j_hot)*100, 1),
                 "cold": round((1-j_cold)*100, 1)
-            },
-            "unique": {
-                "all": round((j_all)*100, 1),
-                "hot": round((j_hot)*100, 1),
-                "cold": round(j_cold*100, 1)
             }
         }
 

@@ -20,10 +20,6 @@
                 <h4>Misc data</h4>
                 <p>Overall identical percentage: {{ percent }}%</p>
             </div>
-            {% else %}
-                <div class="col-md-1 col-md-offset-1"></div>
-                {% include 'forms/compareForm.html' %}
-            {% endif %}
         </div>
         <div class="row">
             <div class="col-md-5">
@@ -35,6 +31,12 @@
             </div>
             <div class="col-md-1"></div>
         </div>
+            {% else %}
+                <div class="col-md-1 col-md-offset-1"></div>
+                {% include 'forms/compareForm.html' %}
+        </div>
+        {% endif %}
+
     </div>
     {% if error %}
         <div class="error well"><h2>{{ error }}</h2></div>
