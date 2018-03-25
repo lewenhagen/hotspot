@@ -3,7 +3,7 @@ maps/
 *.csv
 *.pyc
 static/*.png
-static/compare/compare.png
+static/compare/*.png
 static/visualize/
 static/maps/
 debug.log
