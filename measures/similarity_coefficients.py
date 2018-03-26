@@ -27,6 +27,10 @@ def setup_data(left, right):
                 true_true += 1
             elif left[index] == 0 and right[index] in (1, -1): # false_true
                 false_true += 1
+            elif left[index] == -1 and right[index] == 1:
+                true_false += 1
+            elif left[index] == 1 and right[index] == -1:
+                true_false += 1
 
             # if left[index] == 1 and right[index] == 0: # true false
             #     true_false += 1
@@ -97,8 +101,10 @@ if __name__ == "__main__":
     partial_left =  [0, 0, 1, 0, 0, 1, 0, 0, 1, 0] # 3 / 5 = 6 / 10 = 60 / 100
     partial_right = [1, 0, 1, 0, 0, 1, 1, 0, 1, 0]
 
-    all_values_left =  [-1, -1, 1, 0, 2, 1, 0, 0, 1, 0]
-    all_values_right = [0, -1, 1, 0, 0, 1, 0, 0, 1, 0]
+    all_values_left =  [-1, -1, 1, 0, 1, 1, 0, 1, 0, 1]
+    all_values_right = [0, -1, 1, 0, 0, 1, 0, 0, 1, 1]
+
+    
 
     print("Jaccard unique:", jaccard(unique_left, unique_right))
     print("Jaccard identical:", jaccard(identical_left, identical_right))
