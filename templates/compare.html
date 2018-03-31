@@ -14,9 +14,8 @@
                 <img class="hotspot" src="{{ url_for('static', filename='compare/compare.png') }}{{ time | e }}">
             </div>
             <div class="col-md-5 col-md-offset-1">
-
                 {% include 'tables/jaccard_table.html' %}
-
+                {% include 'tables/delta_table.html' %}
             </div>
         </div>
         <div class="row">

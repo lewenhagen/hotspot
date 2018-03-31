@@ -318,6 +318,35 @@ def init_compare(hotspot_one, hotspot_two):
 
 
 
+def calculate_delta(old, new):
+    """
+    Calculates the delta between two heatmaps
+    """
+    delta = {
+        "amount": 0,
+        "occ": 0
+    }
+
+    old_nr_of_hotspots = np.count_nonzero(~np.isnan(old))
+    new_nr_of_hotspots = np.count_nonzero(~np.isnan(new))
+
+    old_sum = np.nansum(old)
+    new_sum = np.nansum(new)
+
+    delta["amount"] = round(((new_nr_of_hotspots - old_nr_of_hotspots) / old_nr_of_hotspots) * 100, 2)
+    delta["occ"] = round(((new_sum - old_sum) / old_sum) * 100, 2)
+    # ((new value)-(old value))/(old value)
+    # print(old_nr_of_hotspots)
+    # print(new_nr_of_hotspots)
+    #
+    #
+    # print(old_sum)
+    # print(new_sum)
+
+    # print(right)
+    return delta
+
+
 def get_original_data_from_csv(filename):
     """
     Returns a matrix with replaced z-score to amount of occurences

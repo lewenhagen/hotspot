@@ -143,6 +143,7 @@ def compare():
     comparing = False
     error = False
     compared_pngs = []
+    delta = {}
     all_folders = functions.get_folders()
     compared_hotspot = {
         "all_percentage": 0,
@@ -172,9 +173,11 @@ def compare():
                 # compared_hotspot["j_unique_cold"] = round(float(1 - compared_hotspot["jaccard"]["cold"])*100, 3)
                 heatmap = functions.create_compared_heatmap(compared_hotspot["data"], "Overlap with percentual increase/decrease")
                 functions.save_figure(heatmap, "static/", "compare", ".png")
-                
+
                 left_nr_occurences = functions.get_original_data_from_csv(request.form["chooseCompareOne"])
                 right_nr_occurences = functions.get_original_data_from_csv(request.form["chooseCompareTwo"])
+
+                delta = functions.calculate_delta(left_nr_occurences, right_nr_occurences)
 
                 left = functions.create_compared_heatmap(left_nr_occurences, "Amount of occurences in " + request.form["chooseCompareOne"])
                 functions.save_figure(left, "static/", "compare", "-left.png")
@@ -192,7 +195,7 @@ def compare():
 
 
 
-    return render_template("compare.html", created=sorted(all_folders), error=error, comparing=comparing, compared_pngs=compared_pngs, percent=compared_hotspot["all_percentage"], jaccard=compared_hotspot["jaccard"], left="-left.png", right="-right.png", time="?"+str(time.time()))
+    return render_template("compare.html", created=sorted(all_folders), error=error, comparing=comparing, compared_pngs=compared_pngs, percent=compared_hotspot["all_percentage"], jaccard=compared_hotspot["jaccard"], left="-left.png", right="-right.png", delta=delta, time="?"+str(time.time()))
 
 
 
