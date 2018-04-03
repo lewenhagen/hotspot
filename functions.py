@@ -335,16 +335,9 @@ def calculate_delta(old, new):
 
     delta["amount"] = round(((new_nr_of_hotspots - old_nr_of_hotspots) / old_nr_of_hotspots) * 100, 2)
     delta["occ"] = round(((new_sum - old_sum) / old_sum) * 100, 2)
-    # ((new value)-(old value))/(old value)
-    # print(old_nr_of_hotspots)
-    # print(new_nr_of_hotspots)
-    #
-    #
-    # print(old_sum)
-    # print(new_sum)
 
-    # print(right)
     return delta
+
 
 
 def get_original_data_from_csv(filename):
